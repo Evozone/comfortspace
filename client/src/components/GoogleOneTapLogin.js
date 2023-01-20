@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import { Google } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
+import axios from 'axios';
 
 import { useDispatch } from 'react-redux';
 import { signInAction } from '../actions/actions';
@@ -25,18 +26,46 @@ const GoogleOneTapLogin = () => {
             picture: photoURL,
             iat: signInTime,
         } = jwtDecode(token);
-        dispatch(
-            signInAction(
-                uid,
-                email,
-                name,
-                photoURL,
-                token,
-                signInTime,
-                email.split('@')[0]
+        const username = email.split('@')[0];
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+            },
+        };
+        await axios
+            .post(
+                'http://localhost:5000/api/user/googleSignUp',
+                {
+                    uid,
+                    email,
+                    name,
+                    photoURL,
+                    token,
+                    signInTime,
+                    username,
+                },
+                config
             )
-        );
-        navigate('/home');
+            .then((res) => {
+                console.log(res);
+                dispatch(
+                    signInAction(
+                        uid,
+                        email,
+                        name,
+                        photoURL,
+                        token,
+                        signInTime,
+                        username
+                    )
+                );
+                navigate('/home');
+            })
+            .catch((err) => {
+                console.log(err);
+                alert('Something went wrong, please try again later.');
+            });
     };
 
     const handleGoogleLogIn = () => {
