@@ -11,6 +11,13 @@ import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
 
+import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import EmailIcon from '@mui/icons-material/Email';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+
 import {
     bluegrey,
     richBlack,
@@ -108,7 +115,7 @@ function ViewBlog({ mode }) {
                     />
                 </CardContent>
                 <CardActions sx={{ px: 3, pb: 3 }}>
-                    <Button
+                    {/* <Button
                         onClick={() => {
                             navigator.clipboard.writeText(window.location.href);
                             alert('Link copied to clipboard');
@@ -116,7 +123,47 @@ function ViewBlog({ mode }) {
                         size='small'
                     >
                         Share
-                    </Button>
+                    </Button> */}
+
+                    <Stack direction='row' spacing={1}>
+                        <IconButton
+                            onClick={() =>
+                                window.open(
+                                    `https://web.whatsapp.com/send?text=Heres the blog link ${window.location.href}`,
+                                    '_blank'
+                                )
+                            }
+                            color='success'
+                            aria-label='WhatsAppIcon'
+                        >
+                            <WhatsAppIcon />
+                        </IconButton>
+                        <IconButton
+                            onClick={() =>
+                                window.open(
+                                    `mailto:?body=Heres%the%blog%link%${window.location.href}`,
+                                    '_blank'
+                                )
+                            }
+                            aria-label='EmailIcon'
+                            color='primary'
+                        >
+                            <EmailIcon />
+                        </IconButton>
+                        <IconButton
+                            onClick={() =>
+                                window.open(
+                                    `https://twitter.com/intent/tweet?text=Heres%the%blog%link%${window.location.href}`,
+                                    '_blank'
+                                )
+                            }
+                            color='primary'
+                            aria-label='TwitterIcon'
+                        >
+                            <TwitterIcon />
+                        </IconButton>
+                    </Stack>
+
                     {blog?.authorId === author.uid && (
                         <Button color='error' onClick={deleteBlog} size='small'>
                             Delete
