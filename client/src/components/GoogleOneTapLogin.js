@@ -35,7 +35,7 @@ const GoogleOneTapLogin = () => {
         };
         await axios
             .post(
-                'http://localhost:5000/api/user/googleSignUp',
+                `${process.env.REACT_APP_SERVER_URL}/api/user/googleSignUp`,
                 {
                     uid,
                     email,
