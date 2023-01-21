@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -34,6 +34,8 @@ function App() {
         setMode(updatedTheme);
     };
 
+    const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+
     useEffect(() => {
         const auth = window.localStorage.getItem('healthApp');
         if (auth) {
@@ -56,6 +58,8 @@ function App() {
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
             <Routes>
+                {/* Appbar */}
+                <h1>Appbar</h1>
                 <Route path='/' element={<LandingPage />} />
                 <Route
                     path='/home'

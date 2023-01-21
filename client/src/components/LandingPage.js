@@ -91,7 +91,7 @@ function LandingPage() {
                         }}
                     >
                         <h1 style={{
-                            color: '#1E352F', fontWeight: 'bold', fontSize: '3rem', fontFamily: 'Poppins', fontWeight: '700',
+                            color: '#1E352F', fontSize: '3rem', fontFamily: 'Poppins', fontWeight: '700',
                         }}>Meadow Melodies</h1>
                         <Typography
                             variant="h6"
