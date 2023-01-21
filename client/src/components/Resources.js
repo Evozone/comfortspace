@@ -4,39 +4,54 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 function Resources() {
-    const [resources, setResources] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        fetch('http://localhost:3001/resources')
-            .then((res) => {
-                if (!res.ok) {
-                    throw Error('Could not fetch the data for that resource');
-                }
-                return res.json();
-            })
-            .then((data) => {
-                setResources(data);
-                setLoading(false);
-                setError(null);
-            })
-            .catch((err) => {
-                setLoading(false);
-                setError(err.message);
-            });
-    }, []);
-
     return (
-        <Box>
-            {loading && <div>Loading...</div>}
-            {error && <div>{error}</div>}
-            {resources.map((resource) => (
-                <Box key={resource.id}>
-                    <h2>{resource.title}</h2>
-                    <p>Written by {resource.author}</p>
-                </Box>
-            ))}
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100vh',
+                backgroundColor: 'background.default',
+                color: 'text.primary',
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: '100vh',
+                    backgroundColor: 'background.default',
+                    color: 'text.primary',
+                }}
+            >
+                <Typography
+                    variant="h1"
+                    sx={{
+                        fontWeight: 'bold',
+                        fontSize: '3rem',
+                        color: 'primary.main',
+                        textAlign: 'center',
+                        marginBottom: '1rem',
+                    }}
+                >
+                    Resources
+                </Typography>
+                <Typography
+                    variant="h2"
+                    sx={{
+                        fontWeight: 'bold',
+                        fontSize: '2rem',
+                        color: 'primary.main',
+                        textAlign: 'center',
+                        marginBottom: '1rem',
+                    }}
+                >
+                    Resources go here
+                </Typography>
+            </Box>
         </Box>
     );
 }

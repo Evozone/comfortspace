@@ -14,49 +14,59 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 import Blogs from './Blogs';
-import Spaces from './Spaces';
 import Resources from './Resources';
 
 
 function Home() {
-    const [active, setActive] = useState('blogs');
-    const [mode, setMode] = useState('light');
-
-    const handleSwitch = (e) => {
-        setActive(e.target.id);
-    };
-
-    const handleMode = () => {
-        const updatedMode = mode === 'light' ? 'dark' : 'light';
-        setMode(updatedMode);
-    };
-
-    useEffect(() => {
-        const localMode = window.localStorage.getItem('healthAppTheme');
-        if (localMode) {
-            setMode(localMode);
-        }
-    }, []);
-
-    useEffect(() => {
-        window.localStorage.setItem('healthAppTheme', mode);
-    }, [mode]);
-
     return (
-        <Box>
-            <Tabs
-                value={active}
-                onChange={handleSwitch}
-                aria-label='home tabs'
+        // Color scheme: https://coolors.co/ff6b6b-ffe66d-ffffff-48dbfb-1dd1a1
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100vh',
+                backgroundColor: 'background.default',
+                color: 'text.primary',
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: '100vh',
+                    backgroundColor: 'background.default',
+                    color: 'text.primary',
+                }}
             >
-                <Tab id='blogs' label='Blogs' />
-                <Tab id='spaces' label='Spaces' />
-                <Tab id='resources' label='Resources' />
-            </Tabs>
-
-            {active === 'blogs' && <Blogs />}
-            {active === 'spaces' && <Spaces />}
-            {active === 'resources' && <Resources />}
+                <Typography
+                    variant="h1"
+                    sx={{
+                        fontWeight: 'bold',
+                        fontSize: '3rem',
+                        color: 'primary.main',
+                        textAlign: 'center',
+                        marginBottom: '1rem',
+                    }}
+                >
+                    Home
+                </Typography>
+                <Typography
+                    variant="h2"
+                    sx={{
+                        fontWeight: 'bold',
+                        fontSize: '2rem',
+                        color: 'primary.main',
+                        textAlign: 'center',
+                        marginBottom: '1rem',
+                    }}
+                >
+                    Spaces go here
+                </Typography>
+            </Box>
         </Box>
     );
 }
