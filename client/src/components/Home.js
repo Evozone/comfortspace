@@ -8,6 +8,8 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+
 import Typography from '@mui/material/Typography';
 
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
@@ -58,6 +60,39 @@ export default function Home({ themeChange, mode }) {
                 padding: '5rem',
             }}
         >
+            <Typography variant="h1" component="h2"
+                sx={{
+                    color: mode === 'light' ? deepDark : light,
+                    margin: '2rem',
+                    fontFamily: 'Poppins, Work Sans',
+                    fontWeight: 'bold',
+                    fontSize: '3rem',
+                    textAlign: 'center',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                Support Groups
+                <RecordVoiceOverIcon sx={{ fontSize: '3rem', marginLeft: '1rem' }} />
+            </Typography>
+
+            <Typography variant="h2" component="h3"
+                sx={{
+                    color: mode === 'light' ? deepDark.concat('aa') : light.concat('aa'),
+                    margin: '2rem',
+                    fontFamily: 'Work Sans',
+                    fontWeight: 'medium',
+                    fontSize: '1.5rem',
+                    textAlign: 'center',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                Find a space to talk about your mental health.
+            </Typography>
+
             <Box
                 sx={{
                     display: 'grid',
