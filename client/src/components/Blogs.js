@@ -10,7 +10,7 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 
-import { maximumBlueGreen, mayaBlue, magnolia, darkJungleGreen, neonBlue } from './colors';
+import { black, light, medium, dark, deepDark } from './colors';
 
 function Blogs() {
 
@@ -88,7 +88,7 @@ function Blogs() {
         <Box
             sx={{
                 minHeight: '100vh',
-                backgroundColor: magnolia,
+                backgroundColor: '#65b891',
                 color: 'text.primary',
             }}
         >
