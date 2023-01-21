@@ -39,9 +39,6 @@ function App() {
     const localTheme = window.localStorage.getItem('healthAppTheme');
 
     const [mode, setMode] = useState(localTheme ? localTheme : 'light');
-    const [page, setPage] = useState(
-        `${window.location.pathname.split('/')[1]}`
-    );
 
     const darkTheme = createTheme({
         palette: {
@@ -60,7 +57,6 @@ function App() {
     };
 
     const isSignedIn = useSelector((state) => state.auth.isSignedIn);
-    // const isSignedIn = true;
 
     useEffect(() => {
         const auth = window.localStorage.getItem('healthApp');
@@ -79,11 +75,6 @@ function App() {
             }
         }
     }, []);
-
-    const handlePageChange = (event, page) => {
-        setPage(page);
-        navigate(`/${page}`);
-    };
 
     const handleSignOut = () => {
         const choice = window.confirm('Please click on OK to Log Out.');
@@ -125,21 +116,29 @@ function App() {
                     </IconButton>
 
                     {/* Swticher between 3 pages */}
-                    <CustomSwitcherGroup
-                        value={page}
-                        onChange={handlePageChange}
-                        exclusive
-                    >
-                        <CustomSwitcherButton value='home'>
+                    <CustomSwitcherGroup exclusive>
+                        <CustomSwitcherButton
+                            onClick={() => navigate(`/home`)}
+                            value='home'
+                        >
                             <Groups2Icon /> Spaces
                         </CustomSwitcherButton>
-                        <CustomSwitcherButton value='blogs'>
+                        <CustomSwitcherButton
+                            onClick={() => navigate(`/blogs`)}
+                            value='blogs'
+                        >
                             <LibraryBooksIcon /> Blogs
                         </CustomSwitcherButton>
-                        <CustomSwitcherButton value='resources'>
+                        <CustomSwitcherButton
+                            onClick={() => navigate(`/resources`)}
+                            value='resources'
+                        >
                             <FavoriteIcon /> Resources
                         </CustomSwitcherButton>
-                        <CustomSwitcherButton value='exam'>
+                        <CustomSwitcherButton
+                            onClick={() => navigate(`/exam`)}
+                            value='exam'
+                        >
                             <QuizIcon /> Take a Test
                         </CustomSwitcherButton>
                     </CustomSwitcherGroup>

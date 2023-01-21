@@ -3,8 +3,6 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const multer = require('multer');
-const fs = require('fs');
 
 const userRouter = require('./routes/user.js');
 const blogsRouter = require('./routes/blog.js');
@@ -12,8 +10,6 @@ const blogsRouter = require('./routes/blog.js');
 const app = express();
 
 const PORT = process.env.PORT || 5000;
-
-const uploadMiddleware = multer({ dest: 'blogMedia/' });
 
 dotenv.config();
 
