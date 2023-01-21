@@ -43,14 +43,14 @@ export default function Home({ themeChange, mode }) {
         },
         {
             id: '9z8y7x6w5v4u3t2s1r0q',
-            title: 'Bereavement Space',
-            description: 'A space for people who are grieving to talk about their loss and offer support to others.',
+            title: 'ADHD Space',
+            description: 'A space for people who have low self-esteem and face difficulties in their daily works',
             cover: 'https://picsum.photos/400',
         },
         {
             id: '0q9w8e7r6t5y4u3i2o1p',
-            title: 'Eating Disorder Space',
-            description: 'A space for people who have eating disorders to share their experiences and get support from others.',
+            title: 'OCD Space',
+            description: 'A space for people who suffer from unwanted thoughts that leads to compulsion',
             cover: 'https://picsum.photos/400',
         }
     ];
