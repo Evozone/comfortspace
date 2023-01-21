@@ -9,18 +9,23 @@ import { signInAction, signOutAction } from './actions/actions';
 import Home from './components/Home';
 import Blogs from './components/Blogs';
 import Resources from './components/Resources';
+import Exam from './components/Exam';
 import LandingPage from './components/LandingPage';
 import ProtectedRoute from './components/ProtectedRoute';
+
+import Groups2Icon from '@mui/icons-material/Groups2';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import QuizIcon from '@mui/icons-material/Quiz';
 
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LogoutIcon from '@mui/icons-material/Logout';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { CustomSwitcherGroup, CustomSwitcherButton } from './components/CustomSwitcher';
 
-import { maximumBlueGreen, mayaBlue, magnolia, darkJungleGreen, neonBlue } from './components/colors';
+import { richBlack, light, medium, dark, deepDark } from './components/colors';
 
 function App() {
     const dispatch = useDispatch();
@@ -69,7 +74,7 @@ function App() {
     }, []);
 
 
-    const handlePageChange = (page) => () => {
+    const handlePageChange = (event, page) => {
         setPage(page);
         navigate(`/${page}`);
     };
@@ -89,14 +94,16 @@ function App() {
             {isSignedIn &&
                 <Box
                     sx={{
+                        position: 'fixed',
                         width: '100%',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        backgroundColor: mode === 'light' ? neonBlue : darkJungleGreen,
+                        bgcolor: mode === 'light' ? medium : richBlack,
+                        boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
                         color: 'white',
                         zIndex: '1000',
-                        padding: '5px',
+                        padding: '7px',
                     }}
                 >
                     <IconButton
@@ -108,27 +115,31 @@ function App() {
                     </IconButton>
 
                     {/* Swticher between 3 pages */}
-                    <ToggleButtonGroup
-                        sx={{
-                            backgroundColor: mode === 'light' ? mayaBlue : maximumBlueGreen,
-                        }}
+                    <CustomSwitcherGroup
+                        value={page}
+                        onChange={handlePageChange}
+                        exclusive
                     >
-                        <ToggleButton value="home" onClick={handlePageChange('home')}>
-                            Spaces
-                        </ToggleButton>
-                        <ToggleButton value="blogs" onClick={handlePageChange('blogs')}>
-                            Blogs
-                        </ToggleButton>
-                        <ToggleButton value="resources" onClick={handlePageChange('resources')}>
-                            Resources
-                        </ToggleButton>
-                    </ToggleButtonGroup>
+                        <CustomSwitcherButton value="home">
+                            <Groups2Icon /> Spaces
+                        </CustomSwitcherButton>
+                        <CustomSwitcherButton value="blogs">
+                            <LibraryBooksIcon /> Blogs
+                        </CustomSwitcherButton>
+                        <CustomSwitcherButton value="resources">
+                            <FavoriteIcon /> Resources
+                        </CustomSwitcherButton>
+                        <CustomSwitcherButton value="exam">
+                            <QuizIcon /> Exam
+                        </CustomSwitcherButton>
+                    </CustomSwitcherGroup>
+
 
                     {/* Sign out */}
                     <IconButton
                         onClick={() => { handleSignOut() }}
                     >
-                        <LogoutIcon sx={{ color: darkJungleGreen }} />
+                        <LogoutIcon sx={{ color: mode === 'light' ? deepDark : light }} />
                     </IconButton>
                 </Box>}
 
@@ -139,7 +150,7 @@ function App() {
                     element={
                         // <ProtectedRoute>
                         <Home themeChange={themeChange} mode={mode} />
-                        // </ProtectedRoute>
+                        //</ProtectedRoute>
                     }
                 />
                 <Route
@@ -147,7 +158,7 @@ function App() {
                     element={
                         // <ProtectedRoute>
                         <Blogs themeChange={themeChange} mode={mode} />
-                        // </ProtectedRoute>
+                        //</ProtectedRoute>
                     }
                 />
                 <Route
@@ -155,7 +166,15 @@ function App() {
                     element={
                         // <ProtectedRoute>
                         <Resources themeChange={themeChange} mode={mode} />
-                        // </ProtectedRoute>
+                        //</ProtectedRoute>
+                    }
+                />
+                <Route
+                    path='/exam'
+                    element={
+                        // <ProtectedRoute>
+                        <Exam themeChange={themeChange} mode={mode} />
+                        //</ProtectedRoute>
                     }
                 />
             </Routes>
