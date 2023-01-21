@@ -13,6 +13,6 @@ router.get('/getList', get20Blogs);
 router.post('/create', createBlog);
 router.get('/get/:id', getBlogById);
 router.put('/update/:id', updateBlogById);
-router.delete('/delete/:id', deleteBlogById);
+router.delete('/delete/:id/:authorId', deleteBlogById);
 
 module.exports = router;

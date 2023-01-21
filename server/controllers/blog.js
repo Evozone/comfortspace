@@ -1,11 +1,19 @@
 const BlogModel = require('../models/blogModel');
 
 exports.createBlog = async (req, res) => {
-    const { title, content, cover, authorId, authorName, authorUsername } =
-        req.body;
+    const {
+        title,
+        summary,
+        content,
+        cover,
+        authorId,
+        authorName,
+        authorUsername,
+    } = req.body;
     try {
         const result = await BlogModel.create({
             title,
+            summary,
             content,
             cover,
             authorId,
@@ -66,10 +74,18 @@ exports.getBlogById = async (req, res) => {
 
 exports.updateBlogById = async (req, res) => {
     const { id } = req.params;
-    const { title, content, cover, authorId, authorName, authorUsername } =
-        req.body;
+    const {
+        title,
+        summary,
+        content,
+        cover,
+        authorId,
+        authorName,
+        authorUsername,
+    } = req.body;
     const update = {
         title,
+        summary,
         content,
         cover,
         authorId,
@@ -103,10 +119,10 @@ exports.updateBlogById = async (req, res) => {
 };
 
 exports.deleteBlogById = async (req, res) => {
-    const { id } = req.params;
-    const { authorId } = req.body;
+    const { id, authorId } = req.params;
     try {
         const isAuthor = await BlogModel.findById(id);
+        console.log(isAuthor.authorId);
         if (isAuthor.authorId !== authorId) {
             return res.status(401).json({
                 success: false,

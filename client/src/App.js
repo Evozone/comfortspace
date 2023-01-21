@@ -12,6 +12,8 @@ import Resources from './components/Resources';
 import Exam from './components/Exam';
 import LandingPage from './components/LandingPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import ViewBlog from './components/ViewBlog';
+import CreateBlog from './components/CreateBlog';
 
 import Groups2Icon from '@mui/icons-material/Groups2';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
@@ -23,7 +25,10 @@ import IconButton from '@mui/material/IconButton';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { CustomSwitcherGroup, CustomSwitcherButton } from './components/CustomSwitcher';
+import {
+    CustomSwitcherGroup,
+    CustomSwitcherButton,
+} from './components/CustomSwitcher';
 
 import { richBlack, light, medium, dark, deepDark } from './components/colors';
 
@@ -34,7 +39,6 @@ function App() {
     const localTheme = window.localStorage.getItem('healthAppTheme');
 
     const [mode, setMode] = useState(localTheme ? localTheme : 'light');
-    const [page, setPage] = useState(`${window.location.pathname.split('/')[1]}`);
 
     const darkTheme = createTheme({
         palette: {
@@ -52,8 +56,7 @@ function App() {
         setMode(updatedTheme);
     };
 
-    // const isSignedIn = useSelector((state) => state.auth.isSignedIn);
-    const isSignedIn = true;
+    const isSignedIn = useSelector((state) => state.auth.isSignedIn);
 
     useEffect(() => {
         const auth = window.localStorage.getItem('healthApp');
@@ -73,25 +76,19 @@ function App() {
         }
     }, []);
 
-
-    const handlePageChange = (event, page) => {
-        setPage(page);
-        navigate(`/${page}`);
-    };
-
     const handleSignOut = () => {
         const choice = window.confirm('Please click on OK to Log Out.');
         if (choice) {
             dispatch(signOutAction());
             navigate('/');
         }
-    }
+    };
 
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
             {/* Top bar */}
-            {isSignedIn &&
+            {isSignedIn && (
                 <Box
                     sx={{
                         position: 'fixed',
@@ -111,74 +108,102 @@ function App() {
                         sx={{ color: 'white' }}
                         aria-label='change theme'
                     >
-                        {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+                        {mode === 'light' ? (
+                            <DarkModeIcon />
+                        ) : (
+                            <LightModeIcon />
+                        )}
                     </IconButton>
 
                     {/* Swticher between 3 pages */}
-                    <CustomSwitcherGroup
-                        value={page}
-                        onChange={handlePageChange}
-                        exclusive
-                    >
-                        <CustomSwitcherButton value="home">
+                    <CustomSwitcherGroup exclusive>
+                        <CustomSwitcherButton
+                            onClick={() => navigate(`/home`)}
+                            value='home'
+                        >
                             <Groups2Icon /> Spaces
                         </CustomSwitcherButton>
-                        <CustomSwitcherButton value="blogs">
+                        <CustomSwitcherButton
+                            onClick={() => navigate(`/blogs`)}
+                            value='blogs'
+                        >
                             <LibraryBooksIcon /> Blogs
                         </CustomSwitcherButton>
-                        <CustomSwitcherButton value="resources">
+                        <CustomSwitcherButton
+                            onClick={() => navigate(`/resources`)}
+                            value='resources'
+                        >
                             <FavoriteIcon /> Resources
                         </CustomSwitcherButton>
-                        <CustomSwitcherButton value="exam">
+                        <CustomSwitcherButton
+                            onClick={() => navigate(`/exam`)}
+                            value='exam'
+                        >
                             <QuizIcon /> Take a Test
                         </CustomSwitcherButton>
                     </CustomSwitcherGroup>
 
-
                     {/* Sign out */}
                     <IconButton
-                        onClick={() => { handleSignOut() }}
+                        onClick={() => {
+                            handleSignOut();
+                        }}
                     >
-                        <LogoutIcon sx={{ color: mode === 'light' ? deepDark : light }} />
+                        <LogoutIcon
+                            sx={{ color: mode === 'light' ? deepDark : light }}
+                        />
                     </IconButton>
-                </Box>}
+                </Box>
+            )}
 
             <Routes>
                 <Route path='/' element={<LandingPage />} />
                 <Route
                     path='/home'
                     element={
-                        // <ProtectedRoute>
-                        <Home themeChange={themeChange} mode={mode} />
-                        // </ProtectedRoute>
+                        <ProtectedRoute>
+                            <Home themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path='/blogs'
                     element={
-                        // <ProtectedRoute>
-                        <Blogs themeChange={themeChange} mode={mode} />
-                        // </ProtectedRoute>
+                        <ProtectedRoute>
+                            <Blogs themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path='/resources'
                     element={
-                        // <ProtectedRoute>
-                        <Resources themeChange={themeChange} mode={mode} />
-                        // </ProtectedRoute>
+                        <ProtectedRoute>
+                            <Resources themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path='/blog/:id'
+                    element={<ViewBlog themeChange={themeChange} mode={mode} />}
+                />
+                <Route
+                    path='/createBlog'
+                    element={
+                        <ProtectedRoute>
+                            <CreateBlog themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path='/exam'
                     element={
-                        // <ProtectedRoute>
-                        <Exam themeChange={themeChange} mode={mode} />
-                        // </ProtectedRoute>
+                        <ProtectedRoute>
+                            <Exam themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
                     }
                 />
             </Routes>
-        </ThemeProvider >
+        </ThemeProvider>
     );
 }
 

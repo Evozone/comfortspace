@@ -7,8 +7,10 @@ import QuestionTable from './QuestionTable';
 
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
 import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
+import { useSelector } from 'react-redux';
 
 export default function Exam({ themeChange, mode }) {
+    const currentUser = useSelector((state) => state.auth);
 
     return (
         <Box
@@ -16,12 +18,13 @@ export default function Exam({ themeChange, mode }) {
                 minHeight: '100vh',
                 backgroundColor: mode === 'light' ? light : bluegrey,
                 padding: '5rem',
-
             }}
         >
             {customGlobalScrollBars(mode)}
             {smoothScrolling()}
-            <Typography variant="h1" component="h2"
+            <Typography
+                variant='h1'
+                component='h2'
                 sx={{
                     color: mode === 'light' ? deepDark : light,
                     margin: '2rem',
@@ -37,9 +40,14 @@ export default function Exam({ themeChange, mode }) {
                 Take a Test!
                 <ModeIcon sx={{ fontSize: '3rem', marginLeft: '1rem' }} />
             </Typography>
-            <Typography variant="h2" component="h3"
+            <Typography
+                variant='h2'
+                component='h3'
                 sx={{
-                    color: mode === 'light' ? deepDark.concat('aa') : light.concat('aa'),
+                    color:
+                        mode === 'light'
+                            ? deepDark.concat('aa')
+                            : light.concat('aa'),
                     margin: '2rem',
                     fontFamily: 'Work Sans',
                     fontWeight: 'medium',
@@ -50,12 +58,12 @@ export default function Exam({ themeChange, mode }) {
                     alignItems: 'center',
                 }}
             >
-                You're not alone.
+                Hey {currentUser.name}, You are not alone :)
             </Typography>
 
             <Box>
                 <QuestionTable mode={mode} />
-            </Box >
-        </Box >
+            </Box>
+        </Box>
     );
-};
+}
