@@ -1,74 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { signOutAction } from '../actions/actions';
+import ModeIcon from '@mui/icons-material/Mode';
 
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import QuestionTable from './QuestionTable';
 
-import Blogs from './Blogs';
-import Resources from './Resources';
+import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
+import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 
+export default function Exam({ themeChange, mode }) {
 
-function Home() {
     return (
-        // Color scheme: https://coolors.co/ff6b6b-ffe66d-ffffff-48dbfb-1dd1a1
         <Box
             sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
                 minHeight: '100vh',
-                backgroundColor: 'background.default',
-                color: 'text.primary',
+                backgroundColor: mode === 'light' ? light : bluegrey,
+                padding: '5rem',
+
             }}
         >
-            <Box
+            {customGlobalScrollBars(mode)}
+            {smoothScrolling()}
+            <Typography variant="h1" component="h2"
                 sx={{
+                    color: mode === 'light' ? deepDark : light,
+                    margin: '2rem',
+                    fontFamily: 'Poppins, Work Sans',
+                    fontWeight: 'bold',
+                    fontSize: '3rem',
+                    textAlign: 'center',
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
                     justifyContent: 'center',
-                    minHeight: '100vh',
-                    backgroundColor: 'background.default',
-                    color: 'text.primary',
+                    alignItems: 'center',
                 }}
             >
-                <Typography
-                    variant="h1"
-                    sx={{
-                        fontWeight: 'bold',
-                        fontSize: '3rem',
-                        color: 'primary.main',
-                        textAlign: 'center',
-                        marginBottom: '1rem',
-                    }}
-                >
-                    Exam
-                </Typography>
-                <Typography
-                    variant="h2"
-                    sx={{
-                        fontWeight: 'bold',
-                        fontSize: '2rem',
-                        color: 'primary.main',
-                        textAlign: 'center',
-                        marginBottom: '1rem',
-                    }}
-                >
-                    Spaces go here
-                </Typography>
-            </Box>
-        </Box>
-    );
-}
+                Take a Test!
+                <ModeIcon sx={{ fontSize: '3rem', marginLeft: '1rem' }} />
+            </Typography>
+            <Typography variant="h2" component="h3"
+                sx={{
+                    color: mode === 'light' ? deepDark.concat('aa') : light.concat('aa'),
+                    margin: '2rem',
+                    fontFamily: 'Work Sans',
+                    fontWeight: 'medium',
+                    fontSize: '1.5rem',
+                    textAlign: 'center',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                You're not alone.
+            </Typography>
 
-export default Home;
+            <Box>
+                <QuestionTable mode={mode} />
+            </Box >
+        </Box >
+    );
+};

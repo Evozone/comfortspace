@@ -1,59 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import CoPresentIcon from '@mui/icons-material/CoPresent';
 
-function Resources() {
+import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
+
+import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
+
+export default function Resources({ themeChange, mode }) {
     return (
         <Box
             sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
                 minHeight: '100vh',
-                backgroundColor: 'background.default',
-                color: 'text.primary',
+                backgroundColor: mode === 'light' ? light : bluegrey,
+                padding: '5rem',
             }}
         >
-            <Box
+            {customGlobalScrollBars(mode)}
+            {smoothScrolling()}
+            <Typography variant="h1" component="h2"
                 sx={{
+                    color: mode === 'light' ? deepDark : light,
+                    margin: '2rem',
+                    fontFamily: 'Poppins, Work Sans',
+                    fontWeight: 'bold',
+                    fontSize: '3rem',
+                    textAlign: 'center',
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
                     justifyContent: 'center',
-                    minHeight: '100vh',
-                    backgroundColor: 'background.default',
-                    color: 'text.primary',
+                    alignItems: 'center',
                 }}
             >
-                <Typography
-                    variant="h1"
-                    sx={{
-                        fontWeight: 'bold',
-                        fontSize: '3rem',
-                        color: 'primary.main',
-                        textAlign: 'center',
-                        marginBottom: '1rem',
-                    }}
-                >
-                    Resources
-                </Typography>
-                <Typography
-                    variant="h2"
-                    sx={{
-                        fontWeight: 'bold',
-                        fontSize: '2rem',
-                        color: 'primary.main',
-                        textAlign: 'center',
-                        marginBottom: '1rem',
-                    }}
-                >
-                    Resources go here
-                </Typography>
-            </Box>
-        </Box>
-    );
-}
+                Resources
+                <CoPresentIcon sx={{ fontSize: '3rem', marginLeft: '1rem' }} />
+            </Typography>
 
-export default Resources;
+            <Typography variant="h2" component="h3"
+                sx={{
+                    color: mode === 'light' ? deepDark.concat('aa') : light.concat('aa'),
+                    margin: '2rem',
+                    fontFamily: 'Work Sans',
+                    fontWeight: 'medium',
+                    fontSize: '1.5rem',
+                    textAlign: 'center',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                We believe in you and your ability to get through this.
+            </Typography>
+        </Box >
+    );
+};
+
+
+

@@ -7,11 +7,14 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import Tooltip from '@mui/material/Tooltip';
 
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
-
 import Typography from '@mui/material/Typography';
 
+import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
 
 // Home takes in themeChange and mode as props
@@ -60,6 +63,8 @@ export default function Home({ themeChange, mode }) {
                 padding: '5rem',
             }}
         >
+            {customGlobalScrollBars(mode)}
+            {smoothScrolling()}
             <Typography variant="h1" component="h2"
                 sx={{
                     color: mode === 'light' ? deepDark : light,
@@ -150,6 +155,39 @@ export default function Home({ themeChange, mode }) {
                 ))}
             </Box>
 
+            {/* To add another space (voice room) with a circular button */}
+            <Tooltip title="Create a new space" placement="left"
+            >
+                <Fab color="primary" aria-label="add"
+                    sx={{
+                        position: 'fixed',
+                        bottom: '2rem',
+                        right: '2rem',
+                        backgroundColor: mode === 'light' ? 'white' : deepDark,
+                        color: mode === 'light' ? deepDark : light,
+
+                        borderRadius: '50%',
+                        height: '3.5rem',
+                        width: '3.5rem',
+
+                        display: 'grid',
+                        placeItems: 'center',
+                        cursor: 'pointer',
+
+                        boxShadow: '0 0 10px 0 rgba(78,135,140, 0.5)',
+
+                        '&:hover': {
+                            backgroundColor: mode === 'light' ? 'white' : deepDark,
+                            color: mode === 'light' ? deepDark : light,
+                            transform: 'scale(1.1) rotate(90deg)',
+                            transition: 'transform 0.2s ease-in-out',
+                        }
+                    }}
+                    onClick={() => navigate('/home/create')}
+                >
+                    <AddIcon />
+                </Fab>
+            </Tooltip>
         </Box >
     );
 }

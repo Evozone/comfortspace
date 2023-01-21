@@ -34,7 +34,7 @@ function App() {
     const localTheme = window.localStorage.getItem('healthAppTheme');
 
     const [mode, setMode] = useState(localTheme ? localTheme : 'light');
-    const [page, setPage] = useState('home');
+    const [page, setPage] = useState(`${window.location.pathname.split('/')[1]}`);
 
     const darkTheme = createTheme({
         palette: {
@@ -130,7 +130,7 @@ function App() {
                             <FavoriteIcon /> Resources
                         </CustomSwitcherButton>
                         <CustomSwitcherButton value="exam">
-                            <QuizIcon /> Exam
+                            <QuizIcon /> Take a Test
                         </CustomSwitcherButton>
                     </CustomSwitcherGroup>
 
@@ -150,7 +150,7 @@ function App() {
                     element={
                         // <ProtectedRoute>
                         <Home themeChange={themeChange} mode={mode} />
-                        //</ProtectedRoute>
+                        // </ProtectedRoute>
                     }
                 />
                 <Route
@@ -158,7 +158,7 @@ function App() {
                     element={
                         // <ProtectedRoute>
                         <Blogs themeChange={themeChange} mode={mode} />
-                        //</ProtectedRoute>
+                        // </ProtectedRoute>
                     }
                 />
                 <Route
@@ -166,7 +166,7 @@ function App() {
                     element={
                         // <ProtectedRoute>
                         <Resources themeChange={themeChange} mode={mode} />
-                        //</ProtectedRoute>
+                        // </ProtectedRoute>
                     }
                 />
                 <Route
@@ -174,7 +174,7 @@ function App() {
                     element={
                         // <ProtectedRoute>
                         <Exam themeChange={themeChange} mode={mode} />
-                        //</ProtectedRoute>
+                        // </ProtectedRoute>
                     }
                 />
             </Routes>
