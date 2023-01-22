@@ -1,10 +1,23 @@
 import { Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import jwtDecode from 'jwt-decode';
+import { signInAction } from '../actions/actions';
+import { useSelector, useDispatch } from 'react-redux';
 
 export default function ProtectedRoute({ children }) {
-    const isSignedIn = useSelector((state) => state.auth.isSignedIn);
-    if (!isSignedIn) {
-        return <Navigate to='/' />;
+    const dispatch = useDispatch();
+    const auth = window.localStorage.getItem('healthApp');
+    if (auth) {
+        const { dnd } = JSON.parse(auth);
+        const {
+            sub: uid,
+            email,
+            name,
+            picture: photoURL,
+            iat: signInTime,
+        } = jwtDecode(dnd);
+        dispatch(signInAction(uid, email, name, photoURL, dnd, signInTime));
+        return children;
     }
-    return children;
+
+    return <Navigate to='/' />;
 }
