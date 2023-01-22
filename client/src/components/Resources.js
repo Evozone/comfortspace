@@ -3,17 +3,22 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
 
 import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { Card, CardActionArea, CardContent, CardMedia } from '@mui/material';
-import {data} from "./ResourcesData"
+import { data } from "./ResourcesData"
 
 export default function Resources({ themeChange, mode }) {
-    
+
     const openInNewTab = (url) => {
         window.open(url, '_blank', 'noreferrer');
-      };
+    };
     return (
         <Box
             sx={{
@@ -64,11 +69,11 @@ export default function Resources({ themeChange, mode }) {
                     // height:'100%'
                 }}
             >
-                {data.map((resource,i) => (
+                {data.map((resource, i) => (
                     // <Link to={resource.link}>
                     <Card
-                    role="link"
-                    onClick={() => openInNewTab(`${resource.link}`)}
+                        role="link"
+                        onClick={() => openInNewTab(`${resource.link}`)}
                         key={i}
                         sx={{
                             backgroundColor:
@@ -89,7 +94,7 @@ export default function Resources({ themeChange, mode }) {
                             <CardMedia
                                 image={require(`./ResourceAssets/${resource.cover}`)}
                                 sx={{
-                                    width:'100%',
+                                    width: '100%',
                                     height: '270px',
                                 }}
                             />
@@ -126,7 +131,7 @@ export default function Resources({ themeChange, mode }) {
                     // </Link>
                 ))}
             </Box>
-            
+
         </Box >
     );
 };

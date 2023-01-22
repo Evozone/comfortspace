@@ -116,7 +116,8 @@ function App() {
                     </IconButton>
 
                     {/* Swticher between 3 pages */}
-                    <CustomSwitcherGroup exclusive>
+                    <CustomSwitcherGroup exclusive
+                        value={window.location.pathname.split('/')[1]}>
                         <CustomSwitcherButton
                             onClick={() => navigate(`/home`)}
                             value='home'
@@ -154,7 +155,8 @@ function App() {
                         />
                     </IconButton>
                 </Box>
-            )}
+            )
+            }
 
             <Routes>
                 <Route path='/' element={<LandingPage />} />
@@ -203,7 +205,7 @@ function App() {
                     }
                 />
             </Routes>
-        </ThemeProvider>
+        </ThemeProvider >
     );
 }
 
