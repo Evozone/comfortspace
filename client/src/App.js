@@ -59,6 +59,7 @@ function App() {
     };
 
     const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+    // const isSignedIn = true;
 
     useEffect(() => {
         const auth = window.localStorage.getItem('healthApp');

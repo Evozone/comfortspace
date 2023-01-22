@@ -261,7 +261,8 @@ function CreateBlog({ mode }) {
                         sx={{
                             mt: 3,
                             backgroundColor: mode === 'light' ? medium : light,
-                            color: 'black',
+                            color: bluegrey,
+                            font: '500 0.9rem Poppins, sans-serif',
                             ':hover': {
                                 backgroundColor: medium,
                                 color: 'black',
