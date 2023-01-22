@@ -8,7 +8,7 @@ function LandingPage() {
         <Box
             sx={{
                 background:
-                    'linear-gradient(-45deg, rgba(166, 195, 111, 1) 0% , rgba(190, 239, 158, 1) 100%)',
+                    'linear-gradient(-45deg,  rgba(147, 229, 171, 1) 0% , rgba(101, 184, 145, 1) 100%)',
                 height: '100vh',
                 width: '100vw',
                 position: 'relative',
@@ -25,7 +25,7 @@ function LandingPage() {
                     position: 'absolute',
                     top: -60,
                     right: -300,
-                    opacity: 0.2,
+                    opacity: 0.15,
                 }}
             />
             <Box
@@ -92,7 +92,7 @@ function LandingPage() {
                     >
                         <h1
                             style={{
-                                color: '#1E352F',
+                                color: '#1B262C',
                                 fontWeight: 'bold',
                                 fontSize: '3rem',
                                 fontFamily: 'Poppins',
@@ -104,7 +104,7 @@ function LandingPage() {
                         <Typography
                             variant='h6'
                             sx={{
-                                color: '#1E352F',
+                                color: '#1B262C',
                                 fontSize: '1.1rem',
                                 fontFamily: 'Poppins',
                             }}
