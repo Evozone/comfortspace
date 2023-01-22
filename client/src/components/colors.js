@@ -8,3 +8,4 @@ export const dark = '#65b891';
 export const deepDark = '#4e878c';
 
 export const bluegrey = '#1B262C';
+export const superLight = '#DBFFF1';
