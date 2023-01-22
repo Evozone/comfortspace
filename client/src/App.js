@@ -7,6 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 import { signInAction, signOutAction } from './actions/actions';
 import Home from './components/Home';
+import VoiceRoom from './components/VoiceRoom';
 import Blogs from './components/Blogs';
 import Resources from './components/Resources';
 import Exam from './components/Exam';
@@ -31,6 +32,7 @@ import {
 } from './components/CustomSwitcher';
 
 import { richBlack, light, medium, dark, deepDark } from './components/colors';
+import { HMSRoomProvider } from '@100mslive/hms-video-react';
 
 function App() {
     const dispatch = useDispatch();
@@ -164,7 +166,22 @@ function App() {
                     path='/home'
                     element={
                         <ProtectedRoute>
-                            <Home themeChange={themeChange} mode={mode} />
+                            <HMSRoomProvider>
+                                <Home themeChange={themeChange} mode={mode} />
+                            </HMSRoomProvider>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path='/room/:id'
+                    element={
+                        <ProtectedRoute>
+                            <HMSRoomProvider>
+                                <VoiceRoom
+                                    themeChange={themeChange}
+                                    mode={mode}
+                                />
+                            </HMSRoomProvider>
                         </ProtectedRoute>
                     }
                 />
@@ -177,14 +194,6 @@ function App() {
                     }
                 />
                 <Route
-                    path='/resources'
-                    element={
-                        <ProtectedRoute>
-                            <Resources themeChange={themeChange} mode={mode} />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
                     path='/blog/:id'
                     element={<ViewBlog themeChange={themeChange} mode={mode} />}
                 />
@@ -193,6 +202,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <CreateBlog themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path='/resources'
+                    element={
+                        <ProtectedRoute>
+                            <Resources themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
                 />

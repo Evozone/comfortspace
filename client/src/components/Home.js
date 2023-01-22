@@ -2,61 +2,185 @@ import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 import Fab from '@mui/material/Fab';
+import Modal from '@mui/material/Modal';
 import AddIcon from '@mui/icons-material/Add';
+import { Delete } from '@mui/icons-material';
 import Tooltip from '@mui/material/Tooltip';
-
+import { TextField } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
+import Button from '@mui/material/Button';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import Typography from '@mui/material/Typography';
+import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { v4 as uuid } from 'uuid';
 
+import axios from 'axios';
 import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
+
+import {
+    useHMSActions,
+    useHMSStore,
+    selectIsConnectedToRoom,
+} from '@100mslive/hms-video-react';
 
 // Home takes in themeChange and mode as props
 export default function Home({ themeChange, mode }) {
     const navigate = useNavigate();
+    const hmsActions = useHMSActions();
+    const currentUser = useSelector((state) => state.auth);
 
-    const spaces = [
-        {
-            id: '63cba2b6e228e865d89c181e',
-            title: 'PSTD Space',
-            description:
-                'A space for people with PTSD to share their stories and experiences.',
-            cover: 'https://picsum.photos/400',
-        },
-        {
-            id: '7f6b2d6e828e865d89c181e',
-            title: 'Anxiety Space',
-            description:
-                'A space for people who deal with anxiety to talk about their struggles and offer support.',
-            cover: 'https://picsum.photos/403',
-        },
-        {
-            id: '1a2b3c4d5e6f7g8h9i0j',
-            title: 'Depression Space',
-            description:
-                'A space for people who are dealing with depression to share their experiences and get support.',
-            cover: 'https://picsum.photos/404',
-        },
-        {
-            id: '9z8y7x6w5v4u3t2s1r0q',
-            title: 'ADHD Space',
-            description:
-                'A space for people who have low self-esteem and face difficulties in their daily works',
-            cover: 'https://picsum.photos/500',
-        },
-        {
-            id: '0q9w8e7r6t5y4u3i2o1p',
-            title: 'OCD Space',
-            description: 'A space for people who suffer from unwanted thoughts that leads to compulsion',
-            cover: 'https://picsum.photos/400',
+    const [modalVisible, setModalVisible] = useState(false);
+    const [roomId, setRoomId] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [coverImgURL, setCoverImgURL] = useState(null);
+
+    const [spaces, setSpaces] = useState(null);
+
+    useEffect(() => {
+        const getSpaces = async () => {
+            await axios
+                .get(`${process.env.REACT_APP_SERVER_URL}/api/rooms/getRooms`)
+                .then((res) => {
+                    setSpaces(res.data.result);
+                    console.log(res.data.result);
+                })
+                .catch((err) => {
+                    alert('Something went wrong, please try again later.');
+                    console.log(err);
+                });
+        };
+        getSpaces();
+    }, []);
+
+    useEffect(() => {
+        const getManagementToken = async () => {
+            var managementToken = '';
+            await fetch(`${process.env.REACT_APP_SERVER_URL}/mtoken`, {
+                method: 'GET',
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    managementToken = data.data.token;
+                });
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${managementToken}`,
+                },
+                body: JSON.stringify({
+                    name: `${currentUser.username}-${uuid()}`,
+                    description: 'This is a sample description for the room',
+                    template_id: '63b72b6a447a48e7edc226bf',
+                    region: 'us',
+                }),
+            };
+            await fetch('https://api.100ms.live/v2/rooms', requestOptions)
+                .then((response) => response.json())
+                .then((data) => setRoomId(data.id));
+        };
+        modalVisible && getManagementToken();
+    }, [modalVisible]);
+
+    const generateCoverImgURL = async () => {
+        const apiKey = 'EZOSMplMfr7b0a00AP3Puje9yEH0sTBqFRZ_mPtuMEw';
+        const response = await fetch(
+            `https://api.unsplash.com/photos/random/?client_id=${apiKey}&count=1&query=nature`
+        );
+        const data = await response.json();
+        const url = data[0].urls.regular;
+        setCoverImgURL(url);
+    };
+
+    const joinCall = (roomId, createdById) => {
+        getToken(roomId, createdById)
+            .then(async (token) => {
+                await hmsActions.join({
+                    userName: `${currentUser.username}@${currentUser.photoURL}`,
+                    authToken: token,
+                    settings: {
+                        isAudioMuted: true,
+                    },
+                    initEndpoint:
+                        process.env.REACT_APP_100MS_TOKEN_ENDPOINT || undefined,
+                });
+                navigate(`/room/${roomId}`);
+            })
+            .catch((error) => {
+                console.log('Token API Error', error);
+            });
+    };
+
+    const getToken = async (roomId, createdById) => {
+        var role = '';
+        createdById.includes(currentUser.uid)
+            ? (role = 'moderator')
+            : (role = 'participant');
+        const response = await fetch(
+            `${process.env.REACT_APP_100MS_TOKEN_ENDPOINT}api/token`,
+            {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_id: currentUser.uid,
+                    role,
+                    room_id: roomId,
+                }),
+            }
+        );
+        const { token } = await response.json();
+        return token;
+    };
+
+    const createNewSpace = async (e) => {
+        e.preventDefault();
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            createdByUsername: currentUser.username,
+            createdById: currentUser.uid,
+            createdByName: currentUser.name,
+            roomId,
+            title,
+            description,
+            cover: coverImgURL,
+        };
+        console.log(config);
+        const response = await axios.post(
+            `${process.env.REACT_APP_SERVER_URL}/api/rooms/create`,
+            config
+        );
+        console.log(response);
+        if (response.data.success) {
+            setModalVisible(false);
+            window.open(`${process.env.REACT_APP_BASE_URL}/home`, '_self');
+        } else {
+            alert('Something went wrong, please try again');
         }
-    ];
+    };
+
+    const deleteSpace = async (roomId) => {
+        const result = await axios.delete(
+            `${process.env.REACT_APP_SERVER_URL}/api/rooms/delete/${roomId}`
+        );
+        if (result.data.success) {
+            window.location.reload();
+            alert('Space deleted successfully');
+        } else {
+            alert('Something went wrong, please try again');
+        }
+    };
 
     return (
         <Box
@@ -117,26 +241,27 @@ export default function Home({ themeChange, mode }) {
                     gridGap: '1rem',
                 }}
             >
-                {spaces.map((space) => (
-                    <Card
-                        key={space.id}
-                        sx={{
-                            backgroundColor:
-                                mode === 'light' ? deepDark : richBlack,
-                            color: mode === 'light' ? light : dark.concat('aa'),
-                            borderRadius: '10px',
-                            border:
-                                mode === 'light'
-                                    ? 'none'
-                                    : `1px solid ${dark.concat('aa')}`,
-                            height: '100%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                        }}
-                    >
-                        <CardActionArea
-                            onClick={() => navigate(`/home/${space.id}`)}
+                {spaces &&
+                    spaces.map((space) => (
+                        <Card
+                            key={space.roomId}
+                            sx={{
+                                backgroundColor:
+                                    mode === 'light' ? deepDark : richBlack,
+                                color:
+                                    mode === 'light'
+                                        ? light
+                                        : dark.concat('aa'),
+                                borderRadius: '10px',
+                                border:
+                                    mode === 'light'
+                                        ? 'none'
+                                        : `1px solid ${dark.concat('aa')}`,
+                                height: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                            }}
                         >
                             <CardMedia
                                 image={space.cover}
@@ -151,14 +276,26 @@ export default function Home({ themeChange, mode }) {
                                         color:
                                             mode === 'light' ? light : medium,
                                         font: '600 1.5rem/1.5rem Poppins, sans-serif',
-                                        mb: '1rem',
+                                        mb: '0.5rem',
                                     }}
                                 >
                                     {space.title}
                                 </Typography>
+                                <Typography
+                                    variant='subtitle2'
+                                    color='textSecondary'
+                                    sx={{
+                                        m: 0,
+                                    }}
+                                >
+                                    by{' '}
+                                    {`${space.createdByUsername}  on   ${
+                                        space.createdAt.split('T')[0]
+                                    }`}
+                                </Typography>
                                 <Box
                                     sx={{
-                                        height: '5rem',
+                                        height: '4rem',
                                         overflow: 'hidden',
                                     }}
                                 >
@@ -171,12 +308,225 @@ export default function Home({ themeChange, mode }) {
                                         {space.description}
                                     </Typography>
                                 </Box>
+                                <Button
+                                    disableElevation
+                                    color='success'
+                                    variant='contained'
+                                    sx={{
+                                        mt: 0,
+                                        backgroundColor:
+                                            mode === 'light' ? medium : light,
+                                        color: 'black',
+                                        ':hover': {
+                                            backgroundColor: light,
+                                            color: 'black',
+                                        },
+                                    }}
+                                    onClick={() => {
+                                        joinCall(
+                                            space.roomId,
+                                            space.createdById
+                                        );
+                                    }}
+                                    endIcon={<PhoneInTalkIcon />}
+                                >
+                                    Join
+                                </Button>
+                                {space.createdById === currentUser.uid && (
+                                    <Button
+                                        sx={{ ml: 2 }}
+                                        disableElevation
+                                        variant='contained'
+                                        color='error'
+                                        endIcon={<Delete />}
+                                        onClick={() => {
+                                            deleteSpace(space._id);
+                                        }}
+                                    >
+                                        Delete
+                                    </Button>
+                                )}
+                                {/* <AvatarGroup max={4}>
+                                    <Avatar
+                                        alt='Remy Sharp'
+                                        src='/static/images/avatar/1.jpg'
+                                    />
+                                    <Avatar
+                                        alt='Travis Howard'
+                                        src='/static/images/avatar/2.jpg'
+                                    />
+                                    <Avatar
+                                        alt='Cindy Baker'
+                                        src='/static/images/avatar/3.jpg'
+                                    />
+                                    <Avatar
+                                        alt='Agnes Walker'
+                                        src='/static/images/avatar/4.jpg'
+                                    />
+                                    <Avatar
+                                        alt='Trevor Henderson'
+                                        src='/static/images/avatar/5.jpg'
+                                    />
+                                </AvatarGroup> */}
                             </CardContent>
-                        </CardActionArea>
-                    </Card>
-                ))}
+                        </Card>
+                    ))}
             </Box>
-
+            <Modal open={modalVisible}>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        minWidth: 600,
+                        maxWidth: 700,
+                        height: 670,
+                        backgroundColor: mode === 'light' ? light : bluegrey,
+                        boxShadow: 24,
+                        borderRadius: '10px',
+                        p: 2,
+                        pb: 1,
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                    }}
+                >
+                    <CancelIcon
+                        sx={{
+                            position: 'absolute',
+                            top: 10,
+                            right: 10,
+                        }}
+                        cursor='pointer'
+                        onClick={() => {
+                            setModalVisible(false);
+                        }}
+                    />
+                    <Typography
+                        variant='h4'
+                        sx={{
+                            textAlign: 'center',
+                            mb: 3,
+                            color: mode === 'light' ? deepDark : light,
+                        }}
+                    >
+                        Create New Space
+                    </Typography>
+                    <form
+                        onSubmit={createNewSpace}
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '500px',
+                        }}
+                    >
+                        <TextField
+                            fullWidth
+                            required
+                            id='outlined-required'
+                            label='Title'
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            sx={{
+                                mb: 3,
+                                '& .MuiInputBase-input': {
+                                    p: 1,
+                                },
+                                '& .MuiInputLabel-root': {
+                                    top: -5,
+                                    fontSize: '0.9rem',
+                                },
+                            }}
+                        />
+                        <TextField
+                            fullWidth
+                            required
+                            id='outlined-required'
+                            label='Description (max 55 characters)'
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            sx={{
+                                mb: 3,
+                                '& .MuiInputBase-input': {
+                                    p: 1,
+                                },
+                                '& .MuiInputLabel-root': {
+                                    top: -5,
+                                    fontSize: '0.9rem',
+                                },
+                            }}
+                        />
+                        {coverImgURL && (
+                            <>
+                                <img
+                                    style={{
+                                        objectFit: 'fill',
+                                        height: '350px',
+                                        width: '455px',
+                                        alignSelf: 'center',
+                                        position: 'relative',
+                                    }}
+                                    alt='loading ...'
+                                    src={coverImgURL}
+                                />
+                                <CancelIcon
+                                    sx={{
+                                        position: 'absolute',
+                                        top: 210,
+                                        right: 80,
+                                    }}
+                                    cursor='pointer'
+                                    onClick={() => {
+                                        setCoverImgURL(null);
+                                    }}
+                                />
+                            </>
+                        )}
+                        <Button
+                            color='success'
+                            variant='contained'
+                            sx={{
+                                mt: 1,
+                                backgroundColor:
+                                    mode === 'light' ? medium : light,
+                                color: 'black',
+                                ':hover': {
+                                    backgroundColor: medium,
+                                    color: 'black',
+                                },
+                            }}
+                            onClick={generateCoverImgURL}
+                        >
+                            Generate Cover Image
+                        </Button>
+                        <Button
+                            color='success'
+                            variant='contained'
+                            sx={{
+                                position: 'absolute',
+                                bottom: 10,
+                                right: 15,
+                                mb: 1,
+                                alignSelf: 'flex-end',
+                                // mr: 7,
+                                backgroundColor:
+                                    mode === 'light' ? medium : light,
+                                color: 'black',
+                                ':hover': {
+                                    backgroundColor: medium,
+                                    color: 'black',
+                                },
+                            }}
+                            // endIcon={<SendIc}
+                            type='submit'
+                        >
+                            Create
+                        </Button>
+                    </form>
+                </Box>
+            </Modal>
             {/* To add another space (voice room) with a circular button */}
             <Tooltip title='Create a new space' placement='left'>
                 <Fab
@@ -186,8 +536,8 @@ export default function Home({ themeChange, mode }) {
                         position: 'fixed',
                         bottom: '2rem',
                         right: '2rem',
-                        backgroundColor: mode === 'light' ? 'white' : deepDark,
-                        color: mode === 'light' ? deepDark : light,
+                        color: mode === 'light' ? 'white' : deepDark,
+                        backgroundColor: mode === 'light' ? deepDark : light,
 
                         borderRadius: '50%',
                         height: '3.5rem',
@@ -200,14 +550,15 @@ export default function Home({ themeChange, mode }) {
                         boxShadow: '0 0 10px 0 rgba(78,135,140, 0.5)',
 
                         '&:hover': {
-                            backgroundColor:
-                                mode === 'light' ? 'white' : deepDark,
-                            color: mode === 'light' ? deepDark : light,
+                            backgroundColor: mode === 'dark' ? light : deepDark,
+                            color: mode === 'dark' ? deepDark : light,
                             transform: 'scale(1.1) rotate(90deg)',
                             transition: 'transform 0.2s ease-in-out',
                         },
                     }}
-                    onClick={() => navigate('/home/create')}
+                    onClick={() => {
+                        setModalVisible(true);
+                    }}
                 >
                     <AddIcon />
                 </Fab>

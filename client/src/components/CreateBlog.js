@@ -161,7 +161,7 @@ function CreateBlog({ mode }) {
                             },
                         }}
                     />
-                    <label htmlFor='cover'>Choose cover Image - </label>
+                    <label htmlFor='cover'>Add a cover Image - </label>
                     <input
                         style={{ marginBottom: 24 }}
                         title='cover'

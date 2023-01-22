@@ -115,16 +115,6 @@ function ViewBlog({ mode }) {
                     />
                 </CardContent>
                 <CardActions sx={{ px: 3, pb: 3 }}>
-                    {/* <Button
-                        onClick={() => {
-                            navigator.clipboard.writeText(window.location.href);
-                            alert('Link copied to clipboard');
-                        }}
-                        size='small'
-                    >
-                        Share
-                    </Button> */}
-
                     <Stack direction='row' spacing={1}>
                         <IconButton
                             onClick={() =>

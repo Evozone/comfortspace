@@ -241,8 +241,8 @@ function Blogs({ mode }) {
                         position: 'fixed',
                         bottom: '2rem',
                         right: '2rem',
-                        backgroundColor: mode === 'light' ? 'white' : deepDark,
-                        color: mode === 'light' ? deepDark : light,
+                        color: mode === 'light' ? 'white' : deepDark,
+                        backgroundColor: mode === 'light' ? deepDark : light,
 
                         borderRadius: '50%',
                         height: '3.5rem',
@@ -255,9 +255,8 @@ function Blogs({ mode }) {
                         boxShadow: '0 0 10px 0 rgba(78,135,140, 0.5)',
 
                         '&:hover': {
-                            backgroundColor:
-                                mode === 'light' ? 'white' : deepDark,
-                            color: mode === 'light' ? deepDark : light,
+                            backgroundColor: mode === 'dark' ? light : deepDark,
+                            color: mode === 'dark' ? deepDark : light,
                             transform: 'scale(1.1) rotate(90deg)',
                             transition: 'transform 0.2s ease-in-out',
                         },
