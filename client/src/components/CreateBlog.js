@@ -100,7 +100,6 @@ function CreateBlog({ mode }) {
             `${process.env.REACT_APP_SERVER_URL}/api/blog/create`,
             config
         );
-        console.log(response);
         if (response.data.success) {
             navigate('/blogs');
         } else {

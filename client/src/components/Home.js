@@ -53,11 +53,9 @@ export default function Home({ themeChange, mode }) {
                 .get(`${process.env.REACT_APP_SERVER_URL}/api/rooms/getRooms`)
                 .then((res) => {
                     setSpaces(res.data.result);
-                    console.log(res.data.result);
                 })
                 .catch((err) => {
                     alert('Something went wrong, please try again later.');
-                    console.log(err);
                 });
         };
         getSpaces();
@@ -156,12 +154,10 @@ export default function Home({ themeChange, mode }) {
             description,
             cover: coverImgURL,
         };
-        console.log(config);
         const response = await axios.post(
             `${process.env.REACT_APP_SERVER_URL}/api/rooms/create`,
             config
         );
-        console.log(response);
         if (response.data.success) {
             setModalVisible(false);
             window.open(`${process.env.REACT_APP_BASE_URL}/home`, '_self');
