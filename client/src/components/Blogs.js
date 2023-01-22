@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import SpeedDial from '@mui/material/SpeedDial';
-import SpeedDialIcon from '@mui/material/SpeedDialIcon';
-import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
 
 import axios from 'axios';
 
@@ -139,9 +136,9 @@ function Blogs({ mode }) {
                 }}
             >
                 Read Blogs
-                {/* <RecordVoiceOverIcon
+                <ChromeReaderModeIcon
                     sx={{ fontSize: '3rem', marginLeft: '1rem' }}
-                /> */}
+                />
             </Typography>
 
             <Typography
@@ -219,9 +216,8 @@ function Blogs({ mode }) {
                                     }}
                                 >
                                     by{' '}
-                                    {`${blog.authorName}  on   ${
-                                        blog.createdAt.split('T')[0]
-                                    }`}
+                                    {`${blog.authorName}  on   ${blog.createdAt.split('T')[0]
+                                        }`}
                                 </Typography>
                                 <Typography
                                     variant='body1'
