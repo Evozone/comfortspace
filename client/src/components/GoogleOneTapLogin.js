@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { Google } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
@@ -7,6 +7,8 @@ import axios from 'axios';
 
 import { useDispatch } from 'react-redux';
 import { signInAction } from '../actions/actions';
+
+import { bluegrey, light, medium, dark, deepDark } from '../components/colors';
 
 const GoogleOneTapLogin = () => {
     const navigate = useNavigate();
@@ -109,15 +111,23 @@ const GoogleOneTapLogin = () => {
                     display: displayType,
                     width: 'fit-content',
                     mt: 3,
-                    backgroundColor: '#335145',
+                    backgroundColor: light,
+                    color: deepDark,
                     '&:hover': {
                         color: '#fff',
-                        backgroundColor: '#0D1A0B99',
+                        backgroundColor: deepDark,
                     },
                 }}
                 onClick={handleGoogleLogIn}
             >
-                Login with Google
+                <Typography
+                    sx={{
+                        fontFamily: 'Poppins',
+                        fontWeight: 600,
+                    }}
+                >
+                    Login with Google
+                </Typography>
             </Button>
             <div style={{ display: gBtnDisplay }} ref={googleButton}></div>
         </React.Fragment>
