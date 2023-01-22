@@ -11,67 +11,14 @@ import CardContent from '@mui/material/CardContent';
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
 
 import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
-import { CardActionArea } from '@mui/material';
-
-const apps = [
-    {
-        id: '1',
-        title: 'Talkspace',
-        description: 'An online therapy platform that connects individuals with licensed therapists',
-        cover: 'https://picsum.photos/400',
-    },
-    {
-        id: '2',
-        title: 'BetterHelp',
-        description: 'An online counseling service that offers therapy sessions with licensed professionals',
-        cover: 'https://picsum.photos/400',
-    },
-    {
-        id: '3',
-        title: '7 Cups',
-        description: 'A free online support community where individuals can connect with trained listeners',
-        cover: 'https://picsum.photos/400',
-    },
-    {
-        id: '4',
-        title: 'Headspace',
-        description: 'An app that offers guided meditation and mindfulness exercises',
-        cover: 'https://picsum.photos/400',
-    },
-    {
-        id: '5',
-        title: 'Moodgym',
-        description: 'An interactive self-help program that teaches cognitive behavioral therapy skills',
-        cover: 'https://picsum.photos/400',
-    },
-    {
-        id: '6',
-        title: 'What\'s Up',
-        description: 'A free mental health app that offers cognitive behavioral therapy and ACT exercises',
-        cover: 'https://picsum.photos/400',
-    },
-    {
-        id: '7',
-        title: 'Pacifica',
-        description: 'An app that offers a variety of tools such as mood tracking, deep breathing exercises, and guided meditations to manage stress and anxiety',
-        cover: 'https://picsum.photos/400',
-    },
-    {
-        id: '8',
-        title: 'Mental Health America',
-        description: 'Website that provides information and resources on a wide range of mental health topics',
-        cover: 'https://picsum.photos/400',
-    },
-    {
-        id: '9',
-        title: 'NAMI (National Alliance on Mental Illness)',
-        description: 'Website that provides information, resources, and support for individuals living with mental illness and their loved ones',
-        cover: 'https://picsum.photos/400',
-    }
-    // ... rest of the apps
-]
+import { Card, CardActionArea, CardContent, CardMedia } from '@mui/material';
+import { data } from "./ResourcesData"
 
 export default function Resources({ themeChange, mode }) {
+
+    const openInNewTab = (url) => {
+        window.open(url, '_blank', 'noreferrer');
+    };
     return (
         <Box
             sx={{
@@ -114,38 +61,78 @@ export default function Resources({ themeChange, mode }) {
             >
                 We believe in you and your ability to get through this.
             </Typography>
-
-            <Box>
-                <Grid container spacing={3}>
-                    {apps.map((app) => (
-                        <Grid item xs={12} sm={6} md={4} key={app.id}>
-                            <Card
-
-                                onClick={() => window.open(app.link, '_blank')}
-                            >
-                                <CardActionArea>
-                                    <CardMedia
-                                        sx={{ height: 200 }}
-                                        image={app.cover}
-                                        title={app.title}
-                                    />
-                                    <CardContent>
-                                        <Typography variant="h5" component="h2">
-                                            {app.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="textSecondary" component="p">
-                                            {app.description}
-                                        </Typography>
-                                    </CardContent>
-                                </CardActionArea>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gridGap: '2rem',
+                    // height:'100%'
+                }}
+            >
+                {data.map((resource, i) => (
+                    // <Link to={resource.link}>
+                    <Card
+                        role="link"
+                        onClick={() => openInNewTab(`${resource.link}`)}
+                        key={i}
+                        sx={{
+                            backgroundColor:
+                                mode === 'light' ? deepDark : richBlack,
+                            color: mode === 'light' ? light : dark.concat('aa'),
+                            borderRadius: '10px',
+                            border:
+                                mode === 'light'
+                                    ? 'none'
+                                    : `1px solid ${dark.concat('aa')}`,
+                            // height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <CardActionArea>
+                            <CardMedia
+                                image={require(`./ResourceAssets/${resource.cover}`)}
+                                sx={{
+                                    width: '100%',
+                                    height: '270px',
+                                }}
+                            />
+                            <CardContent>
+                                <Typography
+                                    variant='h5'
+                                    sx={{
+                                        color:
+                                            mode === 'light' ? light : medium,
+                                        font: '600 1.5rem/1.5rem Poppins, sans-serif',
+                                        mb: '1rem',
+                                    }}
+                                >
+                                    {resource.title}
+                                </Typography>
+                                <Box
+                                    sx={{
+                                        height: '5rem',
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Typography
+                                        variant='body1'
+                                        sx={{
+                                            font: '400 1rem/1.5rem Work Sans, sans-serif',
+                                        }}
+                                    >
+                                        {resource.description}
+                                    </Typography>
+                                </Box>
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
+                    // </Link>
+                ))}
             </Box>
 
-        </Box>
+        </Box >
     );
 };
 
