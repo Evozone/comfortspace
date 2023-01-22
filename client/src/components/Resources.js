@@ -4,15 +4,17 @@ import Typography from '@mui/material/Typography';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 
 import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
 
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
 
 import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
-import { Card, CardActionArea, CardContent, CardMedia } from '@mui/material';
-import { data } from "./ResourcesData"
+import { data } from './ResourcesData';
 
 export default function Resources({ themeChange, mode }) {
-
     const openInNewTab = (url) => {
         window.open(url, '_blank', 'noreferrer');
     };
@@ -26,7 +28,9 @@ export default function Resources({ themeChange, mode }) {
         >
             {customGlobalScrollBars(mode)}
             {smoothScrolling()}
-            <Typography variant="h1" component="h2"
+            <Typography
+                variant='h1'
+                component='h2'
                 sx={{
                     color: mode === 'light' ? deepDark : light,
                     margin: '2rem',
@@ -43,9 +47,14 @@ export default function Resources({ themeChange, mode }) {
                 <CoPresentIcon sx={{ fontSize: '3rem', marginLeft: '1rem' }} />
             </Typography>
 
-            <Typography variant="h2" component="h3"
+            <Typography
+                variant='h2'
+                component='h3'
                 sx={{
-                    color: mode === 'light' ? deepDark.concat('aa') : light.concat('aa'),
+                    color:
+                        mode === 'light'
+                            ? deepDark.concat('aa')
+                            : light.concat('aa'),
                     margin: '2rem',
                     fontFamily: 'Work Sans',
                     fontWeight: 'medium',
@@ -69,7 +78,7 @@ export default function Resources({ themeChange, mode }) {
                 {data.map((resource, i) => (
                     // <Link to={resource.link}>
                     <Card
-                        role="link"
+                        role='link'
                         onClick={() => openInNewTab(`${resource.link}`)}
                         key={i}
                         sx={{
@@ -128,10 +137,6 @@ export default function Resources({ themeChange, mode }) {
                     // </Link>
                 ))}
             </Box>
-
-        </Box >
+        </Box>
     );
-};
-
-
-
+}
