@@ -7,154 +7,137 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import { bluegrey, richBlack, light, medium, dark, deepDark, superLight } from './colors';
+import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 
+import {Radar} from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import Typography from '@mui/material/Typography';
 
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
-import Tooltip from '@mui/material/Tooltip';
+import {Tooltip as Tooltip1} from '@mui/material';
 
-import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
+import { Button } from '@mui/material';
 
-const questions = [
-    {
-        id: 1,
-        question: "Feeling bad about yourself - or that you are a failure or have let yourself or your family down.",
-        disorder: 'depression'
-    },
-    {
-        id: 2,
-        question: "Feeling afraid, as if something awful might happen.",
-        disorder: 'anxiety'
-    },
-    {
-        id: 3,
-        question: "Had nightmares about the event(s) or thought about the event(s) when you did not want to?",
-        disorder: 'ptsd'
-    },
-    {
-        id: 4,
-        question: "Do you ever experience unwanted repetitive and persistent thoughts that cause you anxiety?",
-        disorder: 'ocd'
-    },
-    {
-        id: 5,
-        question: "How often do you have trouble wrapping up the final details of a project, once the challenging parts have been done?",
-        disorder: 'adhd'
-    },
-    {
-        id: 6,
-        question: "Moving or speaking so slowly that other people could have noticed Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual.",
-        disorder: "depression"
-    },
-    {
-        id: 7,
-        question: "Being so restless that it is hard to sit still?",
-        disorder: "anxiety"
-    },
-    {
-        id: 8,
-        question: "Tried hard not to think about the event(s) or went out of your way to avoid situations that reminded you of some past traumatic event(s)?",
-        disorder: "ptsd"
-    },
-    {
-        id: 9,
-        question: "Do you attempt to ignore/suppress these unwanted thoughts/images or engage in another activity (i.e. counting, hand washing, checking repeatedly to be sure doors are locked) to neutralize them and if so how often?",
-        disorder: "ocd"
-    },
-    {
-        id: 10,
-        question: "How often do you have difficulty getting things in order when you have to do a task that requires organization?",
-        disorder: "ADHD"
-    },
-    {
-        id: 11,
-        question: "If you checked off any problems, how difficult have these problems made it for you at work, home, or with other people?",
-        disorder: "depression"
-    },
-    {
-        id: 12,
-        question: "Not being able to stop or control worrying:",
-        disorder: "anxiety"
-    },
-    {
-        id: 13,
-        question: "Been constantly on guard, watchful, or easily startled?",
-        disorder: "PTSD"
-    },
-    {
-        id: 14,
-        question: "Do you experience the need to constantly check on something (i.e. repeatedly checking to be sure doors are locked, light switches and/or appliances are off) or arrange the order of things (a shelf in a bedroom or a kitchen cabinet, for example)?",
-        disorder: "ocd"
-    },
-    {
-        id: 15,
-        question: "How often do you have problems remembering appointments or obligations?",
-        disorder: "adhd"
-    },
-    {
-        id: 16,
-        question: "Trouble concentrating on things, such as reading the newspaper or watching television",
-        disorder: "depression"
-    },
-    {
-        id: 17,
-        question: "Worrying too much about different things",
-        disorder: "anxiety"
-    },
-    {
-        id: 18,
-        question: "Tried to avoid somewhat similar type of situation from your past experience?",
-        disorder: 'ptsd'
-    },
-    {
-        id: 19,
-        question: "Is your job performance, home life, or social relationships significantly affected by your obsessive thinking or ritual behaviors? ",
-        disorder: 'ocd'
-    },
-    {
-        id: 20,
-        question: "When you have a task that requires a lot of thought, how often do you avoid or delay getting started?",
-        disorder: 'adhd'
-    },
-    {
-        id: 21,
-        question: "Feeling tired or having little energy and Trouble falling or staying asleep, or sleeping too much",
-        disorder: 'depression'
-    },
-    {
-        id: 22,
-        question: "Feeling nervous, anxious, or on edge",
-        disorder: 'anxiety'
-    },
-    {
-        id: 23,
-        question: "Have you felt guilty or unable to stop blaming yourself or others for the event(s) or any problems the event(s) may have caused?",
-        disorder: 'ptsd'
-    },
-    {
-        id: 24,
-        question: "Do you spend at least one hour a day thinking obsessive thoughts or performing ritualistic behavior in an attempt to avoid angst? If so, how often?",
-        disorder: 'ocd'
-    },
-    {
-        id: 25,
-        question: "How often do you fidget or squirm with your hands or feet when you have to sit down for a long time?",
-        disorder: 'adhd'
-    },
+import { questions } from './QuestionTableData';
 
-]
 
 export default function QuestionTable({ mode }) {
 
-    const [selectedOption, setSelectedOption] = useState('no');
 
-    const handleOptionChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
+    const [selectedOption, setSelectedOption] = useState({1:null,2:null,3:null,4:null,5:null,6:null,7:null,8:null,9:null,10:null,11:null,12:null,13:null,14:null,15:null,16:null,17:null,18:null,19:null,20:null,21:null,22:null,23:null,24:null,25:null});
+    ChartJS.register(
+        RadialLinearScale,
+        PointElement,
+        LineElement,
+        Filler,
+        Tooltip,
+        Legend
+      );
+    const [data,setData] = useState(null)
 
+
+
+    const formSubmitHandler=()=>{
+        let ocd=0,ADHD=0,depression=0,anxiety=0,PTSD=0;
+        for(let i=0;i<25;i++){
+            if(questions[i].disorder==='ocd') ocd+=(selectedOption[i+1] );
+            else if(questions[i].disorder==='ADHD') ADHD+=(selectedOption[i+1] );
+            else if(questions[i].disorder==='depression') depression+=(selectedOption[i+1] );
+            else if(questions[i].disorder==='anxiety') anxiety+=(selectedOption[i+1] );
+            else if(questions[i].disorder==='PTSD') PTSD+=(selectedOption[i+1] );
+            
+            console.log(ocd,ADHD,depression,anxiety,PTSD)
+        }
+        setData({
+            labels: [
+              'ocd',
+              'ADHD',
+              'depression',
+              'anxiety',
+              'PTSD'
+            ],
+            datasets: [{
+              label: 'Your Analysis',
+              data: [ocd,ADHD,depression,anxiety,PTSD],
+              fill: true,
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgb(255, 99, 132)',
+              pointBackgroundColor: 'rgb(255, 99, 132)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgb(255, 99, 132)'
+    }]})
+    }
+    console.log(selectedOption)
     return (
+        <div>
+            {/* Disclaimer Box */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    padding: '2rem',
+                    my: '2rem',
+                    backgroundColor:
+                        mode === 'light' ? deepDark : richBlack,
+                    color: mode === 'light' ? light : light,
+                    fontSize: '1.1rem',
+                    borderRadius: '15px',
+                    border: mode === 'light' ? 'none' : `1px solid ${light}`,
+                }}
+            >
+                <Typography
+                    variant='h2'
+                    component='h3'
+                    sx={{
+                        mb: '1rem',
+                        fontFamily: 'Poppins, Work Sans',
+                        fontWeight: 'medium',
+                        fontSize: '2rem',
+                        textAlign: 'left',
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}
+                >
+                    <PsychologyAltIcon
+                        sx={{
+                            height: '2.5rem',
+                            width: '2.5rem',
+                            mr: 1,
+                        }}>
+                    </PsychologyAltIcon> How it Works ?
+                </Typography>
+                <Typography
+                    sx={{
+                        fontFamily: 'Work Sans',
+                        fontWeight: '400',
+                        fontSize: '1.1rem',
+                        textAlign: 'left',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    Online screening tools are meant to be a quick snapshot of your mental health.
+                    If your results indicate you may be experiencing symptoms of a mental illness,
+                    consider sharing your results with someone.
+                    <br />
+                    A mental health provider (such as a doctor or a therapist) can
+                    give you a full assessment and talk to you about options for how to feel better.
+                </Typography>
+            </Box>
         <Table
             sx={{
                 minWidth: 650,
@@ -164,6 +147,7 @@ export default function QuestionTable({ mode }) {
                 borderRadius: '15px',
             }}
         >
+            
             <TableHead>
                 <TableRow>
                     <TableCell
@@ -272,25 +256,33 @@ export default function QuestionTable({ mode }) {
                             }}
                         >
                             <RadioGroup
-                                row aria-label={question.id} name={question.id} value={selectedOption[question.id]} onChange={(e) => handleOptionChange(question.id, e.target.value)}>
-                                <Tooltip title="Not at all" placement="top">
+                                row aria-label={question.id} name={question.id} value={selectedOption[question.id]} onChange={(e) => setSelectedOption({...selectedOption,[question.id]:parseInt(e.target.value)})}>
+                                <Tooltip1 title="Not at all" placement="top">
                                     <FormControlLabel value={0} control={<Radio color='primary' />} />
-                                </Tooltip>
-                                <Tooltip title="Some of the days" placement="top">
+                                </Tooltip1>
+                                <Tooltip1 title="Some of the days" placement="top">
                                     <FormControlLabel value={1} control={<Radio color='primary' />} />
-                                </Tooltip>
-                                <Tooltip title="Most of the days" placement="top">
+                                </Tooltip1>
+                                <Tooltip1 title="Most of the days" placement="top">
                                     <FormControlLabel value={2} control={<Radio color='primary' />} />
-                                </Tooltip>
-                                <Tooltip title="Nearly every day" placement="top">
+                                </Tooltip1>
+                                <Tooltip1 title="Nearly every day" placement="top">
                                     <FormControlLabel value={3} control={<Radio color='primary' />} />
-                                </Tooltip>
+                                </Tooltip1>
                             </RadioGroup>
                         </TableCell>
                     </TableRow>
                 ))}
             </TableBody>
         </Table>
+        <br/>
+                <Button color="success" variant="contained" fullWidth style={{width:'100%',margin:'auto'}} onClick={formSubmitHandler} >
+                    Submit
+                </Button>
+                {data &&<div style={{display:'flex',justifyContent:'center',height:'500px',width:'100%',}}>
+                 <Radar data={data}/>
+        </div>}
+        </div>
     );
 }
 
