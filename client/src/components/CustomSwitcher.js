@@ -38,6 +38,11 @@ export const CustomSwitcherGroup = styled(ToggleButtonGroup)(({ theme }) => ({
         '&.Mui-selected': {
             backgroundColor: theme.palette.mode === 'light' ? dark : deepDark,
             color: 'white',
+
+            '&:hover': {
+                backgroundColor: theme.palette.mode === 'light' ? dark : deepDark,
+                color: 'white',
+            }
         },
     },
 }));
