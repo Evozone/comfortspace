@@ -4,9 +4,6 @@ import Typography from '@mui/material/Typography';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 
 import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
 
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
 
