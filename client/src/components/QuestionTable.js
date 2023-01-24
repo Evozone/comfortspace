@@ -16,7 +16,6 @@ import {
     deepDark,
     superLight,
 } from './colors';
-import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 
 import { Radar } from 'react-chartjs-2';
 import {
@@ -93,9 +92,11 @@ export default function QuestionTable({ mode }) {
                 anxiety += selectedOption[i + 1];
             else if (questions[i].disorder === 'PTSD')
                 PTSD += selectedOption[i + 1];
+
+            console.log(ocd, ADHD, depression, anxiety, PTSD);
         }
         setData({
-            labels: ['ocd', 'ADHD', 'depression', 'anxiety', 'PTSD'],
+            labels: ['OCD', 'ADHD', 'Depression', 'Anxiety', 'PTSD'],
             datasets: [
                 {
                     label: 'Your Analysis',
@@ -113,64 +114,14 @@ export default function QuestionTable({ mode }) {
     };
     console.log(selectedOption);
     return (
-        <div>
-            {/* Disclaimer Box */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    padding: '2rem',
-                    my: '2rem',
-                    backgroundColor: mode === 'light' ? deepDark : richBlack,
-                    color: mode === 'light' ? light : light,
-                    fontSize: '1.1rem',
-                    borderRadius: '15px',
-                    border: mode === 'light' ? 'none' : `1px solid ${light}`,
-                }}
-            >
-                <Typography
-                    variant='h2'
-                    component='h3'
-                    sx={{
-                        mb: '1rem',
-                        fontFamily: 'Poppins, Work Sans',
-                        fontWeight: 'medium',
-                        fontSize: '2rem',
-                        textAlign: 'left',
-                        display: 'flex',
-                        alignItems: 'center',
-                    }}
-                >
-                    <PsychologyAltIcon
-                        sx={{
-                            height: '2.5rem',
-                            width: '2.5rem',
-                            mr: 1,
-                        }}
-                    ></PsychologyAltIcon>{' '}
-                    How it Works ?
-                </Typography>
-                <Typography
-                    sx={{
-                        fontFamily: 'Work Sans',
-                        fontWeight: '400',
-                        fontSize: '1.1rem',
-                        textAlign: 'left',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                >
-                    Online screening tools are meant to be a quick snapshot of
-                    your mental health. If your results indicate you may be
-                    experiencing symptoms of a mental illness, consider sharing
-                    your results with someone.
-                    <br />A mental health provider (such as a doctor or a
-                    therapist) can give you a full assessment and talk to you
-                    about options for how to feel better.
-                </Typography>
-            </Box>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+        >
             <Table
                 sx={{
                     minWidth: 650,
@@ -361,27 +312,127 @@ export default function QuestionTable({ mode }) {
                     ))}
                 </TableBody>
             </Table>
-            <br />
+
+            {/* Test submit button */}
             <Button
                 color='success'
                 variant='contained'
-                fullWidth
-                style={{ width: '100%', margin: 'auto' }}
+                sx={{
+                    p: 1,
+                    px: 4,
+                    mt: 3,
+                    backgroundColor: mode === 'light' ? medium : light,
+                    color: bluegrey,
+                    font: '500 1.2rem Poppins, sans-serif',
+                    ':hover': {
+                        backgroundColor: medium,
+                        color: 'black',
+                    },
+                    borderRadius: '15px',
+                    textTransform: 'none',
+                }}
                 onClick={formSubmitHandler}
             >
-                Submit
+                Give me my results!
             </Button>
+
+            {/* Radar chart */}
             {data && (
-                <div
-                    style={{
+                <Box
+                    sx={{
+                        backgroundColor:
+                            mode === 'light' ? '#DBFFF1' : richBlack,
+                        boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.5)',
+                        mt: 3,
+                        p: '2rem',
+                        borderRadius: '15px',
+                        border:
+                            mode === 'light' ? 'none' : `1px solid ${light}`,
                         display: 'flex',
-                        justifyContent: 'center',
-                        height: '500px',
+                        flexDirection: 'column',
+                        height: '100%',
                         width: '100%',
                     }}
                 >
-                    <Radar data={data} />
-                </div>
+                    {/* Header */}
+                    <Box>
+                        <Typography
+                            variant='h2'
+                            component='h3'
+                            sx={{
+                                mb: '1rem',
+                                fontFamily: 'Poppins, Work Sans',
+                                color: mode === 'light' ? deepDark : light,
+                                fontWeight: '600',
+                                fontSize: '2rem',
+                                textAlign: 'left',
+                                display: 'flex',
+                                alignItems: 'left',
+                            }}
+                        >
+                            Results
+                        </Typography>
+                    </Box>
+                    {/* Chart */}
+                    <Box
+                        sx={{
+                            backgroundColor: 'azure',
+                            borderRadius: '15px',
+                            border:
+                                mode === 'light'
+                                    ? `1px solid ${deepDark}`
+                                    : `1px solid ${light}`,
+                            display: 'grid',
+                            placeItems: 'center',
+                            height: '450px',
+                            padding: '1rem',
+                        }}
+                    >
+                        <Radar data={data} />
+                    </Box>
+                    {/* Share it message */}
+                    <Box
+                        sx={{
+                            mt: '1rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                font: '400 1.1rem Work Sans, sans-serif',
+                                color: mode === 'light' ? deepDark : light,
+                                textAlign: 'left',
+                                display: 'flex',
+                                alignItems: 'left',
+                            }}
+                        >
+                            The radar chart you see represents your scores in
+                            different areas of mental health disorders. Each
+                            point on the chart represents a score on a scale of
+                            0-3, with 0 indicating no symptoms and 3 indicating
+                            severe symptoms.
+                            <br />
+                            <br />
+                            Please note that this chart is not a substitute for
+                            professional medical advice and should not be used
+                            to diagnose or treat any condition. If you have any
+                            concerns about your mental health, we strongly
+                            recommend that you speak with a healthcare
+                            professional.
+                            <br />
+                            <br />
+                            You can share this chart with people you trust, but
+                            it's not intended to be used as a diagnostic tool.
+                            <br />
+                            Right click on the chart and select "Copy image" or
+                            "Save image as..." to save the chart to your
+                            computer.
+                        </Typography>
+                    </Box>
+                </Box>
             )}
         </div>
     );

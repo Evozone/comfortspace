@@ -194,23 +194,55 @@ function CreateBlog({ mode }) {
                             },
                         }}
                     />
-                    <label htmlFor='cover'>Add a cover Image - </label>
-                    <input
-                        style={{ marginBottom: 24 }}
-                        title='cover'
-                        placeholder='Cover'
-                        type='file'
-                        accept='image/*'
-                        onChange={handleImageChange}
-                    />
-                    {uploadStatus && (
-                        <Typography
-                            variant='body1'
-                            sx={{ textAlign: 'center', mb: 3 }}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            mb: 3,
+                        }}
+                    >
+                        <label
+                            htmlFor='cover'
+                            style={{
+                                fontSize: '1.1rem',
+                                fontWeight: '500',
+                                color:
+                                    mode === 'light'
+                                        ? deepDark.concat('aa')
+                                        : light.concat('aa'),
+                            }}
                         >
-                            {uploadStatus}
-                        </Typography>
-                    )}
+                            Choose cover image -{' '}
+                        </label>
+                        <input
+                            style={{
+                                marginLeft: '5px',
+                                padding: '7px',
+                                backgroundColor:
+                                    mode === 'light' ? 'whitesmoke' : richBlack,
+                                borderRadius: '6px',
+                                border: `1px solid ${deepDark.concat('a4')}`,
+                            }}
+                            title='cover'
+                            placeholder='Cover'
+                            type='file'
+                            accept='image/*'
+                            onChange={handleImageChange}
+                        />
+                        {uploadStatus && (
+                            <Typography
+                                variant='body1'
+                                sx={{
+                                    textAlign: 'center',
+                                    mb: 3,
+                                }}
+                            >
+                                {uploadStatus}
+                            </Typography>
+                        )}
+                    </Box>
+
                     <ReactQuill
                         theme='snow'
                         modules={modules}
@@ -235,7 +267,8 @@ function CreateBlog({ mode }) {
                         sx={{
                             mt: 3,
                             backgroundColor: mode === 'light' ? medium : light,
-                            color: 'black',
+                            color: bluegrey,
+                            font: '500 0.9rem Poppins, sans-serif',
                             ':hover': {
                                 backgroundColor: medium,
                                 color: 'black',
