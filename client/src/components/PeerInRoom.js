@@ -26,7 +26,6 @@ function PeerInRoom({ peer, mode }) {
     const audioEnabled = useHMSStore(selectIsPeerAudioEnabled(peer.id));
     const localPeer = useHMSStore(selectLocalPeer);
     const isModerator = localPeer.roleName === 'moderator';
-    console.log(isModerator);
     const mutePeer = () => {
         if (isModerator) {
             hmsActions.setRemoteTrackEnabled(peer.audioTrack, false);

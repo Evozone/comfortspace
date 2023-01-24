@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -63,6 +63,15 @@ function VoiceRoom({ mode }) {
             }
         }
     };
+
+    useEffect(() => {
+        console.log(
+            'Hey if u like this project, please star it on github :) https://github.com/Evozone/ok_to_be_not_ok/tree/prod'
+        );
+        return () => {
+            hmsActions.leave();
+        };
+    }, []);
 
     const toggleDeafen = () => {
         setDeafen(!deafen);

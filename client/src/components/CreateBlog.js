@@ -100,7 +100,6 @@ function CreateBlog({ mode }) {
             `${process.env.REACT_APP_SERVER_URL}/api/blog/create`,
             config
         );
-        console.log(response);
         if (response.data.success) {
             navigate('/blogs');
         } else {
@@ -129,23 +128,24 @@ function CreateBlog({ mode }) {
                     borderRadius: '15px',
                 }}
             >
-                <Typography variant='h3'
+                <Typography
+                    variant='h3'
                     sx={{
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                         my: 2,
                         mb: 4,
-                        color:
-                            mode === 'light'
-                                ? deepDark
-                                : light,
+                        color: mode === 'light' ? deepDark : light,
                         padding: '0',
                         fontFamily: 'Poppins',
                         fontWeight: '600',
                         fontSize: '2.5rem',
-                    }}>
-                    <DriveFileRenameOutlineIcon sx={{ fontSize: '2.5rem', mr: 1 }} />
+                    }}
+                >
+                    <DriveFileRenameOutlineIcon
+                        sx={{ fontSize: '2.5rem', mr: 1 }}
+                    />
                     Create a Blog
                 </Typography>
                 <form onSubmit={createNewPost}>
@@ -159,7 +159,8 @@ function CreateBlog({ mode }) {
                         onChange={(e) => setTitle(e.target.value)}
                         sx={{
                             fontFamily: 'Poppins, Work Sans',
-                            backgroundColor: mode === 'light' ? 'whitesmoke' : richBlack,
+                            backgroundColor:
+                                mode === 'light' ? 'whitesmoke' : richBlack,
                             borderRadius: '6px',
                             mb: 3,
                             '& .MuiInputBase-input': {
@@ -180,7 +181,8 @@ function CreateBlog({ mode }) {
                         color='success'
                         onChange={(e) => setSummary(e.target.value)}
                         sx={{
-                            backgroundColor: mode === 'light' ? 'whitesmoke' : richBlack,
+                            backgroundColor:
+                                mode === 'light' ? 'whitesmoke' : richBlack,
                             borderRadius: '6px',
                             mb: 3,
                             '& .MuiInputBase-input': {
@@ -200,7 +202,8 @@ function CreateBlog({ mode }) {
                             mb: 3,
                         }}
                     >
-                        <label htmlFor='cover'
+                        <label
+                            htmlFor='cover'
                             style={{
                                 fontSize: '1.1rem',
                                 fontWeight: '500',
@@ -209,13 +212,15 @@ function CreateBlog({ mode }) {
                                         ? deepDark.concat('aa')
                                         : light.concat('aa'),
                             }}
-
-                        >Choose cover image - </label>
+                        >
+                            Choose cover image -{' '}
+                        </label>
                         <input
                             style={{
                                 marginLeft: '5px',
                                 padding: '7px',
-                                backgroundColor: mode === 'light' ? 'whitesmoke' : richBlack,
+                                backgroundColor:
+                                    mode === 'light' ? 'whitesmoke' : richBlack,
                                 borderRadius: '6px',
                                 border: `1px solid ${deepDark.concat('a4')}`,
                             }}
@@ -244,7 +249,8 @@ function CreateBlog({ mode }) {
                         value={content}
                         onChange={(newValue) => setContent(newValue)}
                         sx={{
-                            backgroundColor: mode === 'light' ? 'whitesmoke' : richBlack,
+                            backgroundColor:
+                                mode === 'light' ? 'whitesmoke' : richBlack,
                             borderRadius: '6px',
                             mb: 3,
                             '& .ql-editor': {
