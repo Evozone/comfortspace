@@ -1,7 +1,8 @@
-import { Navigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
+import { useDispatch } from 'react-redux';
+import { Navigate } from 'react-router-dom';
+
 import { signInAction } from '../actions/actions';
-import { useSelector, useDispatch } from 'react-redux';
 
 export default function ProtectedRoute({ children }) {
     const dispatch = useDispatch();
@@ -18,6 +19,5 @@ export default function ProtectedRoute({ children }) {
         dispatch(signInAction(uid, email, name, photoURL, dnd, signInTime));
         return children;
     }
-
     return <Navigate to='/' />;
 }
