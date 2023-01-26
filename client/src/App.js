@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import Home from './components/Home';
+import Home from './components/Groups';
 import VoiceRoom from './components/VoiceRoom';
 import Blogs from './components/Blogs';
 import Resources from './components/Resources';
@@ -16,6 +16,13 @@ import CreateBlog from './components/CreateBlog';
 import { HMSRoomProvider } from '@100mslive/hms-video-react';
 import MainAppbar from './components/MainAppbar';
 import Loading from './components/Loading';
+import EditBlog from './components/EditBlog';
+
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
+
+import { signInAction } from './actions/actions';
 
 function App() {
     const localTheme = window.localStorage.getItem('healthAppTheme');
@@ -38,6 +45,30 @@ function App() {
         setMode(updatedTheme);
     };
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const auth = window.localStorage.getItem('healthApp');
+        if (auth) {
+            const { dnd } = JSON.parse(auth);
+            const {
+                sub: uid,
+                email,
+                name,
+                picture: photoURL,
+                iat: signInTime,
+            } = jwtDecode(dnd);
+            dispatch(signInAction(uid, email, name, photoURL, dnd, signInTime));
+            const value = window.localStorage.getItem('healthAppLastPage');
+            if (value && value !== undefined) {
+                navigate(`/${value}`);
+            } else {
+                navigate('/groups');
+            }
+        }
+    }, []);
+
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
@@ -45,7 +76,7 @@ function App() {
             <Routes>
                 <Route path='/' element={<LandingPage />} />
                 <Route
-                    path='/home'
+                    path='/groups'
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
@@ -87,10 +118,10 @@ function App() {
                 <Route
                     path='/blog/:id'
                     element={
-                        <ProtectedRoute>
+                        <>
                             <MainAppbar themeChange={themeChange} mode={mode} />
                             <ViewBlog themeChange={themeChange} mode={mode} />
-                        </ProtectedRoute>
+                        </>
                     }
                 />
                 <Route
@@ -99,6 +130,15 @@ function App() {
                         <ProtectedRoute>
                             <MainAppbar themeChange={themeChange} mode={mode} />
                             <CreateBlog themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path='/editBlog/:id'
+                    element={
+                        <ProtectedRoute>
+                            <MainAppbar themeChange={themeChange} mode={mode} />
+                            <EditBlog themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
                 />
