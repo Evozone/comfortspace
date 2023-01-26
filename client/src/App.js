@@ -1,11 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import { signInAction, signOutAction } from './actions/actions';
 import Home from './components/Home';
 import VoiceRoom from './components/VoiceRoom';
 import Blogs from './components/Blogs';
@@ -16,28 +13,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ViewBlog from './components/ViewBlog';
 import CreateBlog from './components/CreateBlog';
 
-import Groups2Icon from '@mui/icons-material/Groups2';
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import QuizIcon from '@mui/icons-material/Quiz';
-
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LogoutIcon from '@mui/icons-material/Logout';
-import {
-    CustomSwitcherGroup,
-    CustomSwitcherButton,
-} from './components/CustomSwitcher';
-
-import { richBlack, light, medium, dark, deepDark } from './components/colors';
 import { HMSRoomProvider } from '@100mslive/hms-video-react';
+import MainAppbar from './components/MainAppbar';
 
 function App() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
     const localTheme = window.localStorage.getItem('healthAppTheme');
 
     const [mode, setMode] = useState(localTheme ? localTheme : 'light');
@@ -58,109 +37,9 @@ function App() {
         setMode(updatedTheme);
     };
 
-    const isSignedIn = useSelector((state) => state.auth.isSignedIn);
-    // const isSignedIn = true;
-
-    useEffect(() => {
-        const auth = window.localStorage.getItem('healthApp');
-        if (auth) {
-            const { dnd } = JSON.parse(auth);
-            const {
-                sub: uid,
-                email,
-                name,
-                picture: photoURL,
-                iat: signInTime,
-            } = jwtDecode(dnd);
-            dispatch(signInAction(uid, email, name, photoURL, dnd, signInTime));
-            if (window.location.pathname === '/') {
-                navigate('/home');
-            }
-        }
-    }, []);
-
-    const handleSignOut = () => {
-        const choice = window.confirm('Please click on OK to Log Out.');
-        if (choice) {
-            dispatch(signOutAction());
-            navigate('/');
-        }
-    };
-
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
-            {/* Top bar */}
-            {isSignedIn && (
-                <Box
-                    sx={{
-                        position: 'fixed',
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        bgcolor: mode === 'light' ? medium : richBlack,
-                        boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-                        color: 'white',
-                        zIndex: '1000',
-                        padding: '7px',
-                    }}
-                >
-                    <IconButton
-                        onClick={themeChange}
-                        sx={{ color: 'white' }}
-                        aria-label='change theme'
-                    >
-                        {mode === 'light' ? (
-                            <DarkModeIcon />
-                        ) : (
-                            <LightModeIcon />
-                        )}
-                    </IconButton>
-
-                    {/* Swticher between 3 pages */}
-                    <CustomSwitcherGroup exclusive
-                        value={window.location.pathname.split('/')[1]}>
-                        <CustomSwitcherButton
-                            onClick={() => navigate(`/home`)}
-                            value='home'
-                        >
-                            <Groups2Icon /> Spaces
-                        </CustomSwitcherButton>
-                        <CustomSwitcherButton
-                            onClick={() => navigate(`/blogs`)}
-                            value='blogs'
-                        >
-                            <LibraryBooksIcon /> Blogs
-                        </CustomSwitcherButton>
-                        <CustomSwitcherButton
-                            onClick={() => navigate(`/resources`)}
-                            value='resources'
-                        >
-                            <FavoriteIcon /> Resources
-                        </CustomSwitcherButton>
-                        <CustomSwitcherButton
-                            onClick={() => navigate(`/exam`)}
-                            value='exam'
-                        >
-                            <QuizIcon /> Take a Test
-                        </CustomSwitcherButton>
-                    </CustomSwitcherGroup>
-
-                    {/* Sign out */}
-                    <IconButton
-                        onClick={() => {
-                            handleSignOut();
-                        }}
-                    >
-                        <LogoutIcon
-                            sx={{ color: mode === 'light' ? deepDark : light }}
-                        />
-                    </IconButton>
-                </Box>
-            )
-            }
-
             <Routes>
                 <Route path='/' element={<LandingPage />} />
                 <Route
@@ -168,6 +47,10 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
+                                <MainAppbar
+                                    themeChange={themeChange}
+                                    mode={mode}
+                                />
                                 <Home themeChange={themeChange} mode={mode} />
                             </HMSRoomProvider>
                         </ProtectedRoute>
@@ -178,6 +61,10 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
+                                <MainAppbar
+                                    themeChange={themeChange}
+                                    mode={mode}
+                                />
                                 <VoiceRoom
                                     themeChange={themeChange}
                                     mode={mode}
@@ -190,18 +77,25 @@ function App() {
                     path='/blogs'
                     element={
                         <ProtectedRoute>
+                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <Blogs themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
                 />
                 <Route
                     path='/blog/:id'
-                    element={<ViewBlog themeChange={themeChange} mode={mode} />}
+                    element={
+                        <ProtectedRoute>
+                            <MainAppbar themeChange={themeChange} mode={mode} />
+                            <ViewBlog themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
+                    }
                 />
                 <Route
                     path='/createBlog'
                     element={
                         <ProtectedRoute>
+                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <CreateBlog themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
@@ -210,6 +104,7 @@ function App() {
                     path='/resources'
                     element={
                         <ProtectedRoute>
+                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <Resources themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
@@ -218,12 +113,13 @@ function App() {
                     path='/exam'
                     element={
                         <ProtectedRoute>
+                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <Exam themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
                 />
             </Routes>
-        </ThemeProvider >
+        </ThemeProvider>
     );
 }
 

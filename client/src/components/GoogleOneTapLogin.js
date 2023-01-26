@@ -50,7 +50,6 @@ const GoogleOneTapLogin = () => {
                 config
             )
             .then((res) => {
-                console.log(res);
                 dispatch(
                     signInAction(
                         uid,

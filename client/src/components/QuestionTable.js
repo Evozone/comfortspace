@@ -92,8 +92,6 @@ export default function QuestionTable({ mode }) {
                 anxiety += selectedOption[i + 1];
             else if (questions[i].disorder === 'PTSD')
                 PTSD += selectedOption[i + 1];
-
-            console.log(ocd, ADHD, depression, anxiety, PTSD);
         }
         setData({
             labels: ['OCD', 'ADHD', 'Depression', 'Anxiety', 'PTSD'],
@@ -112,7 +110,6 @@ export default function QuestionTable({ mode }) {
             ],
         });
     };
-    console.log(selectedOption);
     return (
         <div
             style={{
