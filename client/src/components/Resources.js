@@ -72,11 +72,9 @@ export default function Resources({ themeChange, mode }) {
                     display: 'grid',
                     gridTemplateColumns: 'repeat(2, 1fr)',
                     gridGap: '2rem',
-                    // height:'100%'
                 }}
             >
                 {data.map((resource, i) => (
-                    // <Link to={resource.link}>
                     <Card
                         role='link'
                         onClick={() => openInNewTab(`${resource.link}`)}
@@ -90,7 +88,6 @@ export default function Resources({ themeChange, mode }) {
                                 mode === 'light'
                                     ? 'none'
                                     : `1px solid ${dark.concat('aa')}`,
-                            // height: '100%',
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'space-between',
