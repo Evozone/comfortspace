@@ -1,9 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import GoogleOneTapLogin from './GoogleOneTapLogin';
 import Typography from '@mui/material/Typography';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 
+import { signInAction } from '../actions/actions';
 function LandingPage() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const auth = window.localStorage.getItem('healthApp');
+        if (auth) {
+            const { dnd } = JSON.parse(auth);
+            const {
+                sub: uid,
+                email,
+                name,
+                picture: photoURL,
+                iat: signInTime,
+            } = jwtDecode(dnd);
+            dispatch(signInAction(uid, email, name, photoURL, dnd, signInTime));
+            navigate('/home');
+        }
+    });
+
     return (
         <Box
             sx={{

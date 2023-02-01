@@ -1,4 +1,4 @@
-import { SIGN_IN, SIGN_OUT } from './types';
+import { SIGN_IN, SIGN_OUT, START_LOADING, STOP_LOADING } from './types';
 
 export const signInAction = (uid, email, name, photoURL, token, signInTime) => {
     return {
@@ -17,5 +17,17 @@ export const signInAction = (uid, email, name, photoURL, token, signInTime) => {
 export const signOutAction = () => {
     return {
         type: SIGN_OUT,
+    };
+};
+
+export const startLoadingAction = () => {
+    return {
+        type: START_LOADING,
+    };
+};
+
+export const stopLoadingAction = () => {
+    return {
+        type: STOP_LOADING,
     };
 };

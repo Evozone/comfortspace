@@ -15,6 +15,7 @@ import CreateBlog from './components/CreateBlog';
 
 import { HMSRoomProvider } from '@100mslive/hms-video-react';
 import MainAppbar from './components/MainAppbar';
+import Loading from './components/Loading';
 
 function App() {
     const localTheme = window.localStorage.getItem('healthAppTheme');
@@ -40,6 +41,7 @@ function App() {
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
+            <Loading />
             <Routes>
                 <Route path='/' element={<LandingPage />} />
                 <Route

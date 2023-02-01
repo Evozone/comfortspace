@@ -49,8 +49,219 @@ import PeerInRoom from './PeerInRoom';
 function VoiceRoom({ mode }) {
     const currentUser = useSelector((state) => state.auth);
     const peers = useHMSStore(selectPeers);
+    const isConnected = useHMSStore(selectIsConnectedToRoom);
     const navigate = useNavigate();
     const hmsActions = useHMSActions();
+
+    //create a dummy peers array and the object should have id and name key
+    // const peers = [
+    //     {
+    //         id: 1,
+    //         name: 'peer1',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 2,
+    //         name: 'peer2',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 3,
+    //         name: 'peer3',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 4,
+    //         name: 'peer4',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 5,
+    //         name: 'peer5',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 6,
+    //         name: 'peer6',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 7,
+    //         name: 'peer7',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 8,
+    //         name: 'peer8',
+
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 9,
+    //         name: 'peer9',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 10,
+    //         name: 'peer10',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 11,
+    //         name: 'peer11',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 12,
+    //         name: 'peer12',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 13,
+    //         name: 'peer13',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 14,
+    //         name: 'peer14',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 15,
+    //         name: 'peer15',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 16,
+    //         name: 'peer16',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 17,
+    //         name: 'peer17',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 18,
+    //         name: 'peer18',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 19,
+    //         name: 'peer19',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 20,
+    //         name: 'peer20',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 21,
+    //         name: 'peer21',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 22,
+    //         name: 'peer22',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 23,
+    //         name: 'peer23',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 24,
+    //         name: 'peer24',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 25,
+    //         name: 'peer25',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 26,
+    //         name: 'peer26',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 27,
+    //         name: 'peer27',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 28,
+    //         name: 'peer28',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 29,
+    //         name: 'peer29',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 30,
+    //         name: 'peer30',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 31,
+    //         name: 'peer31',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 32,
+    //         name: 'peer32',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 33,
+    //         name: 'peer33',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 34,
+    //         name: 'peer34',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 35,
+    //         name: 'peer35',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 36,
+    //         name: 'peer36',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 37,
+    //         name: 'peer37',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 38,
+    //         name: 'peer38',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 39,
+    //         name: 'peer39',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 40,
+    //         name: 'peer40',
+    //         audioTrack: true,
+    //     },
+    //     {
+    //         id: 41,
+    //         name: 'peer41',
+    //         audioTrack: true,
+    //     },
+    // ];
 
     const [deafen, setDeafen] = useState(false);
 
@@ -68,6 +279,9 @@ function VoiceRoom({ mode }) {
         console.log(
             'Hey if u like this project, please star it on github :) https://github.com/Evozone/ok_to_be_not_ok/tree/prod'
         );
+        if (!isConnected) {
+            navigate('/home');
+        }
         return () => {
             hmsActions.leave();
         };
@@ -78,58 +292,6 @@ function VoiceRoom({ mode }) {
         deafen ? setPeersVolume(100) : setPeersVolume(0);
     };
 
-    // const clients = [
-    //     { id: 1, username: 'A' },
-    //     { id: 2, username: 'B' },
-    //     { id: 3, username: 'C' },
-    //     { id: 4, username: 'D' },
-    //     { id: 5, username: 'E' },
-    //     { id: 6, username: 'F' },
-    //     { id: 7, username: 'G' },
-    //     { id: 8, username: 'H' },
-    //     { id: 9, username: 'I' },
-    // { id: 10, username: 'J' },
-    // { id: 11, username: 'K' },
-    // { id: 12, username: 'L' },
-    // { id: 13, username: 'M' },
-    // { id: 14, username: 'N' },
-    // { id: 15, username: 'O' },
-    // { id: 16, username: 'P' },
-    // { id: 17, username: 'Q' },
-    // { id: 18, username: 'R' },
-    // { id: 19, username: 'S' },
-    // { id: 20, username: 'T' },
-    // { id: 21, username: 'U' },
-    // { id: 22, username: 'V' },
-    // { id: 23, username: 'W' },
-    // { id: 24, username: 'X' },
-    // { id: 25, username: 'Y' },
-    // { id: 26, username: 'Z' },
-    // { id: 27, username: 'A' },
-    // { id: 28, username: 'B' },
-    // { id: 29, username: 'C' },
-    // { id: 30, username: 'D' },
-    // { id: 31, username: 'E' },
-    // { id: 32, username: 'F' },
-    // { id: 33, username: 'G' },
-    // { id: 34, username: 'H' },
-    // { id: 35, username: 'I' },
-    // { id: 36, username: 'J' },
-    // { id: 37, username: 'K' },
-    // { id: 38, username: 'L' },
-    // { id: 39, username: 'M' },
-    // { id: 40, username: 'N' },
-    // { id: 41, username: 'O' },
-    // { id: 42, username: 'P' },
-    // { id: 43, username: 'Q' },
-    // { id: 44, username: 'R' },
-    // { id: 45, username: 'S' },
-    // { id: 46, username: 'T' },
-    // { id: 47, username: 'U' },
-    // { id: 48, username: 'V' },
-    // { id: 49, username: 'W' },
-    // { id: 50, username: 'X' },
-    // ];
     return (
         <Box
             sx={{
@@ -150,10 +312,12 @@ function VoiceRoom({ mode }) {
                     p: 2,
                     ...(mode === 'light' && { backgroundColor: deepDark }),
                     height: 'calc(100vh - 170px)',
+                    width: '100%',
                     mb: '1rem',
                     overflowY: 'auto',
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(5, 1fr)',
+                    borderRadius: '10px',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
                     gap: '24px 24px',
                     gridAutoFlow: 'dense',
                 }}
@@ -192,7 +356,7 @@ function VoiceRoom({ mode }) {
                         <HeadsetOffIcon sx={{ color: 'red' }} />
                     </IconButton> */}
                     {isLocalAudioEnabled ? (
-                        <Tooltip title='Mute' placement='right' arrow>
+                        <Tooltip title='Mute' arrow>
                             <IconButton
                                 onClick={() =>
                                     hmsActions.setLocalAudioEnabled(
@@ -205,7 +369,7 @@ function VoiceRoom({ mode }) {
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title='Mute' placement='right' arrow>
+                        <Tooltip title='Mute' arrow>
                             <IconButton
                                 onClick={() => {
                                     hmsActions.setLocalAudioEnabled(
@@ -224,7 +388,7 @@ function VoiceRoom({ mode }) {
                         </Tooltip>
                     )}
                     {!deafen ? (
-                        <Tooltip title='Deafen' placement='right' arrow>
+                        <Tooltip title='Deafen' arrow>
                             <IconButton
                                 sx={{ color: 'white' }}
                                 onClick={toggleDeafen}
@@ -233,7 +397,7 @@ function VoiceRoom({ mode }) {
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title='Undeafen' placement='right' arrow>
+                        <Tooltip title='Undeafen' arrow>
                             <IconButton
                                 sx={{
                                     backgroundColor: 'white',

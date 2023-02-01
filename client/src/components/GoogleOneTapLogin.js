@@ -6,7 +6,11 @@ import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 
 import { useDispatch } from 'react-redux';
-import { signInAction } from '../actions/actions';
+import {
+    signInAction,
+    startLoadingAction,
+    stopLoadingAction,
+} from '../actions/actions';
 
 import { bluegrey, light, medium, dark, deepDark } from '../components/colors';
 
@@ -20,6 +24,7 @@ const GoogleOneTapLogin = () => {
     const [gBtnDisplay, setGBtnDisplay] = useState('none');
 
     const handleResponse = async (response) => {
+        dispatch(startLoadingAction());
         const token = response.credential;
         const {
             sub: uid,
@@ -67,6 +72,7 @@ const GoogleOneTapLogin = () => {
                 console.log(err);
                 alert('Something went wrong, please try again later.');
             });
+        dispatch(stopLoadingAction());
     };
 
     const handleGoogleLogIn = () => {
