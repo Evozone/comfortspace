@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
@@ -32,10 +32,12 @@ import {
     useHMSStore,
     selectIsConnectedToRoom,
 } from '@100mslive/hms-video-react';
+import { startLoadingAction, stopLoadingAction } from '../actions/actions';
 
 // Home takes in themeChange and mode as props
 export default function Home({ themeChange, mode }) {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const hmsActions = useHMSActions();
     const currentUser = useSelector((state) => state.auth);
 
@@ -89,6 +91,9 @@ export default function Home({ themeChange, mode }) {
                 .then((data) => setRoomId(data.id));
         };
         modalVisible && getManagementToken();
+        return () => {
+            setRoomId('');
+        };
     }, [modalVisible]);
 
     const generateCoverImgURL = async () => {
@@ -102,6 +107,7 @@ export default function Home({ themeChange, mode }) {
     };
 
     const joinCall = (roomId, createdById) => {
+        dispatch(startLoadingAction());
         getToken(roomId, createdById)
             .then(async (token) => {
                 await hmsActions.join({
@@ -110,12 +116,15 @@ export default function Home({ themeChange, mode }) {
                     settings: {
                         isAudioMuted: true,
                     },
-                    initEndpoint:
-                        process.env.REACT_APP_100MS_TOKEN_ENDPOINT || undefined,
+                    initEndpoint: process.env.REACT_APP_100MS_TOKEN_ENDPOINT,
                 });
+                dispatch(stopLoadingAction());
+
                 navigate(`/room/${roomId}`);
             })
             .catch((error) => {
+                dispatch(stopLoadingAction());
+                alert('Something went wrong, please try again later.');
                 console.log('Token API Error', error);
             });
     };
@@ -523,7 +532,6 @@ export default function Home({ themeChange, mode }) {
                     </form>
                 </Box>
             </Modal>
-            {/* To add another space (voice room) with a circular button */}
             <Tooltip title='Create a new space' placement='left'>
                 <Fab
                     color='primary'
