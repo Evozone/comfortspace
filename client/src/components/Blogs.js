@@ -113,9 +113,7 @@ function Blogs({ mode }) {
             sx={{
                 minHeight: '100vh',
                 backgroundColor: mode === 'light' ? light : bluegrey,
-                color: 'text.primary',
                 padding: '5rem',
-                px: '10rem',
             }}
         >
             {customGlobalScrollBars(mode)}
@@ -187,18 +185,15 @@ function Blogs({ mode }) {
                                         : `1px solid ${dark.concat('aa')}`,
 
                                 width: '100%',
-                                maxHeight: '340px',
+                                maxHeight: '420px',
                                 cursor: 'pointer',
                             }}
                             onClick={() => handleClick(blog._id)}
                         >
                             <CardMedia
                                 component='img'
-                                height='200px'
+                                height='270px'
                                 image={blog.cover}
-                                sx={{
-                                    objectFit: 'fill',
-                                }}
                             />
                             <CardContent
                                 sx={{
@@ -216,8 +211,9 @@ function Blogs({ mode }) {
                                     }}
                                 >
                                     by{' '}
-                                    {`${blog.authorName}  on   ${blog.createdAt.split('T')[0]
-                                        }`}
+                                    {`${blog.authorName}  on   ${
+                                        blog.createdAt.split('T')[0]
+                                    }`}
                                 </Typography>
                                 <Typography
                                     variant='body1'
