@@ -12,7 +12,7 @@ import {
     stopLoadingAction,
 } from '../actions/actions';
 
-import { bluegrey, light, medium, dark, deepDark } from '../components/colors';
+import { light, deepDark } from '../components/colors';
 
 const GoogleOneTapLogin = () => {
     const navigate = useNavigate();
@@ -66,7 +66,8 @@ const GoogleOneTapLogin = () => {
                         username
                     )
                 );
-                navigate('/home');
+                window.localStorage.setItem('healthAppLastPage', 'groups');
+                navigate('/groups');
             })
             .catch((err) => {
                 console.log(err);

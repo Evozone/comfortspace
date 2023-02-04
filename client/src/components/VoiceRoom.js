@@ -280,7 +280,7 @@ function VoiceRoom({ mode }) {
             'Hey if u like this project, please star it on github :) https://github.com/Evozone/ok_to_be_not_ok/tree/prod'
         );
         if (!isConnected) {
-            navigate('/home');
+            navigate('/groups');
         }
         return () => {
             hmsActions.leave();
@@ -420,7 +420,7 @@ function VoiceRoom({ mode }) {
                         }}
                         onClick={() => {
                             hmsActions.leave();
-                            navigate('/home');
+                            navigate('/groups');
                         }}
                     >
                         <CallEndIcon sx={{ color: 'red' }} />

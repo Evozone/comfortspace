@@ -5,18 +5,16 @@ import Paper from '@mui/material/Paper';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
-import { v4 as uuid } from 'uuid';
 
 import {
     bluegrey,
     richBlack,
-    black,
     light,
     medium,
-    dark,
     deepDark,
     superLight,
 } from './colors';
+import { useLocation } from 'react-router';
 
 import { Button, Typography } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -24,19 +22,21 @@ import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
-import storage from '../appwrite';
 import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 
-function CreateBlog({ mode }) {
+function EditBlog({ mode }) {
+    const location = useLocation();
     const navigate = useNavigate();
 
     const author = useSelector((state) => state.auth);
+    const blog = location.state.blog;
 
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [summary, setSummary] = useState('');
-    const [uploadStatus, setUploadStatus] = useState(null);
-    const [coverUrl, setCoverUrl] = useState(null);
+    const oldTitle = blog.title;
+    const oldContent = blog.content;
+    const oldSummary = blog.summary;
+    const [title, setTitle] = useState(blog.title);
+    const [content, setContent] = useState(blog.content);
+    const [summary, setSummary] = useState(blog.summary);
 
     const modules = {
         toolbar: [
@@ -53,37 +53,18 @@ function CreateBlog({ mode }) {
         ],
     };
 
-    const handleImageChange = async (e) => {
-        if (e.target.files[0]) {
-            if (!e.target.files[0].type.match('image.*')) {
-                alert('Please select an image');
-                return;
-            }
-            setUploadStatus('Uploading...');
-            const id = uuid();
-            await storage.createFile(
-                process.env.REACT_APP_APPWRITE_BUCKET_ID,
-                id,
-                e.target.files[0]
-            );
-
-            const result = storage.getFilePreview(
-                process.env.REACT_APP_APPWRITE_BUCKET_ID,
-                id
-            );
-            setUploadStatus('Uploaded successfully ✅');
-            setCoverUrl(result.href);
-        }
-    };
-
-    const createNewPost = async (e) => {
+    const editPost = async (e) => {
         e.preventDefault();
         if (!title || !content || !summary) {
             alert('Please fill all the text fields');
             return;
         }
-        if (summary.length > 55) {
-            alert('Summary should be less than 55 characters');
+        if (
+            title === oldTitle &&
+            content === oldContent &&
+            summary === oldSummary
+        ) {
+            alert('No changes made');
             return;
         }
         const config = {
@@ -91,23 +72,15 @@ function CreateBlog({ mode }) {
                 'Content-Type': 'application/json',
             },
             title,
-            summary,
             content,
-            cover: coverUrl,
+            summary,
             authorId: author.uid,
-            authorName: author.name,
-            authorUsername: author.username,
         };
-
-        const response = await axios.post(
-            `${process.env.REACT_APP_SERVER_URL}/api/blog/create`,
+        await axios.patch(
+            `${process.env.REACT_APP_SERVER_URL}/api/blog/edit/${blog._id}`,
             config
         );
-        if (response.data.success) {
-            navigate('/blogs');
-        } else {
-            alert('Something went wrong, please try again');
-        }
+        navigate(`/blog/${blog._id}`);
     };
 
     return (
@@ -151,7 +124,7 @@ function CreateBlog({ mode }) {
                     />
                     Create a Blog
                 </Typography>
-                <form onSubmit={createNewPost}>
+                <form onSubmit={editPost}>
                     <TextField
                         fullWidth
                         required
@@ -197,55 +170,6 @@ function CreateBlog({ mode }) {
                             },
                         }}
                     />
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            mb: 3,
-                        }}
-                    >
-                        <label
-                            htmlFor='cover'
-                            style={{
-                                fontSize: '1.1rem',
-                                fontWeight: '500',
-                                color:
-                                    mode === 'light'
-                                        ? deepDark.concat('aa')
-                                        : light.concat('aa'),
-                            }}
-                        >
-                            Choose cover image -{' '}
-                        </label>
-                        <input
-                            style={{
-                                marginLeft: '5px',
-                                padding: '7px',
-                                backgroundColor:
-                                    mode === 'light' ? 'whitesmoke' : richBlack,
-                                borderRadius: '6px',
-                                border: `1px solid ${deepDark.concat('a4')}`,
-                            }}
-                            title='cover'
-                            placeholder='Cover'
-                            type='file'
-                            accept='image/*'
-                            onChange={handleImageChange}
-                        />
-                        {uploadStatus && (
-                            <Typography
-                                variant='body1'
-                                sx={{
-                                    textAlign: 'center',
-                                    ml: 1,
-                                }}
-                            >
-                                {uploadStatus}
-                            </Typography>
-                        )}
-                    </Box>
-
                     <ReactQuill
                         theme='snow'
                         modules={modules}
@@ -280,7 +204,7 @@ function CreateBlog({ mode }) {
                         variant='contained'
                         type='submit'
                     >
-                        Create Post
+                        Save Changes
                     </Button>
                 </form>
             </Paper>
@@ -288,4 +212,4 @@ function CreateBlog({ mode }) {
     );
 }
 
-export default CreateBlog;
+export default EditBlog;

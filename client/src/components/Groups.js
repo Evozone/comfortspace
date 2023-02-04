@@ -169,7 +169,7 @@ export default function Home({ themeChange, mode }) {
         );
         if (response.data.success) {
             setModalVisible(false);
-            window.open(`${process.env.REACT_APP_BASE_URL}/home`, '_self');
+            window.open(`${process.env.REACT_APP_BASE_URL}/groups`, '_self');
         } else {
             alert('Something went wrong, please try again');
         }
@@ -428,6 +428,7 @@ export default function Home({ themeChange, mode }) {
                         }}
                     >
                         <TextField
+                            color='success'
                             fullWidth
                             required
                             id='outlined-required'
@@ -446,6 +447,7 @@ export default function Home({ themeChange, mode }) {
                             }}
                         />
                         <TextField
+                            color='success'
                             fullWidth
                             required
                             id='outlined-required'
