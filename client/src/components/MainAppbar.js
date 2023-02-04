@@ -14,8 +14,8 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { CustomSwitcherGroup, CustomSwitcherButton } from './CustomSwitcher';
 
-import { richBlack, light, medium, dark, deepDark } from './colors';
-import { signInAction, signOutAction } from '../actions/actions';
+import { richBlack, light, medium, deepDark } from './colors';
+import { signOutAction } from '../actions/actions';
 
 function MainAppbar({ mode, themeChange }) {
     const navigate = useNavigate();
@@ -25,8 +25,14 @@ function MainAppbar({ mode, themeChange }) {
         const choice = window.confirm('Please click on OK to Log Out.');
         if (choice) {
             dispatch(signOutAction());
+            window.localStorage.removeItem('healthAppLastPage');
             navigate('/');
         }
+    };
+
+    const handleNavigation = (value) => {
+        window.localStorage.setItem('healthAppLastPage', value);
+        navigate(`/${value}`);
     };
 
     return (
@@ -51,34 +57,21 @@ function MainAppbar({ mode, themeChange }) {
             >
                 {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
             </IconButton>
-
-            {/* Swticher between 3 pages */}
-            <CustomSwitcherGroup
-                exclusive
-                value={window.location.pathname.split('/')[1]}
-            >
+            <CustomSwitcherGroup exclusive>
                 <CustomSwitcherButton
-                    onClick={() => navigate(`/home`)}
-                    value='home'
+                    onClick={() => handleNavigation('groups')}
                 >
-                    <Groups2Icon /> Spaces
+                    <Groups2Icon /> Groups
                 </CustomSwitcherButton>
-                <CustomSwitcherButton
-                    onClick={() => navigate(`/blogs`)}
-                    value='blogs'
-                >
+                <CustomSwitcherButton onClick={() => handleNavigation('blogs')}>
                     <LibraryBooksIcon /> Blogs
                 </CustomSwitcherButton>
                 <CustomSwitcherButton
-                    onClick={() => navigate(`/resources`)}
-                    value='resources'
+                    onClick={() => handleNavigation('resources')}
                 >
                     <FavoriteIcon /> Resources
                 </CustomSwitcherButton>
-                <CustomSwitcherButton
-                    onClick={() => navigate(`/exam`)}
-                    value='exam'
-                >
+                <CustomSwitcherButton onClick={() => handleNavigation('exam')}>
                     <QuizIcon /> Take a Test
                 </CustomSwitcherButton>
             </CustomSwitcherGroup>

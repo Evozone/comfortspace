@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -7,37 +9,21 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router';
-
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
 import TwitterIcon from '@mui/icons-material/Twitter';
 
-import {
-    bluegrey,
-    richBlack,
-    black,
-    light,
-    medium,
-    dark,
-    deepDark,
-} from './colors';
-import { useSelector } from 'react-redux';
-
+import { bluegrey, light, medium } from './colors';
 import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 
 function ViewBlog({ mode }) {
-    const [blog, setBlog] = useState(null);
-
+    const navigate = useNavigate();
     const params = useParams();
     const blogId = params.id;
-    const navigate = useNavigate();
-
     const author = useSelector((state) => state.auth);
+    const [blog, setBlog] = useState(null);
 
     useEffect(() => {
         const fetchBlog = async () => {
@@ -56,6 +42,14 @@ function ViewBlog({ mode }) {
             `${process.env.REACT_APP_SERVER_URL}/api/blog/delete/${blogId}/${author.uid}`
         );
         navigate('/blogs');
+    };
+
+    const editBlog = () => {
+        navigate(`/editBlog/${blogId}`, {
+            state: {
+                blog,
+            },
+        });
     };
 
     return (
@@ -105,9 +99,6 @@ function ViewBlog({ mode }) {
                             blog?.createdAt.split('T')[0]
                         }`}
                     </Typography>
-                    {/* <Typography variant='body1' color='text'>
-                        {blog?.content}
-                    </Typography> */}
                     <div
                         className='content'
                         dangerouslySetInnerHTML={{ __html: blog?.content }}
@@ -142,7 +133,7 @@ function ViewBlog({ mode }) {
                         <IconButton
                             onClick={() =>
                                 window.open(
-                                    `https://twitter.com/intent/tweet?text=Heres%the%blog%link%${window.location.href}`,
+                                    `https://twitter.com/intent/tweet/?url=${window.location.href}&text=Heres the blog link-`,
                                     '_blank'
                                 )
                             }
@@ -152,11 +143,41 @@ function ViewBlog({ mode }) {
                             <TwitterIcon />
                         </IconButton>
                     </Stack>
-
                     {blog?.authorId === author.uid && (
-                        <Button color='error' onClick={deleteBlog} size='small'>
-                            Delete
-                        </Button>
+                        <>
+                            <Button
+                                variant='contained'
+                                disableElevation
+                                color='error'
+                                onClick={deleteBlog}
+                                size='small'
+                                sx={{
+                                    p: '6px',
+                                    mx: '1rem',
+                                    font: '500 0.9rem Poppins, sans-serif',
+                                }}
+                            >
+                                Delete
+                            </Button>
+                            <Button
+                                color='success'
+                                disableElevation
+                                onClick={editBlog}
+                                sx={{
+                                    backgroundColor:
+                                        mode === 'light' ? medium : light,
+                                    color: bluegrey,
+                                    font: '500 0.9rem Poppins, sans-serif',
+                                    ':hover': {
+                                        backgroundColor: medium,
+                                        color: 'black',
+                                    },
+                                }}
+                                variant='contained'
+                            >
+                                Edit Blog
+                            </Button>
+                        </>
                     )}
                 </CardActions>
             </Card>

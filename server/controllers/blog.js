@@ -72,40 +72,27 @@ exports.getBlogById = async (req, res) => {
     }
 };
 
-exports.updateBlogById = async (req, res) => {
+exports.editBlogById = async (req, res) => {
     const { id } = req.params;
-    const {
-        title,
-        summary,
-        content,
-        cover,
-        authorId,
-        authorName,
-        authorUsername,
-    } = req.body;
+    const { title, summary, content, cover, authorId } = req.body;
     const update = {
         title,
         summary,
         content,
         cover,
-        authorId,
-        authorName,
-        authorUsername,
     };
     try {
-        const isAuthor = await BlogModel.findById(id);
-        if (isAuthor.authorId !== authorId) {
+        const blog = await BlogModel.findById(id);
+        if (blog.authorId !== authorId) {
             return res.status(401).json({
                 success: false,
                 message: 'You are not authorized to update this blog',
             });
         }
-        const result = await BlogModel.findOneAndUpdate(id, update, {
-            new: true,
-        });
+        await blog.updateOne(update);
         res.status(200).json({
             success: true,
-            result,
+            blog,
             message: 'Blog updated',
         });
     } catch (error) {
@@ -121,9 +108,8 @@ exports.updateBlogById = async (req, res) => {
 exports.deleteBlogById = async (req, res) => {
     const { id, authorId } = req.params;
     try {
-        const isAuthor = await BlogModel.findById(id);
-        console.log(isAuthor.authorId);
-        if (isAuthor.authorId !== authorId) {
+        const blog = await BlogModel.findById(id);
+        if (blog.authorId !== authorId) {
             return res.status(401).json({
                 success: false,
                 message: 'You are not authorized to delete this blog',
