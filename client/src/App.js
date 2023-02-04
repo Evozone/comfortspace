@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import Home from './components/Groups';
+import Groups from './components/Groups';
 import VoiceRoom from './components/VoiceRoom';
 import Blogs from './components/Blogs';
 import Resources from './components/Resources';
@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
 import { signInAction } from './actions/actions';
+import Notify from './components/Notify';
 
 function App() {
     const localTheme = window.localStorage.getItem('healthAppTheme');
@@ -73,6 +74,7 @@ function App() {
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
             <Loading />
+            <Notify />
             <Routes>
                 <Route path='/' element={<LandingPage />} />
                 <Route
@@ -84,7 +86,7 @@ function App() {
                                     themeChange={themeChange}
                                     mode={mode}
                                 />
-                                <Home themeChange={themeChange} mode={mode} />
+                                <Groups themeChange={themeChange} mode={mode} />
                             </HMSRoomProvider>
                         </ProtectedRoute>
                     }

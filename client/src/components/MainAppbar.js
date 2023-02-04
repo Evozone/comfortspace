@@ -60,23 +60,29 @@ function MainAppbar({ mode, themeChange }) {
             <CustomSwitcherGroup exclusive>
                 <CustomSwitcherButton
                     onClick={() => handleNavigation('groups')}
+                    value='groups'
                 >
                     <Groups2Icon /> Groups
                 </CustomSwitcherButton>
-                <CustomSwitcherButton onClick={() => handleNavigation('blogs')}>
+                <CustomSwitcherButton
+                    onClick={() => handleNavigation('blogs')}
+                    value='blogs'
+                >
                     <LibraryBooksIcon /> Blogs
                 </CustomSwitcherButton>
                 <CustomSwitcherButton
                     onClick={() => handleNavigation('resources')}
+                    value='resources'
                 >
                     <FavoriteIcon /> Resources
                 </CustomSwitcherButton>
-                <CustomSwitcherButton onClick={() => handleNavigation('exam')}>
+                <CustomSwitcherButton
+                    onClick={() => handleNavigation('exam')}
+                    value='exam'
+                >
                     <QuizIcon /> Take a Test
                 </CustomSwitcherButton>
             </CustomSwitcherGroup>
-
-            {/* Sign out */}
             <IconButton
                 onClick={() => {
                     handleSignOut();

@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-
+import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import axios from 'axios';
 
 import {
     bluegrey,
@@ -14,19 +19,13 @@ import {
     deepDark,
     superLight,
 } from './colors';
-import { useLocation } from 'react-router';
-
-import { Button, Typography } from '@mui/material';
-import TextField from '@mui/material/TextField';
-import { useNavigate } from 'react-router';
-import { useSelector } from 'react-redux';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-
 import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
+import { notifyAction } from '../actions/actions';
 
 function EditBlog({ mode }) {
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const author = useSelector((state) => state.auth);
     const blog = location.state.blog;
@@ -80,6 +79,7 @@ function EditBlog({ mode }) {
             `${process.env.REACT_APP_SERVER_URL}/api/blog/edit/${blog._id}`,
             config
         );
+        dispatch(notifyAction(true, 'success', 'Blog edited successfully!'));
         navigate(`/blog/${blog._id}`);
     };
 
@@ -122,7 +122,7 @@ function EditBlog({ mode }) {
                     <DriveFileRenameOutlineIcon
                         sx={{ fontSize: '2.5rem', mr: 1 }}
                     />
-                    Create a Blog
+                    Edit blog
                 </Typography>
                 <form onSubmit={editPost}>
                     <TextField

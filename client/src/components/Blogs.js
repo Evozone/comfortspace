@@ -225,7 +225,7 @@ function Blogs({ mode }) {
                         </Card>
                     ))}
             </Box>
-            <Tooltip title='Create a new Blog' placement='left'>
+            <Tooltip title='Create a new Blog'>
                 <Fab
                     color='primary'
                     aria-label='add'
