@@ -15,11 +15,15 @@ export const CustomSwitcherGroup = styled(ToggleButtonGroup)(({ theme }) => ({
         width: '150px',
         '&:not(:first-of-type)': {
             borderRadius: '50px',
-            border: `6px solid ${theme.palette.mode === 'light' ? deepDark : light}`,
+            border: `6px solid ${
+                theme.palette.mode === 'light' ? deepDark : light
+            }`,
         },
         '&:first-of-type': {
             borderRadius: '50px',
-            border: `6px solid ${theme.palette.mode === 'light' ? deepDark : light}`,
+            border: `6px solid ${
+                theme.palette.mode === 'light' ? deepDark : light
+            }`,
         },
     },
     '& .MuiToggleButton-root': {
@@ -40,9 +44,10 @@ export const CustomSwitcherGroup = styled(ToggleButtonGroup)(({ theme }) => ({
             color: 'white',
 
             '&:hover': {
-                backgroundColor: theme.palette.mode === 'light' ? dark : deepDark,
+                backgroundColor:
+                    theme.palette.mode === 'light' ? dark : deepDark,
                 color: 'white',
-            }
+            },
         },
     },
 }));

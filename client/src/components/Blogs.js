@@ -24,8 +24,6 @@ import {
 } from './colors';
 import { Tooltip } from '@mui/material';
 
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
-
 function Blogs({ mode }) {
     const navigate = useNavigate();
 
@@ -116,8 +114,6 @@ function Blogs({ mode }) {
                 padding: '5rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Typography
                 variant='h1'
                 component='h2'

@@ -21,7 +21,6 @@ import {
     superLight,
 } from './colors';
 import storage from '../appwrite';
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { notifyAction } from '../actions/actions';
 
 function CreateBlog({ mode }) {
@@ -130,8 +129,6 @@ function CreateBlog({ mode }) {
                 p: '5rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Paper
                 sx={{
                     p: 2,

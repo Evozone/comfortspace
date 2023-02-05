@@ -19,7 +19,6 @@ import Typography from '@mui/material/Typography';
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
 import { useHMSActions } from '@100mslive/hms-video-react';
 import {
@@ -201,8 +200,6 @@ function Groups({ themeChange, mode }) {
                 padding: '5rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Typography
                 variant='h1'
                 component='h2'

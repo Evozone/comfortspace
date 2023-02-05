@@ -16,7 +16,6 @@ import EmailIcon from '@mui/icons-material/Email';
 import TwitterIcon from '@mui/icons-material/Twitter';
 
 import { bluegrey, light, medium } from './colors';
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { notifyAction } from '../actions/actions';
 
 function ViewBlog({ mode }) {
@@ -62,10 +61,9 @@ function ViewBlog({ mode }) {
                 backgroundColor: mode === 'light' ? light : bluegrey,
                 color: 'text.primary',
                 p: '5rem',
+                pt: '6rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Card>
                 <CardMedia
                     component='img'

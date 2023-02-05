@@ -6,7 +6,6 @@ import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import QuestionTable from './QuestionTable';
 
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { useSelector } from 'react-redux';
 
 export default function Exam({ themeChange, mode }) {
@@ -20,8 +19,6 @@ export default function Exam({ themeChange, mode }) {
                 padding: '5rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Typography
                 variant='h1'
                 component='h2'
@@ -69,8 +66,7 @@ export default function Exam({ themeChange, mode }) {
                     flexDirection: 'column',
                     padding: '2rem',
                     my: '2rem',
-                    backgroundColor:
-                        mode === 'light' ? deepDark : richBlack,
+                    backgroundColor: mode === 'light' ? deepDark : richBlack,
                     color: mode === 'light' ? light : light,
                     fontSize: '1.1rem',
                     borderRadius: '15px',
@@ -95,8 +91,9 @@ export default function Exam({ themeChange, mode }) {
                             height: '2.5rem',
                             width: '2.5rem',
                             mr: 1,
-                        }}>
-                    </PsychologyAltIcon> How it Works ?
+                        }}
+                    ></PsychologyAltIcon>{' '}
+                    How it Works ?
                 </Typography>
                 <Typography
                     sx={{
@@ -109,9 +106,15 @@ export default function Exam({ themeChange, mode }) {
                         alignItems: 'center',
                     }}
                 >
-                    Online screening tools are meant to be a quick snapshot of your mental health. If your results indicate you may be experiencing symptoms of a mental illness, consider sharing your results with someone you trust.
-                    We can only provide you some simple assessments, A mental health provider (such as a doctor or a therapist) can give you a full assessment and talk to you about options for how to feel better.<br></br>
-                    To find the right resources visit the resourves section of our website
+                    Online screening tools are meant to be a quick snapshot of
+                    your mental health. If your results indicate you may be
+                    experiencing symptoms of a mental illness, consider sharing
+                    your results with someone you trust. We can only provide you
+                    some simple assessments, A mental health provider (such as a
+                    doctor or a therapist) can give you a full assessment and
+                    talk to you about options for how to feel better.<br></br>
+                    To find the right resources visit the resourves section of
+                    our website
                 </Typography>
             </Box>
 

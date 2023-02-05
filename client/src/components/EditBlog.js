@@ -19,7 +19,6 @@ import {
     deepDark,
     superLight,
 } from './colors';
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { notifyAction } from '../actions/actions';
 
 function EditBlog({ mode }) {
@@ -92,8 +91,6 @@ function EditBlog({ mode }) {
                 p: '5rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Paper
                 sx={{
                     p: 2,

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import jwtDecode from 'jwt-decode';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-
 import Groups from './components/Groups';
 import VoiceRoom from './components/VoiceRoom';
 import Blogs from './components/Blogs';
@@ -12,18 +13,17 @@ import LandingPage from './components/LandingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ViewBlog from './components/ViewBlog';
 import CreateBlog from './components/CreateBlog';
-
 import { HMSRoomProvider } from '@100mslive/hms-video-react';
+
 import MainAppbar from './components/MainAppbar';
 import Loading from './components/Loading';
 import EditBlog from './components/EditBlog';
-
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
-
-import { signInAction } from './actions/actions';
 import Notify from './components/Notify';
+import {
+    customGlobalScrollBars,
+    smoothScrolling,
+} from './components/CustomGlobalCSS';
+import { signInAction } from './actions/actions';
 
 function App() {
     const localTheme = window.localStorage.getItem('healthAppTheme');
@@ -72,6 +72,8 @@ function App() {
 
     return (
         <ThemeProvider theme={darkTheme}>
+            {customGlobalScrollBars(mode)}
+            {smoothScrolling()}
             <CssBaseline />
             <Loading />
             <Notify />
