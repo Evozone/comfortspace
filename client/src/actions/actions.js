@@ -1,4 +1,21 @@
-import { SIGN_IN, SIGN_OUT, START_LOADING, STOP_LOADING } from './types';
+import {
+    NOTIFY,
+    SIGN_IN,
+    SIGN_OUT,
+    START_LOADING,
+    STOP_LOADING,
+} from './types';
+
+export const notifyAction = (open, severity, message) => {
+    return {
+        type: NOTIFY,
+        payload: {
+            open,
+            severity,
+            message,
+        },
+    };
+};
 
 export const signInAction = (uid, email, name, photoURL, token, signInTime) => {
     return {

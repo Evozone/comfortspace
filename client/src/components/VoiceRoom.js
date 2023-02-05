@@ -1,53 +1,27 @@
 import React, { useEffect, useState } from 'react';
-
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
+import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-
 import MicIcon from '@mui/icons-material/Mic';
 import MicOffIcon from '@mui/icons-material/MicOff';
 import HeadsetIcon from '@mui/icons-material/Headset';
 import HeadsetOffIcon from '@mui/icons-material/HeadsetOff';
 import CallEndIcon from '@mui/icons-material/CallEnd';
-
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router';
-
-import {
-    bluegrey,
-    richBlack,
-    black,
-    light,
-    medium,
-    dark,
-    deepDark,
-} from './colors';
-import { useSelector } from 'react-redux';
-
+import { useNavigate } from 'react-router';
 import {
     useHMSActions,
     useHMSStore,
     selectIsConnectedToRoom,
-    selectIsPeerAudioEnabled,
-    selectLocalPeer,
     selectIsLocalAudioEnabled,
     selectPeers,
 } from '@100mslive/hms-video-react';
 
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
-import { IconButton } from '@mui/material';
+import { bluegrey, light, deepDark } from './colors';
 import PeerInRoom from './PeerInRoom';
 
 function VoiceRoom({ mode }) {
-    const currentUser = useSelector((state) => state.auth);
     const peers = useHMSStore(selectPeers);
     const isConnected = useHMSStore(selectIsConnectedToRoom);
     const navigate = useNavigate();
@@ -277,7 +251,7 @@ function VoiceRoom({ mode }) {
 
     useEffect(() => {
         console.log(
-            'Hey if u like this project, please star it on github :) https://github.com/Evozone/ok_to_be_not_ok/tree/prod'
+            'Hey if u like this project, please star it on github :) https://github.com/Evozone/ok_to_be_not_ok'
         );
         if (!isConnected) {
             navigate('/groups');
@@ -305,8 +279,6 @@ function VoiceRoom({ mode }) {
                 alignItems: 'center',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Paper
                 sx={{
                     p: 2,
@@ -335,26 +307,6 @@ function VoiceRoom({ mode }) {
                 }}
             >
                 <Stack direction='row' spacing={2}>
-                    {/* <IconButton
-                        sx={{
-                            backgroundColor: 'white',
-                            '&:hover': {
-                                backgroundColor: 'white',
-                            },
-                        }}
-                    >
-                        <MicOffIcon sx={{ color: 'red' }} />
-                    </IconButton>
-                    <IconButton
-                        sx={{
-                            backgroundColor: 'white',
-                            '&:hover': {
-                                backgroundColor: 'white',
-                            },
-                        }}
-                    >
-                        <HeadsetOffIcon sx={{ color: 'red' }} />
-                    </IconButton> */}
                     {isLocalAudioEnabled ? (
                         <Tooltip title='Mute' arrow>
                             <IconButton

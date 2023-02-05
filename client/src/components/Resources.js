@@ -10,8 +10,6 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
-
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { data } from './ResourcesData';
 
 export default function Resources({ themeChange, mode }) {
@@ -26,8 +24,6 @@ export default function Resources({ themeChange, mode }) {
                 padding: '5rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Typography
                 variant='h1'
                 component='h2'

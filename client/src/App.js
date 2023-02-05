@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import jwtDecode from 'jwt-decode';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-
-import Home from './components/Groups';
+import Groups from './components/Groups';
 import VoiceRoom from './components/VoiceRoom';
 import Blogs from './components/Blogs';
 import Resources from './components/Resources';
@@ -12,16 +13,16 @@ import LandingPage from './components/LandingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ViewBlog from './components/ViewBlog';
 import CreateBlog from './components/CreateBlog';
-
 import { HMSRoomProvider } from '@100mslive/hms-video-react';
+
 import MainAppbar from './components/MainAppbar';
 import Loading from './components/Loading';
 import EditBlog from './components/EditBlog';
-
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
-
+import Notify from './components/Notify';
+import {
+    customGlobalScrollBars,
+    smoothScrolling,
+} from './components/CustomGlobalCSS';
 import { signInAction } from './actions/actions';
 
 function App() {
@@ -71,8 +72,11 @@ function App() {
 
     return (
         <ThemeProvider theme={darkTheme}>
+            {customGlobalScrollBars(mode)}
+            {smoothScrolling()}
             <CssBaseline />
             <Loading />
+            <Notify />
             <Routes>
                 <Route path='/' element={<LandingPage />} />
                 <Route
@@ -84,7 +88,7 @@ function App() {
                                     themeChange={themeChange}
                                     mode={mode}
                                 />
-                                <Home themeChange={themeChange} mode={mode} />
+                                <Groups themeChange={themeChange} mode={mode} />
                             </HMSRoomProvider>
                         </ProtectedRoute>
                     }

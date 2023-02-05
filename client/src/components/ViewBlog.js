@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
 import Box from '@mui/material/Box';
@@ -16,10 +16,11 @@ import EmailIcon from '@mui/icons-material/Email';
 import TwitterIcon from '@mui/icons-material/Twitter';
 
 import { bluegrey, light, medium } from './colors';
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
+import { notifyAction } from '../actions/actions';
 
 function ViewBlog({ mode }) {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const params = useParams();
     const blogId = params.id;
     const author = useSelector((state) => state.auth);
@@ -41,6 +42,7 @@ function ViewBlog({ mode }) {
         await axios.delete(
             `${process.env.REACT_APP_SERVER_URL}/api/blog/delete/${blogId}/${author.uid}`
         );
+        dispatch(notifyAction(true, 'success', 'Blog deleted successfully!'));
         navigate('/blogs');
     };
 
@@ -59,19 +61,15 @@ function ViewBlog({ mode }) {
                 backgroundColor: mode === 'light' ? light : bluegrey,
                 color: 'text.primary',
                 p: '5rem',
+                pt: '6rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Card>
                 <CardMedia
                     component='img'
                     alt='green iguana'
                     height='350px'
                     image={blog?.cover}
-                    sx={{
-                        objectFit: 'fill',
-                    }}
                 />
                 <CardContent
                     sx={{

@@ -1,38 +1,50 @@
-import React from 'react';
-
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-
 import IconButton from '@mui/material/IconButton';
 import MicIcon from '@mui/icons-material/Mic';
 import MicOffIcon from '@mui/icons-material/MicOff';
-
-import { light, bluegrey } from './colors';
-
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import AddModeratorIcon from '@mui/icons-material/AddModerator';
+import RemoveModeratorIcon from '@mui/icons-material/RemoveModerator';
+import ListItemText from '@mui/material/ListItemText';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
     useHMSActions,
     useHMSStore,
-    selectIsConnectedToRoom,
     selectIsPeerAudioEnabled,
     selectLocalPeer,
-    selectPeers,
 } from '@100mslive/hms-video-react';
-import { richBlack, medium, dark, deepDark } from './colors';
-import { Typography } from '@mui/material';
+
+import { light, bluegrey, deepDark } from './colors';
 
 function PeerInRoom({ peer, mode }) {
     const hmsActions = useHMSActions();
     const audioEnabled = useHMSStore(selectIsPeerAudioEnabled(peer.id));
     const localPeer = useHMSStore(selectLocalPeer);
     const isModerator = localPeer.roleName === 'moderator';
-    // const isModerator = true;
+
+    const [anchorEl, setAnchorEl] = useState(null);
+
     const mutePeer = () => {
         if (isModerator) {
             hmsActions.setRemoteTrackEnabled(peer.audioTrack, false);
         }
+    };
+
+    const changeRole = (role) => {
+        hmsActions.changeRoleOfPeer(peer.id, role, true);
+    };
+
+    const handleMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
     };
 
     return (
@@ -52,35 +64,102 @@ function PeerInRoom({ peer, mode }) {
                 width: '100%',
             }}
         >
-            {!audioEnabled ? (
-                <MicOffIcon
-                    sx={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '8px',
-                    }}
-                />
-            ) : isModerator ? (
-                <Tooltip title={`Mute ${peer.name.split('@')[0]}`}>
+            {isModerator ? (
+                <>
                     <IconButton
                         sx={{
                             position: 'absolute',
-                            top: '2px',
-                            right: 0,
+                            top: '6px',
+                            right: '8px',
                         }}
-                        onClick={mutePeer}
+                        onClick={handleMenuClick}
                     >
-                        <MicIcon />
+                        <MoreVertIcon />
                     </IconButton>
-                </Tooltip>
+                    <Menu
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        sx={{
+                            '& .MuiPaper-root': {
+                                backgroundColor:
+                                    mode === 'light' ? light : bluegrey,
+                            },
+                        }}
+                    >
+                        {audioEnabled ? (
+                            <Tooltip
+                                placement='top'
+                                title={`Mute ${peer.name.split('@')[0]}`}
+                            >
+                                <MenuItem onClick={mutePeer}>
+                                    <MicIcon />
+                                    <ListItemText
+                                        sx={{ ml: 1 }}
+                                        primary='Unmuted'
+                                    />
+                                </MenuItem>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip
+                                placement='top'
+                                title={`User cannot be unmuted`}
+                            >
+                                <MenuItem>
+                                    <MicOffIcon />
+                                    <ListItemText
+                                        sx={{ ml: 1 }}
+                                        primary='Muted'
+                                    />
+                                </MenuItem>
+                            </Tooltip>
+                        )}
+                        {peer.roleName === 'participant' ? (
+                            <Tooltip
+                                title={`Make ${
+                                    peer.name.split('@')[0]
+                                } a moderator`}
+                            >
+                                <MenuItem
+                                    onClick={() => changeRole('moderator')}
+                                >
+                                    <AddModeratorIcon />
+                                    <ListItemText
+                                        sx={{ ml: 1 }}
+                                        primary='Make Moderator'
+                                    />
+                                </MenuItem>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip
+                                title={`Make ${
+                                    peer.name.split('@')[0]
+                                } a participant`}
+                            >
+                                <MenuItem
+                                    onClick={() => changeRole('participant')}
+                                >
+                                    <RemoveModeratorIcon />
+                                    <ListItemText
+                                        sx={{ ml: 1 }}
+                                        primary='Make Participant'
+                                    />
+                                </MenuItem>
+                            </Tooltip>
+                        )}
+                    </Menu>
+                </>
             ) : (
-                <MicIcon
-                    sx={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '8px',
-                    }}
-                />
+                !audioEnabled && (
+                    <MicOffIcon
+                        sx={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '8px',
+                        }}
+                    />
+                )
             )}
             <Tooltip title={peer.name.split('@')[0]}>
                 <Avatar

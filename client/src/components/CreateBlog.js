@@ -1,35 +1,31 @@
 import React, { useState } from 'react';
-
+import axios from 'axios';
+import { useNavigate } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import axios from 'axios';
 import { v4 as uuid } from 'uuid';
 
 import {
     bluegrey,
     richBlack,
-    black,
     light,
     medium,
-    dark,
     deepDark,
     superLight,
 } from './colors';
-
-import { Button, Typography } from '@mui/material';
-import TextField from '@mui/material/TextField';
-import { useNavigate } from 'react-router';
-import { useSelector } from 'react-redux';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-
 import storage from '../appwrite';
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
+import { notifyAction } from '../actions/actions';
 
 function CreateBlog({ mode }) {
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const author = useSelector((state) => state.auth);
 
     const [title, setTitle] = useState('');
@@ -104,8 +100,22 @@ function CreateBlog({ mode }) {
             config
         );
         if (response.data.success) {
+            dispatch(
+                notifyAction(
+                    true,
+                    'success',
+                    'Created a new Blog successfully!'
+                )
+            );
             navigate('/blogs');
         } else {
+            dispatch(
+                notifyAction(
+                    true,
+                    'error',
+                    'Sorry but something went wrong, please try again later :('
+                )
+            );
             alert('Something went wrong, please try again');
         }
     };
@@ -119,8 +129,6 @@ function CreateBlog({ mode }) {
                 p: '5rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Paper
                 sx={{
                     p: 2,

@@ -1,41 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-
+import { v4 as uuid } from 'uuid';
+import axios from 'axios';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
-import CardActionArea from '@mui/material/CardActionArea';
 import Fab from '@mui/material/Fab';
 import Modal from '@mui/material/Modal';
 import AddIcon from '@mui/icons-material/Add';
-import { Delete } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
-import { TextField } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import AvatarGroup from '@mui/material/AvatarGroup';
+import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import Typography from '@mui/material/Typography';
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { v4 as uuid } from 'uuid';
 
-import axios from 'axios';
-import { customGlobalScrollBars, smoothScrolling } from './CustomGlobalCSS';
 import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
-
+import { useHMSActions } from '@100mslive/hms-video-react';
 import {
-    useHMSActions,
-    useHMSStore,
-    selectIsConnectedToRoom,
-} from '@100mslive/hms-video-react';
-import { startLoadingAction, stopLoadingAction } from '../actions/actions';
+    startLoadingAction,
+    stopLoadingAction,
+    notifyAction,
+} from '../actions/actions';
 
-// Home takes in themeChange and mode as props
-export default function Home({ themeChange, mode }) {
+function Groups({ themeChange, mode }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const hmsActions = useHMSActions();
@@ -46,7 +38,6 @@ export default function Home({ themeChange, mode }) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [coverImgURL, setCoverImgURL] = useState(null);
-
     const [spaces, setSpaces] = useState(null);
 
     useEffect(() => {
@@ -65,6 +56,7 @@ export default function Home({ themeChange, mode }) {
 
     useEffect(() => {
         const getManagementToken = async () => {
+            generateCoverImgURL();
             var managementToken = '';
             await fetch(`${process.env.REACT_APP_SERVER_URL}/mtoken`, {
                 method: 'GET',
@@ -93,11 +85,12 @@ export default function Home({ themeChange, mode }) {
         modalVisible && getManagementToken();
         return () => {
             setRoomId('');
+            setCoverImgURL(null);
         };
     }, [modalVisible]);
 
     const generateCoverImgURL = async () => {
-        const apiKey = 'EZOSMplMfr7b0a00AP3Puje9yEH0sTBqFRZ_mPtuMEw';
+        const apiKey = process.env.REACT_APP_UNSPLASH_API_KEY;
         const response = await fetch(
             `https://api.unsplash.com/photos/random/?client_id=${apiKey}&count=1&query=nature`
         );
@@ -119,12 +112,24 @@ export default function Home({ themeChange, mode }) {
                     initEndpoint: process.env.REACT_APP_100MS_TOKEN_ENDPOINT,
                 });
                 dispatch(stopLoadingAction());
-
+                dispatch(
+                    notifyAction(
+                        true,
+                        'success',
+                        'Joined a Group successfully!'
+                    )
+                );
                 navigate(`/room/${roomId}`);
             })
             .catch((error) => {
                 dispatch(stopLoadingAction());
-                alert('Something went wrong, please try again later.');
+                dispatch(
+                    notifyAction(
+                        true,
+                        'error',
+                        'Sorry but something went wrong, please try again later :('
+                    )
+                );
                 console.log('Token API Error', error);
             });
     };
@@ -195,8 +200,6 @@ export default function Home({ themeChange, mode }) {
                 padding: '5rem',
             }}
         >
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <Typography
                 variant='h1'
                 component='h2'
@@ -236,7 +239,7 @@ export default function Home({ themeChange, mode }) {
                     alignItems: 'center',
                 }}
             >
-                Find a space to talk about your mental health.
+                Find a support group to talk about your mental health.
             </Typography>
 
             <Box
@@ -343,7 +346,7 @@ export default function Home({ themeChange, mode }) {
                                         disableElevation
                                         variant='contained'
                                         color='error'
-                                        endIcon={<Delete />}
+                                        endIcon={<DeleteIcon />}
                                         onClick={() => {
                                             deleteSpace(space._id);
                                         }}
@@ -417,7 +420,7 @@ export default function Home({ themeChange, mode }) {
                             color: mode === 'light' ? deepDark : light,
                         }}
                     >
-                        Create New Space
+                        Create New Group
                     </Typography>
                     <form
                         onSubmit={createNewSpace}
@@ -506,7 +509,7 @@ export default function Home({ themeChange, mode }) {
                             }}
                             onClick={generateCoverImgURL}
                         >
-                            Generate Cover Image
+                            Change Cover Image
                         </Button>
                         <Button
                             color='success'
@@ -526,7 +529,6 @@ export default function Home({ themeChange, mode }) {
                                     color: 'black',
                                 },
                             }}
-                            // endIcon={<SendIc}
                             type='submit'
                         >
                             Create
@@ -534,7 +536,7 @@ export default function Home({ themeChange, mode }) {
                     </form>
                 </Box>
             </Modal>
-            <Tooltip title='Create a new space' placement='left'>
+            <Tooltip title='Create a new Group'>
                 <Fab
                     color='primary'
                     aria-label='add'
@@ -572,3 +574,5 @@ export default function Home({ themeChange, mode }) {
         </Box>
     );
 }
+
+export default Groups;
