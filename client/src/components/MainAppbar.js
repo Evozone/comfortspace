@@ -8,7 +8,6 @@ import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import Groups2Icon from '@mui/icons-material/Groups2';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import QuizIcon from '@mui/icons-material/Quiz';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -65,6 +64,7 @@ function MainAppbar({ mode, themeChange }) {
                 color: 'white',
                 zIndex: '1000',
                 padding: '7px',
+                top: '0',
             }}
         >
             <IconButton
@@ -96,11 +96,11 @@ function MainAppbar({ mode, themeChange }) {
                             <LibraryBooksIcon /> Blogs
                         </CustomSwitcherButton>
                         <CustomSwitcherButton
-                            onClick={() => handleNavigation('resources')}
-                            value='resources'
-                            selected={selected === 'resources'}
+                            onClick={() => handleNavigation('connect')}
+                            value='connect'
+                            selected={selected === 'connect'}
                         >
-                            <FavoriteIcon /> Resources
+                            <GroupAddIcon /> Connect
                         </CustomSwitcherButton>
                         <CustomSwitcherButton
                             onClick={() => handleNavigation('exam')}
@@ -116,7 +116,7 @@ function MainAppbar({ mode, themeChange }) {
                             src={currentUser.photoURL}
                             sx={{
                                 bgcolor: mode === 'light' ? deepDark : light,
-                                color: light,
+                                color: mode === 'light' ? light : deepDark,
                                 height: 45,
                                 width: 45,
                                 border: '2px solid',

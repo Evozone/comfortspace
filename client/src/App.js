@@ -24,6 +24,7 @@ import {
     smoothScrolling,
 } from './components/CustomGlobalCSS';
 import { signInAction } from './actions/actions';
+import Connect from './components/Connect';
 
 function App() {
     const localTheme = window.localStorage.getItem('healthAppTheme');
@@ -72,11 +73,11 @@ function App() {
 
     return (
         <ThemeProvider theme={darkTheme}>
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <CssBaseline />
             <Loading />
             <Notify />
+            {customGlobalScrollBars(mode)}
+            {smoothScrolling()}
             <Routes>
                 <Route path='/' element={<LandingPage />} />
                 <Route
@@ -146,12 +147,21 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path='/resources'
+                {/* <Route
+                    path='/connect'
                     element={
                         <ProtectedRoute>
                             <MainAppbar themeChange={themeChange} mode={mode} />
                             <Resources themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
+                    }
+                /> */}
+                <Route
+                    path='/connect'
+                    element={
+                        <ProtectedRoute>
+                            <MainAppbar themeChange={themeChange} mode={mode} />
+                            <Connect themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
                 />
