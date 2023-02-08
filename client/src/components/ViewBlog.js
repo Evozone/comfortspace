@@ -15,7 +15,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
 import TwitterIcon from '@mui/icons-material/Twitter';
 
-import { bluegrey, light, medium } from './colors';
+import { bluegrey, light, medium } from '../utils/colors';
 import { notifyAction } from '../actions/actions';
 
 function ViewBlog({ mode }) {

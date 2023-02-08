@@ -5,7 +5,14 @@ import ModeIcon from '@mui/icons-material/Mode';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import QuestionTable from './QuestionTable';
 
-import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
+import {
+    bluegrey,
+    richBlack,
+    light,
+    medium,
+    dark,
+    deepDark,
+} from '../utils/colors';
 import { useSelector } from 'react-redux';
 
 export default function Exam({ themeChange, mode }) {

@@ -9,7 +9,14 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 
-import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
+import {
+    bluegrey,
+    richBlack,
+    light,
+    medium,
+    dark,
+    deepDark,
+} from '../utils/colors';
 import { data } from './ResourcesData';
 
 export default function Resources({ themeChange, mode }) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -27,6 +27,9 @@ import { signInAction } from './actions/actions';
 import Connect from './components/Connect';
 
 function App() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const localTheme = window.localStorage.getItem('healthAppTheme');
 
     const [mode, setMode] = useState(localTheme ? localTheme : 'light');
@@ -47,8 +50,7 @@ function App() {
         setMode(updatedTheme);
     };
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const isSignedIn = useSelector((state) => state.auth.isSignedIn);
 
     useEffect(() => {
         const auth = window.localStorage.getItem('healthApp');
@@ -78,6 +80,14 @@ function App() {
             <Notify />
             {customGlobalScrollBars(mode)}
             {smoothScrolling()}
+            {isSignedIn && (
+                <MainAppbar
+                    {...{
+                        themeChange,
+                        mode,
+                    }}
+                />
+            )}
             <Routes>
                 <Route path='/' element={<LandingPage />} />
                 <Route
@@ -85,10 +95,6 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
-                                <MainAppbar
-                                    themeChange={themeChange}
-                                    mode={mode}
-                                />
                                 <Groups themeChange={themeChange} mode={mode} />
                             </HMSRoomProvider>
                         </ProtectedRoute>
@@ -99,10 +105,6 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
-                                <MainAppbar
-                                    themeChange={themeChange}
-                                    mode={mode}
-                                />
                                 <VoiceRoom
                                     themeChange={themeChange}
                                     mode={mode}
@@ -115,7 +117,6 @@ function App() {
                     path='/blogs'
                     element={
                         <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <Blogs themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
@@ -133,7 +134,6 @@ function App() {
                     path='/createBlog'
                     element={
                         <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <CreateBlog themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
@@ -142,7 +142,6 @@ function App() {
                     path='/editBlog/:id'
                     element={
                         <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <EditBlog themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
@@ -160,8 +159,7 @@ function App() {
                     path='/connect'
                     element={
                         <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
-                            <Connect themeChange={themeChange} mode={mode} />
+                            <Connect mode={mode} />
                         </ProtectedRoute>
                     }
                 />
@@ -169,7 +167,6 @@ function App() {
                     path='/exam'
                     element={
                         <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <Exam themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }

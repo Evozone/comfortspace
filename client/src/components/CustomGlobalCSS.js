@@ -1,6 +1,6 @@
 import GlobalStyles from '@mui/material/GlobalStyles';
 
-import { bluegrey, light, dark, deepDark } from './colors';
+import { bluegrey, light, dark, deepDark } from '../utils/colors';
 
 export const customGlobalScrollBars = (mode) => {
     const component = (

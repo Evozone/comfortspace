@@ -21,7 +21,7 @@ import {
     medium,
     dark,
     deepDark,
-} from './colors';
+} from '../utils/colors';
 import { Tooltip } from '@mui/material';
 
 function Blogs({ mode }) {

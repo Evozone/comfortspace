@@ -12,7 +12,7 @@ import {
     stopLoadingAction,
 } from '../actions/actions';
 
-import { light, deepDark } from '../components/colors';
+import { light, deepDark } from '../utils/colors';
 
 const GoogleOneTapLogin = () => {
     const navigate = useNavigate();

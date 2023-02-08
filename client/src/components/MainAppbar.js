@@ -15,7 +15,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 import { CustomSwitcherGroup, CustomSwitcherButton } from './CustomSwitcher';
-import { richBlack, light, medium, deepDark, bluegrey } from './colors';
+import { richBlack, light, medium, deepDark, bluegrey } from '../utils/colors';
 import { signOutAction } from '../actions/actions';
 import { Avatar } from '@mui/material';
 

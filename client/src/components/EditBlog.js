@@ -18,7 +18,7 @@ import {
     medium,
     deepDark,
     superLight,
-} from './colors';
+} from '../utils/colors';
 import { notifyAction } from '../actions/actions';
 
 function EditBlog({ mode }) {

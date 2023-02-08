@@ -17,7 +17,13 @@ const Notify = () => {
             open={notify.open}
             autoHideDuration={4000}
             onClose={handleClose}
-            sx={{ top: '10% !important' }}
+            sx={{
+                top: '10% !important',
+                maxWidth: '400px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             TransitionComponent={(props) => (
                 <Slide {...props} direction='left' />

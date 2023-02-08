@@ -15,7 +15,7 @@ import {
     dark,
     deepDark,
     superLight,
-} from './colors';
+} from '../utils/colors';
 
 import { Radar } from 'react-chartjs-2';
 import {

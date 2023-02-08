@@ -19,7 +19,14 @@ import Typography from '@mui/material/Typography';
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
+import {
+    bluegrey,
+    richBlack,
+    light,
+    medium,
+    dark,
+    deepDark,
+} from '../utils/colors';
 import { useHMSActions } from '@100mslive/hms-video-react';
 import {
     startLoadingAction,
@@ -388,8 +395,7 @@ function Groups({ themeChange, mode }) {
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
                         minWidth: 600,
-                        maxWidth: 700,
-                        height: 670,
+                        maxHeight: '700px',
                         backgroundColor: mode === 'light' ? light : bluegrey,
                         boxShadow: 24,
                         borderRadius: '10px',
@@ -473,7 +479,7 @@ function Groups({ themeChange, mode }) {
                                 <img
                                     style={{
                                         objectFit: 'fill',
-                                        height: '350px',
+                                        maxHeight: '300px',
                                         width: '455px',
                                         alignSelf: 'center',
                                         position: 'relative',
@@ -495,10 +501,12 @@ function Groups({ themeChange, mode }) {
                             </>
                         )}
                         <Button
+                            disableElevation
                             color='success'
                             variant='contained'
                             sx={{
                                 mt: 1,
+                                alignSelf: 'center',
                                 backgroundColor:
                                     mode === 'light' ? medium : light,
                                 color: 'black',
@@ -514,10 +522,9 @@ function Groups({ themeChange, mode }) {
                         <Button
                             color='success'
                             variant='contained'
+                            disableElevation
                             sx={{
-                                position: 'absolute',
-                                bottom: 10,
-                                right: 15,
+                                mt: 1,
                                 mb: 1,
                                 alignSelf: 'flex-end',
                                 // mr: 7,

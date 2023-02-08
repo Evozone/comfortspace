@@ -31,8 +31,13 @@ const userSchema = new mongoose.Schema(
             required: [true, 'Please Enter Your Username'],
             unique: true,
         },
+        isAdmin: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
     },
     { timestamps: true }
 );
+
 module.exports = mongoose.model('User', userSchema);
-// name,username,createdAt, email, image, token, unique id

@@ -19,7 +19,7 @@ import {
     medium,
     deepDark,
     superLight,
-} from './colors';
+} from '../utils/colors';
 import storage from '../appwrite';
 import { notifyAction } from '../actions/actions';
 

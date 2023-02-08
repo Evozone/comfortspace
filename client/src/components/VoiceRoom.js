@@ -18,7 +18,7 @@ import {
     selectPeers,
 } from '@100mslive/hms-video-react';
 
-import { bluegrey, light, deepDark } from './colors';
+import { bluegrey, light, deepDark } from '../utils/colors';
 import PeerInRoom from './PeerInRoom';
 
 function VoiceRoom({ mode }) {
