@@ -21,9 +21,13 @@ export default function Exam({ themeChange, mode }) {
     return (
         <Box
             sx={{
-                minHeight: '100vh',
+                overflowY: 'auto',
+                mt: '75px',
+                height: 'calc(100vh - 75px)',
+                maxHeight: 'calc(100vh - 75px)',
                 backgroundColor: mode === 'light' ? light : bluegrey,
                 padding: '5rem',
+                pt: 0,
             }}
         >
             <Typography

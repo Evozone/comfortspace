@@ -57,11 +57,13 @@ function ViewBlog({ mode }) {
     return (
         <Box
             sx={{
-                minHeight: '100vh',
+                overflowY: 'auto',
+                mt: '75px',
+                height: 'calc(100vh - 75px)',
+                maxHeight: 'calc(100vh - 75px)',
                 backgroundColor: mode === 'light' ? light : bluegrey,
-                color: 'text.primary',
-                p: '5rem',
-                pt: '6rem',
+                padding: '5rem',
+                pt: 2,
             }}
         >
             <Card>
@@ -79,7 +81,7 @@ function ViewBlog({ mode }) {
                     <Typography
                         sx={{ textAlign: 'center' }}
                         gutterBottom
-                        variant='h2'
+                        variant='h3'
                         component='div'
                     >
                         {blog?.title}

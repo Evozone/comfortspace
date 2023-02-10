@@ -34,7 +34,7 @@ import {
     notifyAction,
 } from '../actions/actions';
 
-function Groups({ themeChange, mode }) {
+function Groups({ mode }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const hmsActions = useHMSActions();
@@ -181,6 +181,9 @@ function Groups({ themeChange, mode }) {
         );
         if (response.data.success) {
             setModalVisible(false);
+            setTitle('');
+            setDescription('');
+            setCoverImgURL(null);
             window.open(`${process.env.REACT_APP_BASE_URL}/groups`, '_self');
         } else {
             alert('Something went wrong, please try again');
@@ -188,23 +191,31 @@ function Groups({ themeChange, mode }) {
     };
 
     const deleteSpace = async (roomId) => {
-        const result = await axios.delete(
-            `${process.env.REACT_APP_SERVER_URL}/api/rooms/delete/${roomId}`
+        const choice = window.confirm(
+            'Are you sure you want to delete this space?'
         );
-        if (result.data.success) {
-            window.location.reload();
-            alert('Space deleted successfully');
-        } else {
-            alert('Something went wrong, please try again');
+        if (choice) {
+            const result = await axios.delete(
+                `${process.env.REACT_APP_SERVER_URL}/api/rooms/delete/${roomId}`
+            );
+            if (result.data.success) {
+                window.location.reload();
+            } else {
+                alert('Something went wrong, please try again');
+            }
         }
     };
 
     return (
         <Box
             sx={{
-                minHeight: '100vh',
+                overflowY: 'auto',
+                mt: '75px',
+                height: 'calc(100vh - 75px)',
+                maxHeight: 'calc(100vh - 75px)',
                 backgroundColor: mode === 'light' ? light : bluegrey,
                 padding: '5rem',
+                pt: 0,
             }}
         >
             <Typography
@@ -252,8 +263,10 @@ function Groups({ themeChange, mode }) {
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gridGap: '1rem',
+                    borderRadius: '10px',
+                    gridTemplateColumns: 'repeat(3, minmax(280px, 1fr))',
+                    gap: '24px 24px',
+                    gridAutoFlow: 'dense',
                 }}
             >
                 {spaces &&
@@ -415,7 +428,11 @@ function Groups({ themeChange, mode }) {
                         }}
                         cursor='pointer'
                         onClick={() => {
+                            setTitle('');
+                            setDescription('');
+                            setCoverImgURL('');
                             setModalVisible(false);
+                            return;
                         }}
                     />
                     <Typography
@@ -475,30 +492,17 @@ function Groups({ themeChange, mode }) {
                             }}
                         />
                         {coverImgURL && (
-                            <>
-                                <img
-                                    style={{
-                                        objectFit: 'fill',
-                                        maxHeight: '300px',
-                                        width: '455px',
-                                        alignSelf: 'center',
-                                        position: 'relative',
-                                    }}
-                                    alt='loading ...'
-                                    src={coverImgURL}
-                                />
-                                <CancelIcon
-                                    sx={{
-                                        position: 'absolute',
-                                        top: 210,
-                                        right: 80,
-                                    }}
-                                    cursor='pointer'
-                                    onClick={() => {
-                                        setCoverImgURL(null);
-                                    }}
-                                />
-                            </>
+                            <img
+                                style={{
+                                    objectFit: 'fill',
+                                    maxHeight: '300px',
+                                    width: '455px',
+                                    alignSelf: 'center',
+                                    position: 'relative',
+                                }}
+                                alt='loading ...'
+                                src={coverImgURL}
+                            />
                         )}
                         <Button
                             disableElevation
@@ -527,7 +531,6 @@ function Groups({ themeChange, mode }) {
                                 mt: 1,
                                 mb: 1,
                                 alignSelf: 'flex-end',
-                                // mr: 7,
                                 backgroundColor:
                                     mode === 'light' ? medium : light,
                                 color: 'black',
