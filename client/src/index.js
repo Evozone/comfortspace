@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import { legacy_createStore as createStore, compose } from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 
-import './index.css';
 import App from './App';
 import reducers from './reducers/reducers';
 

@@ -2,7 +2,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { styled } from '@mui/material/styles';
 
-import { richBlack, light, medium, dark, deepDark } from './colors';
+import { richBlack, light, medium, dark, deepDark } from '../utils/colors';
 
 export const CustomSwitcherGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'light' ? deepDark : light,

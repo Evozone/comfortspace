@@ -9,7 +9,14 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 
-import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
+import {
+    bluegrey,
+    richBlack,
+    light,
+    medium,
+    dark,
+    deepDark,
+} from '../utils/colors';
 import { data } from './ResourcesData';
 
 export default function Resources({ themeChange, mode }) {
@@ -30,7 +37,6 @@ export default function Resources({ themeChange, mode }) {
                 sx={{
                     color: mode === 'light' ? deepDark : light,
                     margin: '2rem',
-                    fontFamily: 'Poppins, Work Sans',
                     fontWeight: 'bold',
                     fontSize: '3rem',
                     textAlign: 'center',

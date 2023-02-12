@@ -15,7 +15,7 @@ import {
     dark,
     deepDark,
     superLight,
-} from './colors';
+} from '../utils/colors';
 
 import { Radar } from 'react-chartjs-2';
 import {
@@ -358,7 +358,6 @@ export default function QuestionTable({ mode }) {
                             component='h3'
                             sx={{
                                 mb: '1rem',
-                                fontFamily: 'Poppins, Work Sans',
                                 color: mode === 'light' ? deepDark : light,
                                 fontWeight: '600',
                                 fontSize: '2rem',

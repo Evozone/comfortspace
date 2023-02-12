@@ -13,15 +13,7 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 
-import {
-    bluegrey,
-    richBlack,
-    black,
-    light,
-    medium,
-    dark,
-    deepDark,
-} from './colors';
+import { bluegrey, richBlack, light, dark, deepDark } from '../utils/colors';
 import { Tooltip } from '@mui/material';
 
 function Blogs({ mode }) {
@@ -109,9 +101,13 @@ function Blogs({ mode }) {
     return (
         <Box
             sx={{
-                minHeight: '100vh',
+                overflowY: 'auto',
+                mt: '75px',
+                height: 'calc(100vh - 75px)',
+                maxHeight: 'calc(100vh - 75px)',
                 backgroundColor: mode === 'light' ? light : bluegrey,
                 padding: '5rem',
+                pt: 0,
             }}
         >
             <Typography
@@ -120,7 +116,6 @@ function Blogs({ mode }) {
                 sx={{
                     color: mode === 'light' ? deepDark : light,
                     margin: '2rem',
-                    fontFamily: 'Poppins, Work Sans',
                     fontWeight: 'bold',
                     fontSize: '3rem',
                     textAlign: 'center',

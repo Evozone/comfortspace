@@ -19,7 +19,7 @@ import {
     selectLocalPeer,
 } from '@100mslive/hms-video-react';
 
-import { light, bluegrey, deepDark } from './colors';
+import { light, bluegrey, deepDark } from '../utils/colors';
 
 function PeerInRoom({ peer, mode }) {
     const hmsActions = useHMSActions();

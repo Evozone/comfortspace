@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -24,8 +24,14 @@ import {
     smoothScrolling,
 } from './components/CustomGlobalCSS';
 import { signInAction } from './actions/actions';
+import Connect from './components/Connect';
+import PersonalCall from './components/PersonalCall';
 
 function App() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const localTheme = window.localStorage.getItem('healthAppTheme');
 
     const [mode, setMode] = useState(localTheme ? localTheme : 'light');
@@ -36,7 +42,7 @@ function App() {
         },
 
         typography: {
-            fontFamily: "'Open Sans', sans-serif",
+            fontFamily: ['Poppins', 'Work Sans', 'sans-serif'].join(','),
         },
     });
 
@@ -46,8 +52,7 @@ function App() {
         setMode(updatedTheme);
     };
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const isSignedIn = useSelector((state) => state.auth.isSignedIn);
 
     useEffect(() => {
         const auth = window.localStorage.getItem('healthApp');
@@ -61,6 +66,10 @@ function App() {
                 iat: signInTime,
             } = jwtDecode(dnd);
             dispatch(signInAction(uid, email, name, photoURL, dnd, signInTime));
+            if (location.pathname.includes('/connect/pc/')) {
+                navigate(location.pathname);
+                return;
+            }
             const value = window.localStorage.getItem('healthAppLastPage');
             if (value && value !== undefined) {
                 navigate(`/${value}`);
@@ -72,11 +81,19 @@ function App() {
 
     return (
         <ThemeProvider theme={darkTheme}>
-            {customGlobalScrollBars(mode)}
-            {smoothScrolling()}
             <CssBaseline />
             <Loading />
             <Notify />
+            {customGlobalScrollBars(mode)}
+            {smoothScrolling()}
+            {isSignedIn && (
+                <MainAppbar
+                    {...{
+                        themeChange,
+                        mode,
+                    }}
+                />
+            )}
             <Routes>
                 <Route path='/' element={<LandingPage />} />
                 <Route
@@ -84,10 +101,6 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
-                                <MainAppbar
-                                    themeChange={themeChange}
-                                    mode={mode}
-                                />
                                 <Groups themeChange={themeChange} mode={mode} />
                             </HMSRoomProvider>
                         </ProtectedRoute>
@@ -98,10 +111,6 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
-                                <MainAppbar
-                                    themeChange={themeChange}
-                                    mode={mode}
-                                />
                                 <VoiceRoom
                                     themeChange={themeChange}
                                     mode={mode}
@@ -114,7 +123,6 @@ function App() {
                     path='/blogs'
                     element={
                         <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <Blogs themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
@@ -132,7 +140,6 @@ function App() {
                     path='/createBlog'
                     element={
                         <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <CreateBlog themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
@@ -141,17 +148,32 @@ function App() {
                     path='/editBlog/:id'
                     element={
                         <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <EditBlog themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path='/resources'
+                {/* <Route
+                    path='/connect'
                     element={
                         <ProtectedRoute>
                             <MainAppbar themeChange={themeChange} mode={mode} />
                             <Resources themeChange={themeChange} mode={mode} />
+                        </ProtectedRoute>
+                    }
+                /> */}
+                <Route
+                    path='/connect'
+                    element={
+                        <ProtectedRoute>
+                            <Connect mode={mode} />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path='/connect/pc/:id'
+                    element={
+                        <ProtectedRoute>
+                            <PersonalCall mode={mode} />
                         </ProtectedRoute>
                     }
                 />
@@ -159,7 +181,6 @@ function App() {
                     path='/exam'
                     element={
                         <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
                             <Exam themeChange={themeChange} mode={mode} />
                         </ProtectedRoute>
                     }

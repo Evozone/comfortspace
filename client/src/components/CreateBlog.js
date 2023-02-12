@@ -19,7 +19,7 @@ import {
     medium,
     deepDark,
     superLight,
-} from './colors';
+} from '../utils/colors';
 import storage from '../appwrite';
 import { notifyAction } from '../actions/actions';
 
@@ -123,10 +123,13 @@ function CreateBlog({ mode }) {
     return (
         <Box
             sx={{
-                minHeight: '100vh',
+                overflowY: 'auto',
+                mt: '75px',
+                height: 'calc(100vh - 75px)',
+                maxHeight: 'calc(100vh - 75px)',
                 backgroundColor: mode === 'light' ? light : bluegrey,
-                color: 'text.primary',
-                p: '5rem',
+                padding: '5rem',
+                pt: 0,
             }}
         >
             <Paper
@@ -149,7 +152,6 @@ function CreateBlog({ mode }) {
                         mb: 4,
                         color: mode === 'light' ? deepDark : light,
                         padding: '0',
-                        fontFamily: 'Poppins',
                         fontWeight: '600',
                         fontSize: '2.5rem',
                     }}
@@ -169,7 +171,6 @@ function CreateBlog({ mode }) {
                         color='success'
                         onChange={(e) => setTitle(e.target.value)}
                         sx={{
-                            fontFamily: 'Poppins, Work Sans',
                             backgroundColor:
                                 mode === 'light' ? 'whitesmoke' : richBlack,
                             borderRadius: '6px',

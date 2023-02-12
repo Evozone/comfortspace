@@ -5,7 +5,14 @@ import ModeIcon from '@mui/icons-material/Mode';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import QuestionTable from './QuestionTable';
 
-import { bluegrey, richBlack, light, medium, dark, deepDark } from './colors';
+import {
+    bluegrey,
+    richBlack,
+    light,
+    medium,
+    dark,
+    deepDark,
+} from '../utils/colors';
 import { useSelector } from 'react-redux';
 
 export default function Exam({ themeChange, mode }) {
@@ -14,9 +21,13 @@ export default function Exam({ themeChange, mode }) {
     return (
         <Box
             sx={{
-                minHeight: '100vh',
+                overflowY: 'auto',
+                mt: '75px',
+                height: 'calc(100vh - 75px)',
+                maxHeight: 'calc(100vh - 75px)',
                 backgroundColor: mode === 'light' ? light : bluegrey,
                 padding: '5rem',
+                pt: 0,
             }}
         >
             <Typography
@@ -25,7 +36,6 @@ export default function Exam({ themeChange, mode }) {
                 sx={{
                     color: mode === 'light' ? deepDark : light,
                     margin: '2rem',
-                    fontFamily: 'Poppins, Work Sans',
                     fontWeight: 'bold',
                     fontSize: '3rem',
                     textAlign: 'center',
@@ -78,7 +88,6 @@ export default function Exam({ themeChange, mode }) {
                     component='h3'
                     sx={{
                         mb: '1rem',
-                        fontFamily: 'Poppins, Work Sans',
                         fontWeight: 'medium',
                         fontSize: '2rem',
                         textAlign: 'left',
