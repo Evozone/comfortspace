@@ -64,14 +64,10 @@ function ConnectSettings({ setConnectSettings, connectSettings }) {
     };
 
     const handleCheckboxChange = (event) => {
-        console.log(event.target.name);
-        console.log(checkState.showNotifications);
-
         if (
             event.target.name === 'showNotifications' &&
             !checkState.showNotifications
         ) {
-            console.log('inside if');
             notificationPrompt();
             return;
         }

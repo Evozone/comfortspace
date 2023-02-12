@@ -36,7 +36,6 @@ export default function Exam({ themeChange, mode }) {
                 sx={{
                     color: mode === 'light' ? deepDark : light,
                     margin: '2rem',
-                    fontFamily: 'Poppins, Work Sans',
                     fontWeight: 'bold',
                     fontSize: '3rem',
                     textAlign: 'center',
@@ -89,7 +88,6 @@ export default function Exam({ themeChange, mode }) {
                     component='h3'
                     sx={{
                         mb: '1rem',
-                        fontFamily: 'Poppins, Work Sans',
                         fontWeight: 'medium',
                         fontSize: '2rem',
                         textAlign: 'left',

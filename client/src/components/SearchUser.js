@@ -107,14 +107,9 @@ function SearchUser({ mode, handleChatClick }) {
                             borderColor: dark,
                         },
                     },
-                    '& .css-1uyx2m5-MuiFormLabel-root-MuiInputLabel-root.Mui-focused':
-                        {
-                            color: dark,
-                        },
-                    '& .css-zi2b99-MuiFormLabel-root-MuiInputLabel-root.Mui-focused':
-                        {
-                            color: dark,
-                        },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                        color: dark,
+                    },
                 }}
                 InputProps={{
                     endAdornment: (

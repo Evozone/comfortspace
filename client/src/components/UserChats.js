@@ -49,9 +49,7 @@ function UserChats({
                                 : chat.userTwo;
                         return {
                             ...info,
-                            lastMessageTime: formatTime12(
-                                chat.lastMessageTime / 1000
-                            ),
+                            lastMessageTime: chat.lastMessageTime,
                             lastMessage: chat?.lastMessage,
                             lastMessageDate: formatDate(
                                 chat.lastMessageTime / 1000
@@ -86,7 +84,7 @@ function UserChats({
                 const user = prev[index];
                 const newUser = {
                     ...user,
-                    lastMessageTime: formatTime12(message.timestamp / 1000),
+                    lastMessageTime: message.timestamp,
                     lastMessage: message.text,
                     lastMessageDate: formatDate(message.timestamp / 1000),
                 };
@@ -109,7 +107,7 @@ function UserChats({
                 const user = prev[index];
                 const newUser = {
                     ...user,
-                    lastMessageTime: formatTime12(message.timestamp / 1000),
+                    lastMessageTime: message.timestamp,
                     lastMessage: message.text,
                     lastMessageDate: formatDate(message.timestamp / 1000),
                 };
@@ -203,6 +201,7 @@ function UserChats({
                                 <Typography
                                     sx={{
                                         fontSize: '14px',
+                                        fontFamily: 'Helvetica',
                                         color:
                                             mode === 'light'
                                                 ? 'rgba(0, 0, 0, 0.54)'
@@ -218,6 +217,7 @@ function UserChats({
                                 <Typography
                                     sx={{
                                         fontSize: '12px',
+                                        fontFamily: 'Helvetica',
                                         color:
                                             mode === 'light'
                                                 ? 'rgba(0, 0, 0, 0.54)'
@@ -240,10 +240,11 @@ function UserChats({
                                         ml: 2,
                                         position: 'absolute',
                                         right: '15px',
+                                        fontFamily: 'Helvetica',
                                         top: '25px',
                                     }}
                                 >
-                                    {user?.lastMessageTime}
+                                    {formatTime12(user?.lastMessageTime / 1000)}
                                 </Typography>
                                 {messageNotSeen.includes(user.uid) && (
                                     <Box

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { v4 as uuid } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -27,6 +28,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
     const inputRef = useRef();
     const endRef = useRef();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const currentUser = useSelector((state) => state.auth);
     const [messages, setMessages] = useState(null);
@@ -202,6 +204,15 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
         }
     };
 
+    const startPersonalCall = async () => {
+        dispatch(startLoadingAction());
+        const id = uuid();
+        const CALL_TEMPLATE = `Hey, Lets talk more on a video call. Please click on the link below to join the call. \n\n ${process.env.REACT_APP_BASE_URL}/connect/pc/${id}`;
+        await handleSendMessage(CALL_TEMPLATE);
+        dispatch(stopLoadingAction());
+        navigate(`/connect/pc/${id}`);
+    };
+
     return (
         <Box sx={{ flexGrow: 1, overflowY: 'hidden' }}>
             <AppBar
@@ -249,7 +260,10 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                         {typing ? 'typing...' : '@' + otherUser.username}
                     </Typography>
                 </Box>
-                <IconButton sx={{ position: 'absolute', right: '10px' }}>
+                <IconButton
+                    onClick={startPersonalCall}
+                    sx={{ position: 'absolute', right: '10px' }}
+                >
                     <VideoCallIcon
                         sx={{
                             height: 40,

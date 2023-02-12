@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
@@ -10,23 +10,14 @@ import ChatIcon from '@mui/icons-material/Chat';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import { initSocket } from '../socket';
-import {
-    light,
-    bluegrey,
-    deepDark,
-    medium,
-    richBlack,
-    dark,
-} from '../utils/colors';
+import { light, bluegrey, deepDark, medium, richBlack } from '../utils/colors';
 import ChatInterface from './ChatInterface';
 import UserChats from './UserChats';
 import SearchUser from './SearchUser';
 import ConnectSettings from './ConnectSettings';
-import { notifyAction } from '../actions/actions';
 
 function Connect({ mode }) {
     const socketRef = useRef(null);
-    const dispatch = useDispatch();
     const [value, setValue] = useState(0);
     const [otherUser, setOtherUser] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
@@ -39,7 +30,7 @@ function Connect({ mode }) {
 
     useEffect(() => {
         const init = async () => {
-            socketRef.current = await initSocket();
+            socketRef.current = await initSocket('chat');
             socketRef.current.on('connect_error', (error) =>
                 handleErrors(error)
             );
@@ -51,7 +42,6 @@ function Connect({ mode }) {
                 alert(
                     'Socket connection failed, Please close the tab & try again later.'
                 );
-                // navigate('/');
             }
             socketRef.current.emit('join', {
                 newUserId: currentUser.uid,
@@ -272,7 +262,6 @@ function Connect({ mode }) {
                     />
                     <Typography
                         sx={{
-                            fontFamily: 'Poppins, Work Sans',
                             fontWeight: '700',
                             fontSize: '2rem',
                             color: mode === 'light' ? deepDark : medium,

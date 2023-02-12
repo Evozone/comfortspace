@@ -195,21 +195,34 @@ export default function TextBody({ message, endRef }) {
                                 }
                             } else {
                                 return (
-                                    <Typography key={index}>{item}</Typography>
+                                    <Typography
+                                        sx={{
+                                            fontFamily: 'Helvetica',
+                                        }}
+                                        key={index}
+                                    >
+                                        {item}
+                                    </Typography>
                                 );
                             }
                         })}
                     </Box>
                 ) : (
-                    <Typography sx={{ wordBreak: 'break-word' }}>
+                    <Typography
+                        sx={{
+                            wordBreak: 'break-word',
+                            fontFamily: 'Helvetica',
+                        }}
+                    >
                         {message.text}
                     </Typography>
                 )}
                 <Typography
-                    // ref={endRef}
+                    ref={endRef}
                     sx={{
                         textAlign: 'right',
                         fontSize: '11px',
+                        fontFamily: 'Helvetica',
                         ml: '4px',
                         mb: '-5px',
                         alignSelf: 'flex-end',
@@ -220,7 +233,7 @@ export default function TextBody({ message, endRef }) {
                 >
                     {messageTime}
                 </Typography>
-                <div ref={endRef}></div>
+                {/* <div ref={endRef}></div> */}
             </Box>
         </React.Fragment>
     );

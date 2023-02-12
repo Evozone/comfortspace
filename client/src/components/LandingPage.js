@@ -93,20 +93,16 @@ function LandingPage() {
                         <h1
                             style={{
                                 color: '#1B262C',
-                                fontWeight: 'bold',
                                 fontSize: '3rem',
-                                fontFamily: 'Poppins',
-                                fontWeight: '700',
                             }}
                         >
-                            Meadow Melodies
+                            Comfort Space
                         </h1>
                         <Typography
                             variant='h6'
                             sx={{
                                 color: '#1B262C',
                                 fontSize: '1.1rem',
-                                fontFamily: 'Poppins',
                             }}
                         >
                             Mental health includes our emotional, psychological,

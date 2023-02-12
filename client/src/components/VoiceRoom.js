@@ -282,7 +282,7 @@ function VoiceRoom({ mode }) {
             <Paper
                 sx={{
                     p: 2,
-                    ...(mode === 'light' && { backgroundColor: deepDark }),
+                    backgroundColor: deepDark,
                     height: 'calc(100vh - 170px)',
                     width: '100%',
                     mb: '1rem',
@@ -303,7 +303,7 @@ function VoiceRoom({ mode }) {
                 sx={{
                     p: 1,
                     borderRadius: '30px',
-                    ...(mode === 'light' && { backgroundColor: deepDark }),
+                    backgroundColor: deepDark,
                 }}
             >
                 <Stack direction='row' spacing={2}>

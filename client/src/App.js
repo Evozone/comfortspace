@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -25,10 +25,12 @@ import {
 } from './components/CustomGlobalCSS';
 import { signInAction } from './actions/actions';
 import Connect from './components/Connect';
+import PersonalCall from './components/PersonalCall';
 
 function App() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const localTheme = window.localStorage.getItem('healthAppTheme');
 
@@ -40,7 +42,7 @@ function App() {
         },
 
         typography: {
-            fontFamily: "'Open Sans', sans-serif",
+            fontFamily: ['Poppins', 'Work Sans', 'sans-serif'].join(','),
         },
     });
 
@@ -64,6 +66,10 @@ function App() {
                 iat: signInTime,
             } = jwtDecode(dnd);
             dispatch(signInAction(uid, email, name, photoURL, dnd, signInTime));
+            if (location.pathname.includes('/connect/pc/')) {
+                navigate(location.pathname);
+                return;
+            }
             const value = window.localStorage.getItem('healthAppLastPage');
             if (value && value !== undefined) {
                 navigate(`/${value}`);
@@ -160,6 +166,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <Connect mode={mode} />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path='/connect/pc/:id'
+                    element={
+                        <ProtectedRoute>
+                            <PersonalCall mode={mode} />
                         </ProtectedRoute>
                     }
                 />

@@ -37,7 +37,6 @@ export default function Resources({ themeChange, mode }) {
                 sx={{
                     color: mode === 'light' ? deepDark : light,
                     margin: '2rem',
-                    fontFamily: 'Poppins, Work Sans',
                     fontWeight: 'bold',
                     fontSize: '3rem',
                     textAlign: 'center',

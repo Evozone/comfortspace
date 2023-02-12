@@ -358,7 +358,6 @@ export default function QuestionTable({ mode }) {
                             component='h3'
                             sx={{
                                 mb: '1rem',
-                                fontFamily: 'Poppins, Work Sans',
                                 color: mode === 'light' ? deepDark : light,
                                 fontWeight: '600',
                                 fontSize: '2rem',

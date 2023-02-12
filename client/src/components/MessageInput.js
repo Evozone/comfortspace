@@ -59,12 +59,12 @@ export default function MessageInput({
 
     const handleKey = (e) => {
         const text = inputRef.current.value;
-        e.code === 'Enter' && e.ctrlKey && handleSendMessage(text, false);
+        e.code === 'Enter' && e.ctrlKey && handleSendMessage(text);
     };
 
     const handleSendMsg = () => {
         const text = inputRef.current.value;
-        handleSendMessage(text, false);
+        handleSendMessage(text);
     };
 
     return (
@@ -153,6 +153,7 @@ export default function MessageInput({
                                 mode === 'dark' ? '#101010' : '#f0f0f0',
                             paddingRight: '6px',
                             borderRadius: '20px',
+                            fontFamily: 'Helvetica',
                             '&.Mui-focused fieldset': {
                                 borderColor: dark,
                             },

@@ -152,7 +152,6 @@ function CreateBlog({ mode }) {
                         mb: 4,
                         color: mode === 'light' ? deepDark : light,
                         padding: '0',
-                        fontFamily: 'Poppins',
                         fontWeight: '600',
                         fontSize: '2.5rem',
                     }}
@@ -172,7 +171,6 @@ function CreateBlog({ mode }) {
                         color='success'
                         onChange={(e) => setTitle(e.target.value)}
                         sx={{
-                            fontFamily: 'Poppins, Work Sans',
                             backgroundColor:
                                 mode === 'light' ? 'whitesmoke' : richBlack,
                             borderRadius: '6px',
