@@ -179,14 +179,28 @@ export default function TextBody({ message, endRef }) {
                                         <Link
                                             key={index}
                                             href={src}
-                                            target='_blank'
-                                            rel='noopener noreferrer'
+                                            target={
+                                                item.includes(
+                                                    'comfortspace.netlify.app'
+                                                )
+                                                    ? '_self'
+                                                    : '_blank'
+                                            }
+                                            rel={
+                                                item.includes(
+                                                    'comfortspace.netlify.app'
+                                                )
+                                                    ? ''
+                                                    : 'noopener noreferrer'
+                                            }
                                             sx={{
-                                                color: 'white',
+                                                ...(currentUser.uid ===
+                                                message.senderId
+                                                    ? {
+                                                          color: '#00f6ff',
+                                                      }
+                                                    : { color: '#1769e3' }),
                                                 textDecoration: 'underline',
-                                                '&:hover': {
-                                                    color: 'lightblue',
-                                                },
                                             }}
                                         >
                                             {item}
