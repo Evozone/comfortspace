@@ -45,20 +45,20 @@ function Groups({ mode }) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [coverImgURL, setCoverImgURL] = useState(null);
-    const [spaces, setSpaces] = useState(null);
+    const [groups, setGroups] = useState(null);
 
     useEffect(() => {
-        const getSpaces = async () => {
+        const getGroups = async () => {
             await axios
                 .get(`${process.env.REACT_APP_SERVER_URL}/api/rooms/getRooms`)
                 .then((res) => {
-                    setSpaces(res.data.result);
+                    setGroups(res.data.result);
                 })
                 .catch((err) => {
                     alert('Something went wrong, please try again later.');
                 });
         };
-        getSpaces();
+        getGroups();
     }, []);
 
     useEffect(() => {
@@ -71,6 +71,9 @@ function Groups({ mode }) {
                 .then((res) => res.json())
                 .then((data) => {
                     managementToken = data.data.token;
+                })
+                .catch((err) => {
+                    alert('Something went wrong, please try again later.');
                 });
             const requestOptions = {
                 method: 'POST',
@@ -87,7 +90,10 @@ function Groups({ mode }) {
             };
             await fetch('https://api.100ms.live/v2/rooms', requestOptions)
                 .then((response) => response.json())
-                .then((data) => setRoomId(data.id));
+                .then((data) => setRoomId(data.id))
+                .catch((err) => {
+                    alert('Something went wrong, please try again later.');
+                });
         };
         modalVisible && getManagementToken();
         return () => {
@@ -97,16 +103,21 @@ function Groups({ mode }) {
     }, [modalVisible]);
 
     const generateCoverImgURL = async () => {
-        const apiKey = process.env.REACT_APP_UNSPLASH_API_KEY;
-        const response = await fetch(
-            `https://api.unsplash.com/photos/random/?client_id=${apiKey}&count=1&query=nature`
-        );
-        const data = await response.json();
-        const url = data[0].urls.regular;
-        setCoverImgURL(url);
+        try {
+            const apiKey = process.env.REACT_APP_UNSPLASH_API_KEY;
+            const response = await fetch(
+                `https://api.unsplash.com/photos/random/?client_id=${apiKey}&count=1&query=nature`
+            );
+            const data = await response.json();
+            const url = data[0].urls.regular;
+            setCoverImgURL(url);
+        } catch (error) {
+            console.log(error);
+            alert('Something went wrong, please try again later.');
+        }
     };
 
-    const joinCall = (roomId, createdById) => {
+    const joinGroup = (roomId, createdById) => {
         dispatch(startLoadingAction());
         getToken(roomId, createdById)
             .then(async (token) => {
@@ -161,48 +172,76 @@ function Groups({ mode }) {
         return token;
     };
 
-    const createNewSpace = async (e) => {
+    const createNewGroup = async (e) => {
         e.preventDefault();
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            createdByUsername: currentUser.username,
-            createdById: currentUser.uid,
-            createdByName: currentUser.name,
-            roomId,
-            title,
-            description,
-            cover: coverImgURL,
-        };
-        const response = await axios.post(
-            `${process.env.REACT_APP_SERVER_URL}/api/rooms/create`,
-            config
-        );
-        if (response.data.success) {
+        if (!title || !description || !coverImgURL) {
+            alert('Please fill all the fields');
+            return;
+        }
+        try {
+            const auth = window.localStorage.getItem('healthApp');
+            const { dnd } = JSON.parse(auth);
+            const data = {
+                roomId,
+                title,
+                description,
+                cover: coverImgURL,
+            };
+            const response = await axios({
+                method: 'POST',
+                url: `${process.env.REACT_APP_SERVER_URL}/api/rooms/create`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${dnd}`,
+                },
+                data,
+            });
             setModalVisible(false);
             setTitle('');
             setDescription('');
             setCoverImgURL(null);
-            window.open(`${process.env.REACT_APP_BASE_URL}/groups`, '_self');
-        } else {
-            alert('Something went wrong, please try again');
+            setGroups((prev) => [...prev, response.data.result]);
+        } catch (error) {
+            console.log(error);
+            dispatch(
+                notifyAction(
+                    true,
+                    'error',
+                    'Sorry but something went wrong, please try again later :('
+                )
+            );
         }
     };
 
-    const deleteSpace = async (roomId) => {
+    const deleteGroup = async (roomId) => {
         const choice = window.confirm(
-            'Are you sure you want to delete this space?'
+            'Are you sure you want to delete this group?'
         );
-        if (choice) {
-            const result = await axios.delete(
-                `${process.env.REACT_APP_SERVER_URL}/api/rooms/delete/${roomId}`
+        if (!choice) return;
+        const auth = window.localStorage.getItem('healthApp');
+        const { dnd } = JSON.parse(auth);
+        try {
+            await axios({
+                method: 'DELETE',
+                url: `${process.env.REACT_APP_SERVER_URL}/api/rooms/delete/${roomId}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${dnd}`,
+                },
+            });
+            window.location.reload();
+            dispatch(
+                notifyAction(true, 'success', 'Deleted a Group successfully!')
             );
-            if (result.data.success) {
-                window.location.reload();
-            } else {
-                alert('Something went wrong, please try again');
-            }
+        } catch (error) {
+            console.log(error);
+            dispatch(
+                notifyAction(
+                    true,
+                    'error',
+                    'Sorry but something went wrong, please try again later :('
+                )
+            );
         }
     };
 
@@ -268,8 +307,8 @@ function Groups({ mode }) {
                     gridAutoFlow: 'dense',
                 }}
             >
-                {spaces &&
-                    spaces.map((space) => (
+                {groups &&
+                    groups.map((space) => (
                         <Card
                             key={space.roomId}
                             sx={{
@@ -350,7 +389,7 @@ function Groups({ mode }) {
                                         },
                                     }}
                                     onClick={() => {
-                                        joinCall(
+                                        joinGroup(
                                             space.roomId,
                                             space.createdById
                                         );
@@ -367,7 +406,7 @@ function Groups({ mode }) {
                                         color='error'
                                         endIcon={<DeleteIcon />}
                                         onClick={() => {
-                                            deleteSpace(space._id);
+                                            deleteGroup(space._id);
                                         }}
                                     >
                                         Delete
@@ -445,7 +484,7 @@ function Groups({ mode }) {
                         Create New Group
                     </Typography>
                     <form
-                        onSubmit={createNewSpace}
+                        onSubmit={createNewGroup}
                         style={{
                             display: 'flex',
                             flexDirection: 'column',

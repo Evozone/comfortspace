@@ -6,8 +6,6 @@ const INITIAL_STATE = {
     email: null,
     name: null,
     photoURL: null,
-    token: null,
-    signInTime: null,
     username: null,
 };
 
@@ -25,8 +23,6 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 email: action.payload.email,
                 name: action.payload.name,
                 photoURL: action.payload.photoURL,
-                token: action.payload.token,
-                signInTime: action.payload.signInTime,
                 username: action.payload.email.split('@')[0],
             };
 
@@ -39,8 +35,6 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 email: null,
                 name: null,
                 photoURL: null,
-                token: null,
-                signInTime: null,
                 username: null,
             };
 

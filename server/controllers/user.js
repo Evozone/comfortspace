@@ -1,28 +1,34 @@
 const UserModel = require('../models/userModel');
+const jwt = require('jsonwebtoken');
 
 exports.googleSignUp = async (req, res) => {
-    let { uid, email, name, photoURL, token, signInTime, username } = req.body;
+    let { uid, email, name, photoURL, username } = req.body;
     try {
+        const token = jwt.sign(
+            { uid, email, name, photoURL, username },
+            process.env.HMS_SECRET_APP,
+            {
+                expiresIn: '48h',
+            }
+        );
         const oldUser = await UserModel.findOne({ email });
         if (oldUser) {
             res.status(200).json({
                 success: 'true',
-                result: oldUser,
+                result: { ...oldUser._doc, token },
                 message: 'User already exists',
             });
         } else {
-            const result = await UserModel.create({
+            const user = await UserModel.create({
                 uid,
                 email,
                 name,
                 photoURL,
-                token,
-                signInTime,
                 username,
             });
             res.status(201).json({
                 success: true,
-                result,
+                result: { ...user._doc, token },
                 message: 'User created',
             });
         }

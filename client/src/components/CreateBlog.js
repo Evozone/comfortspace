@@ -26,11 +26,11 @@ import { notifyAction } from '../actions/actions';
 function CreateBlog({ mode }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const author = useSelector((state) => state.auth);
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [summary, setSummary] = useState('');
+    const [buttonStatus, setButtonStatus] = useState(true);
     const [uploadStatus, setUploadStatus] = useState(null);
     const [coverUrl, setCoverUrl] = useState(null);
 
@@ -69,6 +69,7 @@ function CreateBlog({ mode }) {
             );
             setUploadStatus('Uploaded successfully ✅');
             setCoverUrl(result.href);
+            setButtonStatus(false);
         }
     };
 
@@ -78,28 +79,32 @@ function CreateBlog({ mode }) {
             alert('Please fill all the text fields');
             return;
         }
+        if (!coverUrl) {
+            alert('Please upload a cover image');
+            return;
+        }
         if (summary.length > 55) {
             alert('Summary should be less than 55 characters');
             return;
         }
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        const auth = window.localStorage.getItem('healthApp');
+        const { dnd } = JSON.parse(auth);
+        const data = {
             title,
             summary,
             content,
             cover: coverUrl,
-            authorId: author.uid,
-            authorName: author.name,
-            authorUsername: author.username,
         };
-
-        const response = await axios.post(
-            `${process.env.REACT_APP_SERVER_URL}/api/blog/create`,
-            config
-        );
-        if (response.data.success) {
+        try {
+            const response = await axios({
+                method: 'POST',
+                url: `${process.env.REACT_APP_SERVER_URL}/api/blog/create`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${dnd}`,
+                },
+                data,
+            });
             dispatch(
                 notifyAction(
                     true,
@@ -107,8 +112,9 @@ function CreateBlog({ mode }) {
                     'Created a new Blog successfully!'
                 )
             );
-            navigate('/blogs');
-        } else {
+            navigate(`/blog/${response.data.result._id}`);
+        } catch (error) {
+            console.log(error);
             dispatch(
                 notifyAction(
                     true,
@@ -116,7 +122,6 @@ function CreateBlog({ mode }) {
                     'Sorry but something went wrong, please try again later :('
                 )
             );
-            alert('Something went wrong, please try again');
         }
     };
 
@@ -288,6 +293,7 @@ function CreateBlog({ mode }) {
                         }}
                         variant='contained'
                         type='submit'
+                        disabled={buttonStatus}
                     >
                         Create Post
                     </Button>

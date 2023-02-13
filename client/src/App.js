@@ -7,7 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Groups from './components/Groups';
 import VoiceRoom from './components/VoiceRoom';
 import Blogs from './components/Blogs';
-import Resources from './components/Resources';
+// import Resources from './components/Resources';
 import Exam from './components/Exam';
 import LandingPage from './components/LandingPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -58,14 +58,8 @@ function App() {
         const auth = window.localStorage.getItem('healthApp');
         if (auth) {
             const { dnd } = JSON.parse(auth);
-            const {
-                sub: uid,
-                email,
-                name,
-                picture: photoURL,
-                iat: signInTime,
-            } = jwtDecode(dnd);
-            dispatch(signInAction(uid, email, name, photoURL, dnd, signInTime));
+            const { uid, email, name, photoURL } = jwtDecode(dnd);
+            dispatch(signInAction(uid, email, name, photoURL, dnd));
             if (location.pathname.includes('/connect/pc/')) {
                 navigate(location.pathname);
                 return;

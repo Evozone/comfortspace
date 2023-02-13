@@ -13,6 +13,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LogoutIcon from '@mui/icons-material/Logout';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
 import { CustomSwitcherGroup, CustomSwitcherButton } from './CustomSwitcher';
 import { richBlack, light, medium, deepDark, bluegrey } from '../utils/colors';
@@ -148,6 +149,16 @@ function MainAppbar({ mode, themeChange }) {
                                 }}
                             />
                             <ListItemText sx={{ ml: 1 }} primary='Logout' />
+                        </MenuItem>
+                        <MenuItem>
+                            <AccountBoxIcon
+                                sx={{
+                                    color: mode === 'light' ? deepDark : light,
+                                    fontSize: '1.7rem',
+                                    ml: -0.5,
+                                }}
+                            />
+                            <ListItemText sx={{ ml: 1 }} primary='Profile' />
                         </MenuItem>
                     </Menu>
                 </>

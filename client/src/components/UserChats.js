@@ -28,9 +28,17 @@ function UserChats({
     useEffect(() => {
         const getUserChats = async () => {
             try {
-                const { data } = await axios.get(
-                    `${process.env.REACT_APP_SERVER_URL}/api/chat/${currentUser.uid}`
-                );
+                const auth = window.localStorage.getItem('healthApp');
+                const { dnd } = JSON.parse(auth);
+
+                const { data } = await axios({
+                    method: 'GET',
+                    url: `${process.env.REACT_APP_SERVER_URL}/api/chat`,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        authorization: `Bearer ${dnd}`,
+                    },
+                });
                 if (data.result.length === 0) {
                     dispatch(
                         notifyAction(

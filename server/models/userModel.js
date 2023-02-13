@@ -22,19 +22,10 @@ const userSchema = new mongoose.Schema(
         token: {
             type: String,
         },
-        signInTime: {
-            type: Date,
-            default: Date.now,
-        },
         username: {
             type: String,
             required: [true, 'Please Enter Your Username'],
             unique: true,
-        },
-        isAdmin: {
-            type: Boolean,
-            required: true,
-            default: false,
         },
     },
     { timestamps: true }

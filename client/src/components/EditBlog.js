@@ -65,21 +65,37 @@ function EditBlog({ mode }) {
             alert('No changes made');
             return;
         }
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        const auth = window.localStorage.getItem('healthApp');
+        const { dnd } = JSON.parse(auth);
+        const data = {
             title,
             content,
             summary,
-            authorId: author.uid,
         };
-        await axios.patch(
-            `${process.env.REACT_APP_SERVER_URL}/api/blog/edit/${blog._id}`,
-            config
-        );
-        dispatch(notifyAction(true, 'success', 'Blog edited successfully!'));
-        navigate(`/blog/${blog._id}`);
+        try {
+            await axios({
+                method: 'PATCH',
+                url: `${process.env.REACT_APP_SERVER_URL}/api/blog/edit/${blog._id}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${dnd}`,
+                },
+                data,
+            });
+            navigate(`/blog/${blog._id}`);
+            dispatch(
+                notifyAction(true, 'success', 'Blog edited successfully!')
+            );
+        } catch (error) {
+            console.log(error);
+            dispatch(
+                notifyAction(
+                    true,
+                    'error',
+                    'Sorry but something went wrong, please try again later :('
+                )
+            );
+        }
     };
 
     return (

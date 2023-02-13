@@ -26,13 +26,7 @@ const GoogleOneTapLogin = () => {
     const handleResponse = async (response) => {
         dispatch(startLoadingAction());
         const token = response.credential;
-        const {
-            sub: uid,
-            email,
-            name,
-            picture: photoURL,
-            iat: signInTime,
-        } = jwtDecode(token);
+        const { sub: uid, email, name, picture: photoURL } = jwtDecode(token);
         const username = email.split('@')[0];
 
         const config = {
@@ -48,22 +42,19 @@ const GoogleOneTapLogin = () => {
                     email,
                     name,
                     photoURL,
-                    token,
-                    signInTime,
                     username,
                 },
                 config
             )
-            .then((res) => {
+            .then((result) => {
+                const user = result.data.result;
                 dispatch(
                     signInAction(
-                        uid,
-                        email,
-                        name,
-                        photoURL,
-                        token,
-                        signInTime,
-                        username
+                        user.uid,
+                        user.email,
+                        user.name,
+                        user.photoURL,
+                        user.token
                     )
                 );
                 window.localStorage.setItem('healthAppLastPage', 'groups');

@@ -1,15 +1,12 @@
 const RoomModel = require('../models/roomModel');
 
 exports.createRoom = async (req, res) => {
+    const { title, description, roomId, cover } = req.body;
     const {
-        title,
-        description,
-        roomId,
-        cover,
-        createdById,
-        createdByUsername,
-        createdByName,
-    } = req.body;
+        uid: createdById,
+        username: createdByUsername,
+        name: createdByName,
+    } = req.user;
     try {
         const result = await RoomModel.create({
             title,
@@ -55,11 +52,18 @@ exports.getRooms = async (req, res) => {
 
 exports.deleteRoom = async (req, res) => {
     const { id } = req.params;
+    const { uid } = req.user;
     try {
-        const result = await RoomModel.findByIdAndDelete(id);
+        const room = await RoomModel.findById(id);
+        if (room.createdById !== uid) {
+            return res.status(401).json({
+                success: false,
+                message: 'You are not authorized to delete this room',
+            });
+        }
+        await RoomModel.findByIdAndDelete(id);
         res.status(200).json({
             success: true,
-            result,
             message: 'Room deleted successfully',
         });
     } catch (error) {
