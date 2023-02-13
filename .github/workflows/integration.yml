@@ -6,13 +6,15 @@ name: Node.js CI
 on:
   push:
     branches: ["development"]
-  pull_request:
+  pull_request:working-directory: ./client
     branches: ["development"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    defaults:
+          run:
+            working-directory: ./app
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
@@ -21,7 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        working-directory: ./client
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
