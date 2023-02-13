@@ -6,15 +6,15 @@ name: Node.js CI
 on:
   push:
     branches: ["development"]
-  pull_request:working-directory: ./client
+  pull_request:
     branches: ["development"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
-          run:
-            working-directory: ./app
+      run:
+        working-directory: ./app
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
