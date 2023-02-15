@@ -12,9 +12,11 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 import { dark, deepDark, medium } from '../utils/colors';
 import { notifyAction } from '../actions/actions';
+import ProfileInfo from './ProfileInfo';
 
 function SearchUser({ mode, handleChatClick }) {
     const dispatch = useDispatch();
@@ -22,6 +24,8 @@ function SearchUser({ mode, handleChatClick }) {
     const [searchStatus, setSearchStatus] = useState(null);
     const [searchResults, setSearchResults] = useState(null);
     const [timer, setTimer] = useState(null);
+    const [profileInfoOpen, setProfileInfoOpen] = useState(false);
+    const [otherUser, setOtherUser] = useState(null);
 
     const handleSearch = (event) => {
         if (event.target.value.length > 0) {
@@ -56,26 +60,12 @@ function SearchUser({ mode, handleChatClick }) {
             currentUser.uid > user.uid
                 ? currentUser.uid + user.uid
                 : user.uid + currentUser.uid;
-        const userOneInfo = {
-            uid: currentUser.uid,
-            name: currentUser.name,
-            photoURL: currentUser.photoURL,
-            email: currentUser.email,
-            username: currentUser.username,
-        };
-        const userTwoInfo = {
-            uid: user.uid,
-            name: user.name,
-            photoURL: user.photoURL,
-            email: user.email,
-            username: user.username,
-        };
         const lastMessageTime = Date.now();
         try {
             await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/chat`, {
                 chatId,
-                userOneInfo,
-                userTwoInfo,
+                userOneInfo: user,
+                userTwoInfo: currentUser,
                 lastMessageTime,
             });
             handleChatClick({ ...user, new: true });
@@ -90,6 +80,12 @@ function SearchUser({ mode, handleChatClick }) {
             console.log(err);
         }
     };
+
+    const handleShowProfileInfo = (user) => {
+        setOtherUser(user);
+        setProfileInfoOpen(true);
+    };
+
     return (
         <List sx={{ p: 0 }}>
             <TextField
@@ -172,13 +168,30 @@ function SearchUser({ mode, handleChatClick }) {
                             {user.name}
                         </Typography>
                         <Tooltip
+                            title={`View ${user.name}'s Profile`}
+                            placement='bottom'
+                        >
+                            <IconButton
+                                sx={{
+                                    ml: 'auto',
+                                }}
+                                onClick={() => handleShowProfileInfo(user)}
+                            >
+                                <RemoveRedEyeIcon
+                                    sx={{
+                                        fontSize: '30px',
+                                        color: deepDark,
+                                    }}
+                                />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip
                             title={`Start a conversation with ${user.name}`}
                             placement='right'
                         >
                             <IconButton
                                 sx={{
-                                    ml: 'auto',
-                                    mr: 3,
+                                    mr: 1,
                                 }}
                                 onClick={() => createChat(user)}
                             >
@@ -203,6 +216,9 @@ function SearchUser({ mode, handleChatClick }) {
                 >
                     No results found
                 </Typography>
+            )}
+            {profileInfoOpen && (
+                <ProfileInfo {...{ mode, otherUser, setProfileInfoOpen }} />
             )}
         </List>
     );

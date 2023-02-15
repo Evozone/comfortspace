@@ -82,6 +82,19 @@ function Connect({ mode }) {
                 JSON.stringify(data)
             );
             setConnectSettings(data);
+        } else {
+            const data = {
+                showNotifications: true,
+                textContent: false,
+                playSound: true,
+                onlineStatus: true,
+                typingStatus: true,
+            };
+            window.localStorage.setItem(
+                'connectSettings',
+                JSON.stringify(data)
+            );
+            setConnectSettings(data);
         }
     }, []);
 

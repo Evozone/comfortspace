@@ -24,9 +24,9 @@ const Notify = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             TransitionComponent={(props) => (
-                <Slide {...props} direction='left' />
+                <Slide {...props} direction='down' />
             )}
         >
             <Alert

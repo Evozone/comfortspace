@@ -24,7 +24,7 @@ export default function TextBody({ message, endRef }) {
         /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
 
     const imageRegex =
-        /(https:\/\/)([^\s(["<,>/]*)(\/)[^\s[",><]*(.png|.jpg|.jpeg|.gif|\/preview\?project=)(\?[^\s[",><]*)?/gi;
+        /(https:\/\/)([^\s(["<,>/]*)(\/)[^\s[",><]*(.png|.jpg|.webp|.jpeg|.gif|\/preview\?project=|\/view\?project=)(\?[^\s[",><]*)?/gi;
 
     useEffect(() => {
         const time = formatTime12(message.timestamp / 1000);

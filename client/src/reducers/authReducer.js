@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     name: null,
     photoURL: null,
     username: null,
+    socialLinks: null,
 };
 
 const authReducer = (state = INITIAL_STATE, action) => {
@@ -23,7 +24,8 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 email: action.payload.email,
                 name: action.payload.name,
                 photoURL: action.payload.photoURL,
-                username: action.payload.email.split('@')[0],
+                username: action.payload.username,
+                socialLinks: action.payload.socialLinks,
             };
 
         case SIGN_OUT:
@@ -36,6 +38,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 name: null,
                 photoURL: null,
                 username: null,
+                socialLinks: null,
             };
 
         default:

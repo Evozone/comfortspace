@@ -122,8 +122,6 @@ export default function Exam({ themeChange, mode }) {
                     some simple assessments, A mental health provider (such as a
                     doctor or a therapist) can give you a full assessment and
                     talk to you about options for how to feel better.<br></br>
-                    To find the right resources visit the resourves section of
-                    our website
                 </Typography>
             </Box>
 

@@ -7,7 +7,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Groups from './components/Groups';
 import VoiceRoom from './components/VoiceRoom';
 import Blogs from './components/Blogs';
-// import Resources from './components/Resources';
 import Exam from './components/Exam';
 import LandingPage from './components/LandingPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -58,9 +57,23 @@ function App() {
         const auth = window.localStorage.getItem('healthApp');
         if (auth) {
             const { dnd } = JSON.parse(auth);
-            const { uid, email, name, photoURL } = jwtDecode(dnd);
-            dispatch(signInAction(uid, email, name, photoURL, dnd));
-            if (location.pathname.includes('/connect/pc/')) {
+            const { uid, email, name, photoURL, username, socialLinks } =
+                jwtDecode(dnd);
+            dispatch(
+                signInAction(
+                    uid,
+                    email,
+                    name,
+                    photoURL,
+                    username,
+                    socialLinks,
+                    dnd
+                )
+            );
+            if (
+                location.pathname.includes('/connect/pc/') ||
+                location.pathname.includes('/blog/')
+            ) {
                 navigate(location.pathname);
                 return;
             }
@@ -146,15 +159,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                {/* <Route
-                    path='/connect'
-                    element={
-                        <ProtectedRoute>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
-                            <Resources themeChange={themeChange} mode={mode} />
-                        </ProtectedRoute>
-                    }
-                /> */}
                 <Route
                     path='/connect'
                     element={
