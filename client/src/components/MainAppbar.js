@@ -48,13 +48,13 @@ function MainAppbar({ mode, themeChange }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [imageFile, setImageFile] = useState(null);
     const [twitterProfile, setTwitterProfile] = useState(
-        currentUser.socialLinks.twitter
+        currentUser?.socialLinks?.twitter
     );
     const [instagramProfile, setInstagramProfile] = useState(
-        currentUser.socialLinks.instagram
+        currentUser?.socialLinks?.instagram
     );
-    const [avatarURL, setAvatarURL] = useState(currentUser.photoURL);
-    const [name, setName] = useState(currentUser.name);
+    const [avatarURL, setAvatarURL] = useState(currentUser?.photoURL);
+    const [name, setName] = useState(currentUser?.name);
     const [buttonStatus, setButtonStatus] = useState(true);
 
     const handleSignOut = () => {
