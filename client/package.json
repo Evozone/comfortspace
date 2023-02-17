@@ -27,8 +27,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "TZ=UTC react-scripts test --env=jsdom --verbose",
+    "eject": "react-scripts eject",
+    "coverage": "TZ=UTC react-scripts test --env=jsdom --verbose --coverage --watchAll"
   },
   "eslintConfig": {
     "extends": [

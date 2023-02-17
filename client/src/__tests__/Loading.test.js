@@ -5,8 +5,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import Loading from '../components/Loading';
 
-describe('Loading', () => {
-    it('should render a loading spinner when the loading state is true', () => {
+describe('Loading spinner should', () => {
+    test('render when loading state is true', () => {
         // Create a redux store with a loading state of true
         const store = configureStore({
             reducer: () => ({ loading: { isVisible: true } }),
@@ -23,7 +23,7 @@ describe('Loading', () => {
         expect(getByTestId('loading-spinner')).toBeVisible();
     });
 
-    it('should not render a loading spinner when the loading state is false', () => {
+    test('not render loading state is false', () => {
         // Create a redux store with a loading state of false
         const store = configureStore({
             reducer: () => ({ loading: { isVisible: false } }),
