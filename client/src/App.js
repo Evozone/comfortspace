@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import jwtDecode from 'jwt-decode';
+import { HMSRoomProvider } from '@100mslive/hms-video-react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Groups from './components/Groups';
@@ -12,7 +13,6 @@ import LandingPage from './components/LandingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ViewBlog from './components/ViewBlog';
 import CreateBlog from './components/CreateBlog';
-import { HMSRoomProvider } from '@100mslive/hms-video-react';
 
 import MainAppbar from './components/MainAppbar';
 import Loading from './components/Loading';
