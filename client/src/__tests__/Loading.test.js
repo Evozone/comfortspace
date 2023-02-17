@@ -1,9 +1,13 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import Loading from '../components/Loading';
+
+afterEach(() => {
+    cleanup();
+});
 
 describe('Loading spinner should', () => {
     test('render when loading state is true', () => {
