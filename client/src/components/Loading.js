@@ -10,6 +10,7 @@ const Loading = () => {
             sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
         >
             <img
+                data-testid='loading-spinner'
                 style={{ alignSelf: 'center', width: '160px' }}
                 src='/assets/vectors/page-loading-1.svg'
                 alt=''
