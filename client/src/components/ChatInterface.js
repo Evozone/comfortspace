@@ -33,7 +33,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
 
     const currentUser = useSelector((state) => state.auth);
     const [messages, setMessages] = useState(null);
-    const [count, setCount] = useState(0);
+    const [pageNum, setPageNum] = useState(0);
     const [loadButtonVisible, setLoadButtonVisible] = useState(true);
     const [prevOtherUser, setPrevOtherUser] = useState(null);
     const [timer, setTimer] = useState(null);
@@ -98,10 +98,18 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
             const { data } = await axios.get(
                 `${process.env.REACT_APP_SERVER_URL}/api/message/${chatId}?page=${page}`
             );
-            setCount(page);
+            setPageNum(page);
             if (data.result.length === 0) {
                 setLoadButtonVisible(false);
-                !otherUser.new && alert('No more messages');
+                if (!otherUser.new) {
+                    dispatch(
+                        notifyAction(
+                            true,
+                            'success',
+                            'No more messages to load'
+                        )
+                    );
+                }
                 return;
             }
             setMessages((prev) => {
@@ -115,7 +123,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                 notifyAction(
                     true,
                     'error',
-                    'Sorry but something went wrong, please try again in a minute :('
+                    'It seems something is wrong, please log out and log in again. in a minute :('
                 )
             );
         }
@@ -164,7 +172,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                 notifyAction(
                     true,
                     'error',
-                    'Sorry but something went wrong, please try again in a minute :('
+                    'It seems something is wrong, please log out and log in again. in a minute :('
                 )
             );
             console.log(error);
@@ -210,7 +218,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
         dispatch(startLoadingAction());
         const id = uuid();
         const CALL_TEMPLATE = `Hey, Lets talk more on a video call. Please click on the link below to join the call. \n\n ${process.env.REACT_APP_BASE_URL}/connect/pc/${id}`;
-        await handleSendMessage(CALL_TEMPLATE);
+        // await handleSendMessage(CALL_TEMPLATE);
         dispatch(stopLoadingAction());
         navigate(`/connect/pc/${id}`);
     };
@@ -305,9 +313,9 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                     backgroundSize: '115px',
                 }}
             >
-                {messages?.length >= 101 && loadButtonVisible && (
+                {messages?.length >= 10 && loadButtonVisible && (
                     <Button
-                        onClick={() => loadConversation(count + 1)}
+                        onClick={() => loadConversation(pageNum + 1)}
                         endIcon={<LoopIcon />}
                         // size='small'
                         sx={{

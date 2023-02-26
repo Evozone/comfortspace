@@ -70,7 +70,7 @@ function UserChats({
                     notifyAction(
                         true,
                         'error',
-                        'Sorry but something went wrong, please try again in a minute :('
+                        'It seems something is wrong, please log out and log in again. in a minute :('
                     )
                 );
                 console.log(err);

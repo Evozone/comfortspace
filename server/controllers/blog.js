@@ -32,13 +32,18 @@ exports.createBlog = async (req, res) => {
     }
 };
 
-exports.get20Blogs = async (req, res) => {
+exports.getBlogs = async (req, res) => {
     try {
-        const result = await BlogModel.find().sort({ createdAt: -1 }).limit(20);
+        const PAGE_SIZE = 6;
+        let skip = req.query.page ? parseInt(req.query.page) : 0;
+        const result = await BlogModel.find()
+            .sort({ createdAt: -1 })
+            .skip(skip * PAGE_SIZE)
+            .limit(PAGE_SIZE);
         res.status(200).json({
             success: true,
             result,
-            message: '20 blogs fetched',
+            message: '6 blogs fetched',
         });
     } catch (error) {
         res.status(500).json({

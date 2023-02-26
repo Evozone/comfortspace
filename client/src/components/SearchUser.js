@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -42,7 +43,7 @@ function SearchUser({ mode, handleChatClick }) {
                         notifyAction(
                             true,
                             'error',
-                            'Sorry but something went wrong, please try again in a minute :('
+                            'It seems something is wrong, please log out and log in again. in a minute :('
                         )
                     );
                     console.log(err);
@@ -74,7 +75,7 @@ function SearchUser({ mode, handleChatClick }) {
                 notifyAction(
                     true,
                     'error',
-                    'Sorry but something went wrong, please try again in a minute :('
+                    'It seems something is wrong, please log out and log in again. in a minute :('
                 )
             );
             console.log(err);
@@ -87,124 +88,127 @@ function SearchUser({ mode, handleChatClick }) {
     };
 
     return (
-        <List sx={{ p: 0 }}>
-            <TextField
-                autoFocus
-                label='Search for users'
-                onChange={handleSearch}
-                sx={{
-                    m: 2,
-                    width: '90%',
-                    '& .MuiOutlinedInput-root': {
-                        paddingRight: '6px',
-                        borderRadius: '20px',
-
-                        '&.Mui-focused fieldset': {
-                            borderColor: dark,
-                        },
-                    },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                        color: dark,
-                    },
-                }}
-                InputProps={{
-                    endAdornment: (
-                        <Tooltip title='Search for users by typing their name or username'>
-                            <InputAdornment position='end'>
-                                <IconButton>
-                                    <SearchIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        </Tooltip>
-                    ),
-                }}
-                size='small'
-            />
-            <Divider />
-            {searchStatus && (
-                <Typography
+        <Box sx={{ position: 'relative', height: 'inherit' }}>
+            <List sx={{ p: 0 }}>
+                <TextField
+                    autoFocus
+                    label='Search for users'
+                    onChange={handleSearch}
                     sx={{
-                        fontSize: '1.1rem',
-                        ml: 2,
-                        mt: 2,
-                        mb: 1,
+                        m: 2,
+                        width: '90%',
+                        '& .MuiOutlinedInput-root': {
+                            paddingRight: '6px',
+                            borderRadius: '20px',
+
+                            '&.Mui-focused fieldset': {
+                                borderColor: dark,
+                            },
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                            color: dark,
+                        },
                     }}
-                >
-                    {searchStatus}
-                </Typography>
+                    InputProps={{
+                        endAdornment: (
+                            <Tooltip title='Search for users by typing their name or username'>
+                                <InputAdornment position='end'>
+                                    <IconButton>
+                                        <SearchIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            </Tooltip>
+                        ),
+                    }}
+                    size='small'
+                />
+                <Divider />
+                {searchResults &&
+                    searchResults.map((user) => (
+                        <ListItem
+                            key={user.uid}
+                            sx={{
+                                p: 0,
+                                pl: 2,
+                                height: '70px',
+                                borderBottom:
+                                    mode === 'light'
+                                        ? '1px solid rgba(0, 0, 0, 0.12)'
+                                        : '1px solid rgba(255, 255, 255, 0.12)',
+                            }}
+                        >
+                            <Avatar
+                                src={user?.photoURL}
+                                alt='user avatar'
+                                sx={{
+                                    width: 50,
+                                    height: 50,
+                                    backgroundColor:
+                                        mode === 'light' ? deepDark : medium,
+                                }}
+                            >
+                                {user.name[0].toUpperCase()}
+                            </Avatar>
+                            <Typography
+                                sx={{
+                                    fontSize: '1rem',
+                                    ml: 2,
+                                }}
+                            >
+                                {user.name}
+                            </Typography>
+                            <Tooltip
+                                title={`View ${user.name}'s Profile`}
+                                placement='bottom'
+                            >
+                                <IconButton
+                                    sx={{
+                                        ml: 'auto',
+                                    }}
+                                    onClick={() => handleShowProfileInfo(user)}
+                                >
+                                    <RemoveRedEyeIcon
+                                        sx={{
+                                            fontSize: '30px',
+                                            color: deepDark,
+                                        }}
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip
+                                title={`Start a conversation with ${user.name}`}
+                                placement='right'
+                            >
+                                <IconButton
+                                    sx={{
+                                        mr: 1,
+                                    }}
+                                    onClick={() => createChat(user)}
+                                >
+                                    <AddCommentIcon
+                                        sx={{
+                                            fontSize: '30px',
+                                            color: deepDark,
+                                        }}
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </ListItem>
+                    ))}
+            </List>
+            {searchStatus && (
+                <img
+                    style={{
+                        alignSelf: 'center',
+                        width: '200px',
+                        position: 'absolute',
+                        top: '36%',
+                        right: '25%',
+                    }}
+                    src='/assets/vectors/searching.svg'
+                    alt=''
+                />
             )}
-            {searchResults &&
-                searchResults.map((user) => (
-                    <ListItem
-                        key={user.uid}
-                        sx={{
-                            p: 0,
-                            pl: 2,
-                            height: '70px',
-                            borderBottom:
-                                mode === 'light'
-                                    ? '1px solid rgba(0, 0, 0, 0.12)'
-                                    : '1px solid rgba(255, 255, 255, 0.12)',
-                        }}
-                    >
-                        <Avatar
-                            src={user?.photoURL}
-                            alt='user avatar'
-                            sx={{
-                                width: 50,
-                                height: 50,
-                                backgroundColor:
-                                    mode === 'light' ? deepDark : medium,
-                            }}
-                        >
-                            {user.name[0].toUpperCase()}
-                        </Avatar>
-                        <Typography
-                            sx={{
-                                fontSize: '1rem',
-                                ml: 2,
-                            }}
-                        >
-                            {user.name}
-                        </Typography>
-                        <Tooltip
-                            title={`View ${user.name}'s Profile`}
-                            placement='bottom'
-                        >
-                            <IconButton
-                                sx={{
-                                    ml: 'auto',
-                                }}
-                                onClick={() => handleShowProfileInfo(user)}
-                            >
-                                <RemoveRedEyeIcon
-                                    sx={{
-                                        fontSize: '30px',
-                                        color: deepDark,
-                                    }}
-                                />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip
-                            title={`Start a conversation with ${user.name}`}
-                            placement='right'
-                        >
-                            <IconButton
-                                sx={{
-                                    mr: 1,
-                                }}
-                                onClick={() => createChat(user)}
-                            >
-                                <AddCommentIcon
-                                    sx={{
-                                        fontSize: '30px',
-                                        color: deepDark,
-                                    }}
-                                />
-                            </IconButton>
-                        </Tooltip>
-                    </ListItem>
-                ))}
             {searchResults && searchResults.length === 0 && (
                 <Typography
                     sx={{
@@ -220,7 +224,7 @@ function SearchUser({ mode, handleChatClick }) {
             {profileInfoOpen && (
                 <ProfileInfo {...{ mode, otherUser, setProfileInfoOpen }} />
             )}
-        </List>
+        </Box>
     );
 }
 

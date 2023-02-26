@@ -30,7 +30,7 @@ function CreateBlog({ mode }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [summary, setSummary] = useState('');
-    const [buttonStatus, setButtonStatus] = useState(true);
+    const [buttonStatus, setButtonStatus] = useState(!true);
     const [uploadStatus, setUploadStatus] = useState(null);
     const [coverUrl, setCoverUrl] = useState(null);
 
@@ -79,10 +79,10 @@ function CreateBlog({ mode }) {
             alert('Please fill all the text fields');
             return;
         }
-        if (!coverUrl) {
-            alert('Please upload a cover image');
-            return;
-        }
+        // if (!coverUrl) {
+        //     alert('Please upload a cover image');
+        //     return;
+        // }
         if (summary.length > 55) {
             alert('Summary should be less than 55 characters');
             return;
@@ -119,7 +119,7 @@ function CreateBlog({ mode }) {
                 notifyAction(
                     true,
                     'error',
-                    'Sorry but something went wrong, please try again later :('
+                    'It seems something is wrong, please log out and log in again. later :('
                 )
             );
         }

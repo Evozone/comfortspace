@@ -37,7 +37,7 @@ exports.addMessage = async (req, res) => {
 exports.getMessages = async (req, res) => {
     const { chatId } = req.params;
     try {
-        const PAGE_SIZE = 101;
+        const PAGE_SIZE = 10;
         let skip = req.query.page ? parseInt(req.query.page) : 0;
         const result = await MessageModel.find({ chatId })
             .sort({ _id: -1 })

@@ -40,9 +40,6 @@ function VoiceRoom({ mode }) {
     };
 
     useEffect(() => {
-        console.log(
-            'Hey if u like this project, please star it on github :) https://github.com/Evozone/ok_to_be_not_ok'
-        );
         if (!isConnected) {
             navigate('/groups');
         }

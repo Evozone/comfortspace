@@ -121,6 +121,7 @@ function ViewBlog({ mode }) {
                     </Typography>
                     <div
                         className='content'
+                        style={{ wordBreak: 'break-word' }}
                         dangerouslySetInnerHTML={{ __html: blog?.content }}
                     />
                 </CardContent>

@@ -15,7 +15,6 @@ function LandingPage() {
                 overflow: 'hidden',
             }}
         >
-            {/* insert a tree img  using a Box */}
             <Box
                 component='img'
                 src='/assets/vectors/tree-landing.svg'
@@ -55,19 +54,24 @@ function LandingPage() {
                         padding: '20px',
                     }}
                 >
-                    <div style={{ width: '100%' }}>
-                        <iframe
-                            title='spotify'
+                    <div
+                        style={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <img
+                            src={'/assets/vectors/logo-800x800.svg'}
+                            alt='logo'
                             style={{
-                                width: '100%',
-                                height: '352px',
-                                border: 0,
-                                borderRadius: 12,
+                                width: '500px',
+                                height: '500px',
+                                borderRadius: '50%',
+                                boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)',
                             }}
-                            src='https://open.spotify.com/embed/track/0zzVTGyRrWpQu8Fr28NRAv?utm_source=generator'
-                            allow='encrypted-media'
                         />
-                        {/* <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/0zzVTGyRrWpQu8Fr28NRAv?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> */}
                     </div>
                 </Box>
                 <Box
@@ -103,15 +107,34 @@ function LandingPage() {
                             sx={{
                                 color: '#1B262C',
                                 fontSize: '1.1rem',
+                                p: 2,
+                                background: ' rgba(255, 255, 255, 0.26)',
+                                borderRadius: '6px',
+                                boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                backdropFilter: 'blur(3.1px)',
+                                border: '1px solid rgba(255, 255, 255, 0.8)',
                             }}
                         >
-                            Mental health includes our emotional, psychological,
-                            and social well-being. It affects how we think,
-                            feel, and act; it also determines how we handle
-                            stress and make healthy choices. Mental health is
-                            important at every stage of life, from childhood and
-                            adolescence through adulthood.
+                            ComfortSpace is a web app which focuses on creating
+                            a safe and supportive environment. Whether you're
+                            looking for a community to connect with or
+                            professional guidance, ComfortSpace is here to help.
+                            Remember, <br />
+                            it's OK Not To Be OK.
                         </Typography>
+                        <Box sx={{ mt: 3 }}>
+                            <iframe
+                                title='spotify'
+                                style={{
+                                    width: '60%',
+                                    height: '85px',
+                                    mt: '20px',
+                                    border: 0,
+                                }}
+                                src='https://open.spotify.com/embed/track/0zzVTGyRrWpQu8Fr28NRAv?utm_source=generator'
+                                allow='encrypted-media'
+                            />
+                        </Box>
                         <GoogleOneTapLogin />
                     </Box>
                 </Box>

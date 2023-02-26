@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuid } from 'uuid';
@@ -48,6 +48,19 @@ function Groups({ mode }) {
     const [groups, setGroups] = useState(null);
 
     useEffect(() => {
+        console.log(
+            '%cHey if u like this project, consider giving it a star on github :) https://github.com/Evozone/comfortspace',
+            'color: green; font-size: 26px;'
+        );
+        console.log(
+            "%cIf someone told you to copy/paste something here, there's an 11/10 chance you're being scammed.",
+            'font-size: 19px;'
+        );
+        console.log(
+            '%cPasting anything in here could give attackers access to your Comfort Space account, so do not paste anything here.',
+            'color:red; font-size: 19px;'
+        );
+        console.log('%c-inspired by discord', 'font-size: 17px;');
         const getGroups = async () => {
             await axios
                 .get(`${process.env.REACT_APP_SERVER_URL}/api/rooms/getRooms`)
@@ -145,7 +158,7 @@ function Groups({ mode }) {
                     notifyAction(
                         true,
                         'error',
-                        'Sorry but something went wrong, please try again later :('
+                        'It seems something is wrong, please log out and log in again. later :('
                     )
                 );
                 console.log('Token API Error', error);
@@ -207,7 +220,7 @@ function Groups({ mode }) {
                 notifyAction(
                     true,
                     'error',
-                    'Sorry but something went wrong, please try again later :('
+                    'It seems something is wrong, please log out and log in again. later :('
                 )
             );
         }
@@ -239,7 +252,7 @@ function Groups({ mode }) {
                 notifyAction(
                     true,
                     'error',
-                    'Sorry but something went wrong, please try again later :('
+                    'It seems something is wrong, please log out and log in again. later :('
                 )
             );
         }

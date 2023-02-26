@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
@@ -25,9 +25,10 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import DownloadIcon from '@mui/icons-material/Download';
 
-import { CustomSwitcherGroup, CustomSwitcherButton } from './CustomSwitcher';
 import storage from '../appwrite';
+import { CustomSwitcherGroup, CustomSwitcherButton } from './CustomSwitcher';
 import { richBlack, light, medium, deepDark, bluegrey } from '../utils/colors';
 import {
     signOutAction,
@@ -37,7 +38,7 @@ import {
     notifyAction,
 } from '../actions/actions';
 
-function MainAppbar({ mode, themeChange }) {
+function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.auth);
@@ -56,6 +57,40 @@ function MainAppbar({ mode, themeChange }) {
     const [avatarURL, setAvatarURL] = useState(currentUser?.photoURL);
     const [name, setName] = useState(currentUser?.name);
     const [buttonStatus, setButtonStatus] = useState(true);
+
+    const onInstallClick = () => {
+        if (!supportsPWA) {
+            alert(
+                'Either you have already installed the app or your browser does not support PWA :('
+            );
+            return;
+        }
+        promptInstall.prompt();
+    };
+
+    const renderInstallOption = () => {
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            return;
+        } else {
+            return (
+                <MenuItem
+                    onClick={() => {
+                        onInstallClick();
+                        handleMenuClose();
+                    }}
+                >
+                    <DownloadIcon
+                        sx={{
+                            color: mode === 'light' ? deepDark : light,
+                            fontSize: '1.7rem',
+                            ml: -0.5,
+                        }}
+                    />
+                    <ListItemText sx={{ ml: 1 }} primary='Install' />
+                </MenuItem>
+            );
+        }
+    };
 
     const handleSignOut = () => {
         const choice = window.confirm('Please click on OK to Log Out.');
@@ -213,17 +248,15 @@ function MainAppbar({ mode, themeChange }) {
                 top: '0',
             }}
         >
-            <IconButton
-                onClick={themeChange}
-                sx={{ color: 'white', height: 45, width: 45 }}
-                aria-label='change theme'
-            >
-                {mode === 'light' ? (
-                    <DarkModeIcon sx={{ height: 33, width: 33 }} />
-                ) : (
-                    <LightModeIcon sx={{ height: 33, width: 33 }} />
-                )}
-            </IconButton>
+            <img
+                src={'/assets/vectors/logo-800x800.svg'}
+                alt='chat'
+                style={{
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '50%',
+                }}
+            />
             {currentUser.isSignedIn ? (
                 <>
                     <CustomSwitcherGroup exclusive>
@@ -285,6 +318,32 @@ function MainAppbar({ mode, themeChange }) {
                     >
                         <MenuItem
                             onClick={() => {
+                                themeChange();
+                            }}
+                        >
+                            {mode === 'light' ? (
+                                <DarkModeIcon
+                                    sx={{
+                                        color:
+                                            mode === 'light' ? deepDark : light,
+                                        fontSize: '1.7rem',
+                                        ml: -0.5,
+                                    }}
+                                />
+                            ) : (
+                                <LightModeIcon
+                                    sx={{
+                                        color:
+                                            mode === 'light' ? deepDark : light,
+                                        fontSize: '1.7rem',
+                                        ml: -0.5,
+                                    }}
+                                />
+                            )}
+                            <ListItemText sx={{ ml: 1 }} primary='Theme' />
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
                                 handleMenuClose();
                                 setModalVisible(true);
                             }}
@@ -298,6 +357,7 @@ function MainAppbar({ mode, themeChange }) {
                             />
                             <ListItemText sx={{ ml: 1 }} primary='Profile' />
                         </MenuItem>
+                        {renderInstallOption()}
                         <MenuItem
                             onClick={() => {
                                 handleSignOut();

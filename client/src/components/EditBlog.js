@@ -91,7 +91,7 @@ function EditBlog({ mode }) {
                 notifyAction(
                     true,
                     'error',
-                    'Sorry but something went wrong, please try again later :('
+                    'It seems something is wrong, please log out and log in again. later :('
                 )
             );
         }

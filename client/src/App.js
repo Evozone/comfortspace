@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
+import jwtDecode from 'jwt-decode';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import jwtDecode from 'jwt-decode';
 import { HMSRoomProvider } from '@100mslive/hms-video-react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -34,6 +34,8 @@ function App() {
     const localTheme = window.localStorage.getItem('healthAppTheme');
 
     const [mode, setMode] = useState(localTheme ? localTheme : 'light');
+    const [supportsPWA, setSupportsPWA] = useState(false);
+    const [promptInstall, setPromptInstall] = useState(null);
 
     const darkTheme = createTheme({
         palette: {
@@ -55,6 +57,12 @@ function App() {
 
     useEffect(() => {
         const auth = window.localStorage.getItem('healthApp');
+        const handler = (e) => {
+            e.preventDefault();
+            setSupportsPWA(true);
+            setPromptInstall(e);
+        };
+        window.addEventListener('beforeinstallprompt', handler);
         if (auth) {
             const { dnd } = JSON.parse(auth);
             const { uid, email, name, photoURL, username, socialLinks } =
@@ -98,6 +106,8 @@ function App() {
                     {...{
                         themeChange,
                         mode,
+                        supportsPWA,
+                        promptInstall,
                     }}
                 />
             )}

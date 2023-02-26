@@ -66,7 +66,7 @@ app.get('/mtoken', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('Hello to Oktobenotok API');
+    res.send("Hello, welocme to comfort space's API");
 });
 
 mongoose.set('strictQuery', false);
@@ -80,7 +80,7 @@ mongoose
 
 const server = app.listen(PORT, () =>
     console.log(
-        'Hello! This is oktobenotok backend, listening on port - ',
+        "Hello! This is comfort space's backend, listening on port - ",
         PORT
     )
 );
@@ -207,7 +207,11 @@ personal_call.on('connection', (socket) => {
             const remoteUser = users[roomId].filter(
                 (user) => user.id !== socket.id
             );
-            personal_call.to(remoteUser[0].id).emit('toggle_audio', audioMuted);
+            if (remoteUser.length > 0) {
+                personal_call
+                    .to(remoteUser[0].id)
+                    .emit('toggle_audio', audioMuted);
+            }
         }
     });
 
