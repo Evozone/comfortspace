@@ -1,5 +1,4 @@
 import { Alert, Snackbar, Slide } from '@mui/material';
-import React from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { notifyAction } from '../actions/actions';
