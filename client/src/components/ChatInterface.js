@@ -23,6 +23,7 @@ import {
     startLoadingAction,
     stopLoadingAction,
 } from '../actions/actions';
+import ProfileInfo from './ProfileInfo';
 
 function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
     const inputRef = useRef();
@@ -32,14 +33,15 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
 
     const currentUser = useSelector((state) => state.auth);
     const [messages, setMessages] = useState(null);
-    const [count, setCount] = useState(0);
+    const [pageNum, setPageNum] = useState(0);
     const [loadButtonVisible, setLoadButtonVisible] = useState(true);
-    const [prevOtherUser, setPrevOtherUser] = useState(false);
+    const [prevOtherUser, setPrevOtherUser] = useState(null);
     const [timer, setTimer] = useState(null);
     const [typing, setTyping] = useState(false);
+    const [profileInfoOpen, setProfileInfoOpen] = useState(false);
 
     useEffect(() => {
-        if (otherUser.uid === prevOtherUser.uid) return;
+        if (otherUser.uid === prevOtherUser?.uid) return;
         setTimeout(() => {
             endRef.current.scrollIntoView({ behavior: 'smooth' });
         }, 700);
@@ -96,10 +98,18 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
             const { data } = await axios.get(
                 `${process.env.REACT_APP_SERVER_URL}/api/message/${chatId}?page=${page}`
             );
-            setCount(page);
+            setPageNum(page);
             if (data.result.length === 0) {
                 setLoadButtonVisible(false);
-                !otherUser.new && alert('No more messages');
+                if (!otherUser.new) {
+                    dispatch(
+                        notifyAction(
+                            true,
+                            'success',
+                            'No more messages to load'
+                        )
+                    );
+                }
                 return;
             }
             setMessages((prev) => {
@@ -113,7 +123,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                 notifyAction(
                     true,
                     'error',
-                    'Sorry but something went wrong, please try again in a minute :('
+                    'It seems something is wrong, please log out and log in again. in a minute :('
                 )
             );
         }
@@ -162,7 +172,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                 notifyAction(
                     true,
                     'error',
-                    'Sorry but something went wrong, please try again in a minute :('
+                    'It seems something is wrong, please log out and log in again. in a minute :('
                 )
             );
             console.log(error);
@@ -213,6 +223,10 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
         navigate(`/connect/pc/${id}`);
     };
 
+    const handleProfileClick = () => {
+        setProfileInfoOpen(true);
+    };
+
     return (
         <Box sx={{ flexGrow: 1, overflowY: 'hidden' }}>
             <AppBar
@@ -229,36 +243,46 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                 color='inherit'
                 position='static'
             >
-                <Avatar
-                    alt={otherUser.name.charAt(0).toUpperCase()}
-                    src={otherUser.photoURL}
+                <Box
                     sx={{
-                        bgcolor: mode === 'light' ? deepDark : light,
-                        height: 50,
-                        width: 50,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        cursor: 'pointer',
                     }}
+                    onClick={handleProfileClick}
                 >
-                    {otherUser.name.charAt(0).toUpperCase()}
-                </Avatar>
-                <Box sx={{ display: 'block' }}>
-                    <Typography
-                        sx={{ fontWeight: '400', ml: 3, fontSize: '1rem' }}
-                    >
-                        {otherUser.name}
-                    </Typography>
-                    <Typography
+                    <Avatar
+                        alt={otherUser.name.charAt(0).toUpperCase()}
+                        src={otherUser.photoURL}
                         sx={{
-                            fontWeight: '300',
-                            ml: 3,
-                            fontSize: '0.8rem',
-                            color:
-                                mode === 'light'
-                                    ? 'rgba(0, 0, 0, 0.54)'
-                                    : 'rgba(255, 255, 255, 0.54)',
+                            bgcolor: mode === 'light' ? deepDark : light,
+                            height: 50,
+                            width: 50,
                         }}
                     >
-                        {typing ? 'typing...' : '@' + otherUser.username}
-                    </Typography>
+                        {otherUser.name.charAt(0).toUpperCase()}
+                    </Avatar>
+                    <Box sx={{ display: 'block' }}>
+                        <Typography
+                            sx={{ fontWeight: '400', ml: 3, fontSize: '1rem' }}
+                        >
+                            {otherUser.name}
+                        </Typography>
+                        <Typography
+                            sx={{
+                                fontWeight: '300',
+                                ml: 3,
+                                fontSize: '0.8rem',
+                                color:
+                                    mode === 'light'
+                                        ? 'rgba(0, 0, 0, 0.54)'
+                                        : 'rgba(255, 255, 255, 0.54)',
+                            }}
+                        >
+                            {typing ? 'typing...' : '@' + otherUser.username}
+                        </Typography>
+                    </Box>
                 </Box>
                 <IconButton
                     onClick={startPersonalCall}
@@ -289,11 +313,10 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                     backgroundSize: '115px',
                 }}
             >
-                {messages?.length >= 101 && loadButtonVisible && (
+                {messages?.length >= 10 && loadButtonVisible && (
                     <Button
-                        onClick={() => loadConversation(count + 1)}
+                        onClick={() => loadConversation(pageNum + 1)}
                         endIcon={<LoopIcon />}
-                        // size='small'
                         sx={{
                             alignSelf: 'center',
                             mb: '10px',
@@ -321,7 +344,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                         const nxtMsgDate = formatDate(
                             messages[index - 1]?.timestamp / 1000
                         );
-                        if (index == 0 || msgDate != nxtMsgDate) {
+                        if (index === 0 || msgDate !== nxtMsgDate) {
                             return (
                                 <React.Fragment key={message._id}>
                                     <div
@@ -365,6 +388,9 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                 uploadFile={uploadFile}
                 textfieldOnChange={textfieldOnChange}
             />
+            {profileInfoOpen && (
+                <ProfileInfo {...{ mode, otherUser, setProfileInfoOpen }} />
+            )}
         </Box>
     );
 }

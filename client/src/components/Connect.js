@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -72,6 +72,19 @@ function Connect({ mode }) {
         if (!(Notification.permission === 'granted')) {
             const data = {
                 showNotifications: false,
+                textContent: false,
+                playSound: true,
+                onlineStatus: true,
+                typingStatus: true,
+            };
+            window.localStorage.setItem(
+                'connectSettings',
+                JSON.stringify(data)
+            );
+            setConnectSettings(data);
+        } else {
+            const data = {
+                showNotifications: true,
                 textContent: false,
                 playSound: true,
                 onlineStatus: true,

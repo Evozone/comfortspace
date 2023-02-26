@@ -1,21 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ModeIcon from '@mui/icons-material/Mode';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
+
 import QuestionTable from './QuestionTable';
+import { bluegrey, richBlack, light, deepDark } from '../utils/colors';
 
-import {
-    bluegrey,
-    richBlack,
-    light,
-    medium,
-    dark,
-    deepDark,
-} from '../utils/colors';
-import { useSelector } from 'react-redux';
-
-export default function Exam({ themeChange, mode }) {
+function Exam({ mode }) {
     const currentUser = useSelector((state) => state.auth);
 
     return (
@@ -67,8 +59,6 @@ export default function Exam({ themeChange, mode }) {
             >
                 Hey {currentUser.name}, You are not alone :)
             </Typography>
-
-            {/* Disclaimer Box */}
             <Box
                 sx={{
                     display: 'flex',
@@ -122,14 +112,13 @@ export default function Exam({ themeChange, mode }) {
                     some simple assessments, A mental health provider (such as a
                     doctor or a therapist) can give you a full assessment and
                     talk to you about options for how to feel better.<br></br>
-                    To find the right resources visit the resourves section of
-                    our website
                 </Typography>
             </Box>
-
             <Box>
                 <QuestionTable mode={mode} />
             </Box>
         </Box>
     );
 }
+
+export default Exam;

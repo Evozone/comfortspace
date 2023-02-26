@@ -1,22 +1,16 @@
-// Component to display the questions in a table
-
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
+import Typography from '@mui/material/Typography';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import Button from '@mui/material/Button';
 import TableRow from '@mui/material/TableRow';
-import {
-    bluegrey,
-    richBlack,
-    light,
-    medium,
-    dark,
-    deepDark,
-    superLight,
-} from '../utils/colors';
-
 import { Radar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -27,18 +21,13 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
-import Typography from '@mui/material/Typography';
 
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
-import { Tooltip as Tooltip1 } from '@mui/material';
+import { bluegrey, richBlack, light, medium, deepDark } from '../utils/colors';
+import { questions } from '../utils/questionTableData';
 
-import { Button } from '@mui/material';
-
-import { questions } from './QuestionTableData';
-
-export default function QuestionTable({ mode }) {
+function QuestionTable({ mode }) {
+    const currentUser = useSelector((state) => state.auth);
+    const [data, setData] = useState(null);
     const [selectedOption, setSelectedOption] = useState({
         1: null,
         2: null,
@@ -66,6 +55,7 @@ export default function QuestionTable({ mode }) {
         24: null,
         25: null,
     });
+
     ChartJS.register(
         RadialLinearScale,
         PointElement,
@@ -74,31 +64,54 @@ export default function QuestionTable({ mode }) {
         Tooltip,
         Legend
     );
-    const [data, setData] = useState(null);
+
+    const chartOptions = {
+        scales: {
+            r: {
+                max: 3,
+                min: 0,
+                ticks: {
+                    stepSize: 0.5,
+                },
+            },
+        },
+    };
 
     const formSubmitHandler = () => {
+        const values = Object.values(selectedOption);
+        if (values.includes(null)) {
+            alert('Please answer all the questions');
+            return;
+        }
         let ocd = 0,
-            ADHD = 0,
+            adhd = 0,
             depression = 0,
             anxiety = 0,
-            PTSD = 0;
+            ptsd = 0;
         for (let i = 0; i < 25; i++) {
-            if (questions[i].disorder === 'ocd') ocd += selectedOption[i + 1];
-            else if (questions[i].disorder === 'ADHD')
-                ADHD += selectedOption[i + 1];
-            else if (questions[i].disorder === 'depression')
+            if (questions[i].disorder === 'ocd') {
+                ocd += selectedOption[i + 1];
+            } else if (questions[i].disorder === 'ADHD') {
+                adhd += selectedOption[i + 1];
+            } else if (questions[i].disorder === 'depression') {
                 depression += selectedOption[i + 1];
-            else if (questions[i].disorder === 'anxiety')
+            } else if (questions[i].disorder === 'anxiety') {
                 anxiety += selectedOption[i + 1];
-            else if (questions[i].disorder === 'PTSD')
-                PTSD += selectedOption[i + 1];
+            } else if (questions[i].disorder === 'PTSD') {
+                ptsd += selectedOption[i + 1];
+            }
         }
+        ocd = Math.round(ocd / 5);
+        adhd = Math.round(adhd / 5);
+        depression = Math.round(depression / 5);
+        anxiety = Math.round(anxiety / 5);
+        ptsd = Math.round(ptsd / 5);
         setData({
             labels: ['OCD', 'ADHD', 'Depression', 'Anxiety', 'PTSD'],
             datasets: [
                 {
-                    label: 'Your Analysis',
-                    data: [ocd, ADHD, depression, anxiety, PTSD],
+                    label: `${currentUser.name}'s Results`,
+                    data: [ocd, adhd, depression, anxiety, ptsd],
                     fill: true,
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgb(255, 99, 132)',
@@ -109,7 +122,13 @@ export default function QuestionTable({ mode }) {
                 },
             ],
         });
+        ocd = 0;
+        adhd = 0;
+        depression = 0;
+        anxiety = 0;
+        ptsd = 0;
     };
+
     return (
         <div
             style={{
@@ -153,33 +172,6 @@ export default function QuestionTable({ mode }) {
                                 Situations/Questions you may have experienced
                             </Typography>
                         </TableCell>
-                        <TableCell
-                            sx={{
-                                backgroundColor:
-                                    mode === 'light' ? medium : deepDark,
-                                borderRadius: '0 15px 0 0',
-                                border: 'none',
-                            }}
-                            align='center'
-                        >
-                            <Typography
-                                variant='h3'
-                                component='h4'
-                                sx={{
-                                    color:
-                                        mode === 'light' ? deepDark : richBlack,
-                                    fontFamily: 'Work Sans',
-                                    fontWeight: 'medium',
-                                    fontSize: '1.3rem',
-                                    textAlign: 'center',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                Options
-                            </Typography>
-                        </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -191,37 +183,39 @@ export default function QuestionTable({ mode }) {
                                     border: 'none',
                                     boxShadow: 'none',
                                     borderRadius: 'none',
-                                    width: '50rem',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'flex-start',
+                                    p: 3,
+                                    pb: 1,
                                 }}
                                 component='th'
                                 scope='row'
                             >
+                                <Typography
+                                    variant='h4'
+                                    component='h4'
+                                    sx={{
+                                        color:
+                                            mode === 'light' ? deepDark : light,
+                                        m: '1rem',
+                                        mt: '2px',
+                                        mr: '2rem',
+                                        fontFamily: 'Work Sans',
+                                        fontWeight: 'medium',
+                                        fontSize: '1.5rem',
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    {question.id}
+                                </Typography>
                                 <Box
                                     sx={{
                                         display: 'flex',
-                                        flexDirection: 'row',
-                                        justifyContent: 'flex-start',
-                                        alignItems: 'center',
+                                        flexDirection: 'column',
                                     }}
                                 >
-                                    <Typography
-                                        variant='h4'
-                                        component='h4'
-                                        sx={{
-                                            color:
-                                                mode === 'light'
-                                                    ? deepDark
-                                                    : light,
-                                            margin: '1rem',
-                                            mr: '2rem',
-                                            fontFamily: 'Work Sans',
-                                            fontWeight: 'medium',
-                                            fontSize: '1.5rem',
-                                            textAlign: 'center',
-                                        }}
-                                    >
-                                        {question.id}
-                                    </Typography>
                                     <Typography
                                         variant='h4'
                                         component='h5'
@@ -238,79 +232,59 @@ export default function QuestionTable({ mode }) {
                                     >
                                         {question.question}
                                     </Typography>
-                                </Box>
-                            </TableCell>
-
-                            {/* This is the Radio buttons */}
-                            <TableCell
-                                sx={{
-                                    border: 'none',
-                                    boxShadow: 'none',
-                                    borderRadius: 'none',
-                                    margin: '0',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <RadioGroup
-                                    row
-                                    aria-label={question.id}
-                                    name={question.id}
-                                    value={selectedOption[question.id]}
-                                    onChange={(e) =>
-                                        setSelectedOption({
-                                            ...selectedOption,
-                                            [question.id]: parseInt(
-                                                e.target.value
-                                            ),
-                                        })
-                                    }
-                                >
-                                    <Tooltip1
-                                        title='Not at all'
-                                        placement='top'
+                                    <RadioGroup
+                                        row
+                                        sx={{
+                                            mb: '1.3rem',
+                                        }}
+                                        aria-label={question.id}
+                                        name={question.id.toString()}
+                                        value={selectedOption[question.id]}
+                                        onChange={(e) =>
+                                            setSelectedOption({
+                                                ...selectedOption,
+                                                [question.id]: parseInt(
+                                                    e.target.value
+                                                ),
+                                            })
+                                        }
                                     >
                                         <FormControlLabel
+                                            sx={{
+                                                mr: '2rem',
+                                            }}
                                             value={0}
-                                            control={<Radio color='primary' />}
+                                            label='Not at all'
+                                            control={<Radio color='success' />}
                                         />
-                                    </Tooltip1>
-                                    <Tooltip1
-                                        title='Some of the days'
-                                        placement='top'
-                                    >
                                         <FormControlLabel
+                                            sx={{
+                                                mr: '2rem',
+                                            }}
                                             value={1}
-                                            control={<Radio color='primary' />}
+                                            control={<Radio color='success' />}
+                                            label='Some of the days'
                                         />
-                                    </Tooltip1>
-                                    <Tooltip1
-                                        title='Most of the days'
-                                        placement='top'
-                                    >
                                         <FormControlLabel
+                                            sx={{
+                                                mr: '2rem',
+                                            }}
                                             value={2}
-                                            control={<Radio color='primary' />}
+                                            label='Most of the days'
+                                            control={<Radio color='success' />}
                                         />
-                                    </Tooltip1>
-                                    <Tooltip1
-                                        title='Nearly every day'
-                                        placement='top'
-                                    >
                                         <FormControlLabel
                                             value={3}
-                                            control={<Radio color='primary' />}
+                                            label='Nearly every day'
+                                            control={<Radio color='success' />}
                                         />
-                                    </Tooltip1>
-                                </RadioGroup>
+                                    </RadioGroup>
+                                </Box>
                             </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
-
-            {/* Test submit button */}
             <Button
                 color='success'
                 variant='contained'
@@ -332,8 +306,6 @@ export default function QuestionTable({ mode }) {
             >
                 Give me my results!
             </Button>
-
-            {/* Radar chart */}
             {data && (
                 <Box
                     sx={{
@@ -351,7 +323,6 @@ export default function QuestionTable({ mode }) {
                         width: '100%',
                     }}
                 >
-                    {/* Header */}
                     <Box>
                         <Typography
                             variant='h2'
@@ -369,7 +340,6 @@ export default function QuestionTable({ mode }) {
                             Results
                         </Typography>
                     </Box>
-                    {/* Chart */}
                     <Box
                         sx={{
                             backgroundColor: 'azure',
@@ -384,9 +354,12 @@ export default function QuestionTable({ mode }) {
                             padding: '1rem',
                         }}
                     >
-                        <Radar data={data} />
+                        <Radar
+                            options={chartOptions}
+                            data={data}
+                            redraw={true}
+                        />
                     </Box>
-                    {/* Share it message */}
                     <Box
                         sx={{
                             mt: '1rem',
@@ -422,10 +395,6 @@ export default function QuestionTable({ mode }) {
                             <br />
                             You can share this chart with people you trust, but
                             it's not intended to be used as a diagnostic tool.
-                            <br />
-                            Right click on the chart and select "Copy image" or
-                            "Save image as..." to save the chart to your
-                            computer.
                         </Typography>
                     </Box>
                 </Box>
@@ -433,3 +402,5 @@ export default function QuestionTable({ mode }) {
         </div>
     );
 }
+
+export default QuestionTable;

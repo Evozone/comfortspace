@@ -17,7 +17,15 @@ export const notifyAction = (open, severity, message) => {
     };
 };
 
-export const signInAction = (uid, email, name, photoURL, token, signInTime) => {
+export const signInAction = (
+    uid,
+    email,
+    name,
+    photoURL,
+    username,
+    socialLinks,
+    token
+) => {
     return {
         type: SIGN_IN,
         payload: {
@@ -25,8 +33,9 @@ export const signInAction = (uid, email, name, photoURL, token, signInTime) => {
             email,
             name,
             photoURL,
+            username,
+            socialLinks,
             token,
-            signInTime,
         },
     };
 };

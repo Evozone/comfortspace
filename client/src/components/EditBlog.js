@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
@@ -26,7 +26,6 @@ function EditBlog({ mode }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const author = useSelector((state) => state.auth);
     const blog = location.state.blog;
 
     const oldTitle = blog.title;
@@ -65,30 +64,48 @@ function EditBlog({ mode }) {
             alert('No changes made');
             return;
         }
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        const auth = window.localStorage.getItem('healthApp');
+        const { dnd } = JSON.parse(auth);
+        const data = {
             title,
             content,
             summary,
-            authorId: author.uid,
         };
-        await axios.patch(
-            `${process.env.REACT_APP_SERVER_URL}/api/blog/edit/${blog._id}`,
-            config
-        );
-        dispatch(notifyAction(true, 'success', 'Blog edited successfully!'));
-        navigate(`/blog/${blog._id}`);
+        try {
+            await axios({
+                method: 'PATCH',
+                url: `${process.env.REACT_APP_SERVER_URL}/api/blog/edit/${blog._id}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${dnd}`,
+                },
+                data,
+            });
+            navigate(`/blog/${blog._id}`);
+            dispatch(
+                notifyAction(true, 'success', 'Blog edited successfully!')
+            );
+        } catch (error) {
+            console.log(error);
+            dispatch(
+                notifyAction(
+                    true,
+                    'error',
+                    'It seems something is wrong, please log out and log in again. later :('
+                )
+            );
+        }
     };
 
     return (
         <Box
             sx={{
-                minHeight: '100vh',
+                overflowY: 'auto',
+                mt: '75px',
+                maxHeight: 'calc(100vh - 75px)',
                 backgroundColor: mode === 'light' ? light : bluegrey,
-                color: 'text.primary',
-                p: '5rem',
+                padding: '5rem',
+                pt: 2,
             }}
         >
             <Paper

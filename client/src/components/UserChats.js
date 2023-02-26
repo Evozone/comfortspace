@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
@@ -28,9 +28,17 @@ function UserChats({
     useEffect(() => {
         const getUserChats = async () => {
             try {
-                const { data } = await axios.get(
-                    `${process.env.REACT_APP_SERVER_URL}/api/chat/${currentUser.uid}`
-                );
+                const auth = window.localStorage.getItem('healthApp');
+                const { dnd } = JSON.parse(auth);
+
+                const { data } = await axios({
+                    method: 'GET',
+                    url: `${process.env.REACT_APP_SERVER_URL}/api/chat`,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        authorization: `Bearer ${dnd}`,
+                    },
+                });
                 if (data.result.length === 0) {
                     dispatch(
                         notifyAction(
@@ -62,7 +70,7 @@ function UserChats({
                     notifyAction(
                         true,
                         'error',
-                        'Sorry but something went wrong, please try again in a minute :('
+                        'It seems something is wrong, please log out and log in again. in a minute :('
                     )
                 );
                 console.log(err);

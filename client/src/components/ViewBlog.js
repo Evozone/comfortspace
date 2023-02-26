@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
@@ -39,11 +39,31 @@ function ViewBlog({ mode }) {
     const deleteBlog = async () => {
         const choice = window.confirm('Are you sure you want to delete?');
         if (!choice) return;
-        await axios.delete(
-            `${process.env.REACT_APP_SERVER_URL}/api/blog/delete/${blogId}/${author.uid}`
-        );
-        dispatch(notifyAction(true, 'success', 'Blog deleted successfully!'));
-        navigate('/blogs');
+        const auth = window.localStorage.getItem('healthApp');
+        const { dnd } = JSON.parse(auth);
+        try {
+            await axios({
+                method: 'DELETE',
+                url: `${process.env.REACT_APP_SERVER_URL}/api/blog/delete/${blogId}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${dnd}`,
+                },
+            });
+            dispatch(
+                notifyAction(true, 'success', 'Blog deleted successfully!')
+            );
+            navigate('/blogs');
+        } catch (error) {
+            console.log(error);
+            dispatch(
+                notifyAction(
+                    true,
+                    'error',
+                    'Sorry :( but something went wrong!'
+                )
+            );
+        }
     };
 
     const editBlog = () => {
@@ -101,6 +121,7 @@ function ViewBlog({ mode }) {
                     </Typography>
                     <div
                         className='content'
+                        style={{ wordBreak: 'break-word' }}
                         dangerouslySetInnerHTML={{ __html: blog?.content }}
                     />
                 </CardContent>

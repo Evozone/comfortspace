@@ -1,9 +1,22 @@
 const mongoose = require('mongoose');
 
+const socialLinksSchema = new mongoose.Schema({
+    twitter: {
+        type: String,
+        default: '',
+    },
+    instagram: {
+        type: String,
+        default: '',
+    },
+});
+
 const userSchema = new mongoose.Schema(
     {
         uid: {
             type: String,
+            unique: true,
+            required: true,
         },
         email: {
             type: String,
@@ -12,30 +25,17 @@ const userSchema = new mongoose.Schema(
         },
         name: {
             type: String,
-            required: [true, 'Please Enter Your Name'],
-            maxLength: [30, 'Name cannot exceed 30 characters'],
-            minLength: [4, 'Name should have more than 4 characters'],
+            required: true,
         },
         photoURL: {
             type: String,
-        },
-        token: {
-            type: String,
-        },
-        signInTime: {
-            type: Date,
-            default: Date.now,
         },
         username: {
             type: String,
             required: [true, 'Please Enter Your Username'],
             unique: true,
         },
-        isAdmin: {
-            type: Boolean,
-            required: true,
-            default: false,
-        },
+        socialLinks: socialLinksSchema,
     },
     { timestamps: true }
 );

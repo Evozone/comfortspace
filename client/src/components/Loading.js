@@ -1,5 +1,4 @@
-import { Backdrop, CircularProgress } from '@mui/material';
-import React from 'react';
+import { Backdrop } from '@mui/material';
 
 import { useSelector } from 'react-redux';
 
@@ -10,9 +9,11 @@ const Loading = () => {
             open={loading}
             sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
         >
-            <CircularProgress
-                sx={{ color: 'white' }}
+            <img
                 data-testid='loading-spinner'
+                style={{ alignSelf: 'center', width: '160px' }}
+                src='/assets/vectors/page-loading-1.svg'
+                alt=''
             />
         </Backdrop>
     );

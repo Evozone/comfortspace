@@ -1,10 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const uuid4 = require('uuid4');
-const bodyParser = require('body-parser');
 const { Server } = require('socket.io');
 
 const userRouter = require('./routes/user.js');
@@ -17,9 +15,17 @@ const app = express();
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
-app.use(bodyParser.json({ limit: '30mb', extended: true }));
-app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
-app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-Requested-With, Content-Type, Authorization'
+    );
+    next();
+});
+app.use(express.json({ limit: '10MB' }));
+
 app.use('/api/user', userRouter);
 app.use('/api/blog', blogsRouter);
 app.use('/api/chat', chatRouter);
@@ -60,7 +66,7 @@ app.get('/mtoken', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('Hello to Oktobenotok API');
+    res.send("Hello, welocme to comfort space's API");
 });
 
 mongoose.set('strictQuery', false);
@@ -74,7 +80,7 @@ mongoose
 
 const server = app.listen(PORT, () =>
     console.log(
-        'Hello! This is oktobenotok backend, listening on port - ',
+        "Hello! This is comfort space's backend, listening on port - ",
         PORT
     )
 );
@@ -201,7 +207,11 @@ personal_call.on('connection', (socket) => {
             const remoteUser = users[roomId].filter(
                 (user) => user.id !== socket.id
             );
-            personal_call.to(remoteUser[0].id).emit('toggle_audio', audioMuted);
+            if (remoteUser.length > 0) {
+                personal_call
+                    .to(remoteUser[0].id)
+                    .emit('toggle_audio', audioMuted);
+            }
         }
     });
 

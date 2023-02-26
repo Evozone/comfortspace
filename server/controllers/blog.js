@@ -1,15 +1,12 @@
 const BlogModel = require('../models/blogModel');
 
 exports.createBlog = async (req, res) => {
+    const { title, summary, content, cover } = req.body;
     const {
-        title,
-        summary,
-        content,
-        cover,
-        authorId,
-        authorName,
-        authorUsername,
-    } = req.body;
+        uid: authorId,
+        name: authorName,
+        username: authorUsername,
+    } = req.user;
     try {
         const result = await BlogModel.create({
             title,
@@ -35,13 +32,18 @@ exports.createBlog = async (req, res) => {
     }
 };
 
-exports.get20Blogs = async (req, res) => {
+exports.getBlogs = async (req, res) => {
     try {
-        const result = await BlogModel.find().sort({ createdAt: -1 }).limit(20);
+        const PAGE_SIZE = 6;
+        let skip = req.query.page ? parseInt(req.query.page) : 0;
+        const result = await BlogModel.find()
+            .sort({ createdAt: -1 })
+            .skip(skip * PAGE_SIZE)
+            .limit(PAGE_SIZE);
         res.status(200).json({
             success: true,
             result,
-            message: '20 blogs fetched',
+            message: '6 blogs fetched',
         });
     } catch (error) {
         res.status(500).json({
@@ -74,7 +76,8 @@ exports.getBlogById = async (req, res) => {
 
 exports.editBlogById = async (req, res) => {
     const { id } = req.params;
-    const { title, summary, content, cover, authorId } = req.body;
+    const { title, summary, content, cover } = req.body;
+    const { uid: authorId } = req.user;
     const update = {
         title,
         summary,
@@ -106,7 +109,8 @@ exports.editBlogById = async (req, res) => {
 };
 
 exports.deleteBlogById = async (req, res) => {
-    const { id, authorId } = req.params;
+    const { id } = req.params;
+    const { uid: authorId } = req.user;
     try {
         const blog = await BlogModel.findById(id);
         if (blog.authorId !== authorId) {

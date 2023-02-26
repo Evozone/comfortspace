@@ -1,5 +1,4 @@
 import { Alert, Snackbar, Slide } from '@mui/material';
-import React from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { notifyAction } from '../actions/actions';
@@ -24,9 +23,9 @@ const Notify = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             TransitionComponent={(props) => (
-                <Slide {...props} direction='left' />
+                <Slide {...props} direction='down' />
             )}
         >
             <Alert
