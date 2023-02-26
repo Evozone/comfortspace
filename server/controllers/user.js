@@ -4,15 +4,15 @@ const jwt = require('jsonwebtoken');
 exports.googleSignUp = async (req, res) => {
     let { uid, email, name, photoURL, username, socialLinks } = req.body;
     try {
-        const token = jwt.sign(
-            { uid, email, name, photoURL, username, socialLinks },
-            process.env.HMS_SECRET_APP,
-            {
-                expiresIn: '48h',
-            }
-        );
         const oldUser = await UserModel.findOne({ email });
         if (oldUser) {
+            const token = jwt.sign(
+                { ...oldUser._doc },
+                process.env.HMS_SECRET_APP,
+                {
+                    expiresIn: '48h',
+                }
+            );
             res.status(200).json({
                 success: 'true',
                 result: { ...oldUser._doc, token },
@@ -27,6 +27,13 @@ exports.googleSignUp = async (req, res) => {
                 username,
                 socialLinks,
             });
+            const token = jwt.sign(
+                { ...user._doc },
+                process.env.HMS_SECRET_APP,
+                {
+                    expiresIn: '48h',
+                }
+            );
             res.status(201).json({
                 success: true,
                 result: { ...user._doc, token },

@@ -194,6 +194,7 @@ export default function TextBody({ message, endRef }) {
                                                     : 'noopener noreferrer'
                                             }
                                             sx={{
+                                                fontFamily: 'Helvetica',
                                                 ...(currentUser.uid ===
                                                 message.senderId
                                                     ? {
