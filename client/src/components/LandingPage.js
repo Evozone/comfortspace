@@ -40,7 +40,6 @@ function LandingPage() {
                     zIndex: 1,
                 }}
             >
-                {/* Left Side (Spotify) */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -65,8 +64,8 @@ function LandingPage() {
                             src={'/assets/vectors/logo-800x800.svg'}
                             alt='logo'
                             style={{
-                                width: '500px',
-                                height: '500px',
+                                width: '400px',
+                                height: '400px',
                                 borderRadius: '50%',
                                 boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)',
                             }}
@@ -90,7 +89,6 @@ function LandingPage() {
                             width: '100%',
                             padding: '40px',
                             borderRadius: '60px',
-                            // bgcolor: 'rgba(0, 0, 0, 0.5)',
                         }}
                     >
                         <h1
@@ -136,6 +134,20 @@ function LandingPage() {
                         </Box>
                         <GoogleOneTapLogin />
                     </Box>
+                    <a
+                        style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: '42%',
+                            color: 'black',
+                            fontSize: '0.7rem',
+                        }}
+                        href='https://loading.io/icon/'
+                        target='_blank'
+                        rel='noreferrer'
+                    >
+                        the icon "loading" is provided by loading.io
+                    </a>
                 </Box>
             </Box>
         </Box>

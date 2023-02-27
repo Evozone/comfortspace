@@ -1,36 +1,61 @@
-# Meadow Melodies : A mental health support website 🌺🧠
+<div align="center">
+    <table>
+        <tbody>
+            <td align="center"><img src="client/public/assets/icon-96x96.png" >
+    </td>  
+        </tbody>
+    </table>
+</div>
 
-## Inspiration
-The need for mental health support has never been more pressing than it is today. With the ongoing pandemic, many individuals are struggling with their mental health and in search of a platform where they can find support, resources, and community. Our team was inspired to create a website that addresses these needs and provides a safe space for individuals to discuss their mental health experiences, access helpful resources, and take a self-assessment test.
+# Comfort Space : Seek comfort from people who have been through similar experiences 🌺.
 
-## Features
-- Spaces: Our website provides a platform for individuals to come together and discuss mental health-related topics in a safe and supportive environment. This allows for individuals to share their experiences, provide support for one another, and find a sense of community.
-- Blog: Our website features a blog section where users can read and write about mental health-related topics. Users can also create their own blog to share their personal experiences and insights. 
-- Resource Section: Our website provides users with access to various websites and resources related to mental health. These resources can provide additional information and support for individuals dealing with mental health issues.
-- Self-Assessment Test: Our website includes a self-assessment test consisting of 25 mental health-related questions. The test results are presented in a radar graph using Chart.js, which shows the individual where they need to focus on.
-- Google Login: Our website allows users to log in with their Google account for easy access to their personalized information.
+[![Node.js CI](https://github.com/Evozone/comfortspace/actions/workflows/integration.yml/badge.svg?branch=development)](https://github.com/Evozone/comfortspace/actions/workflows/integration.yml)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/4cf7227e-89a4-483a-a92f-68efb9d8bad2/deploy-status)](https://app.netlify.com/sites/comfortspace/deploys)
 
-## What We Learned
-- During the development process, we learned about the importance of community and support in addressing mental health issues. We also gained valuable experience in using the MERN stack and Chart.js to build the website. Specifically, we learned how to use Chart.js to create an interactive and user-friendly radar graph that makes it easy for users to understand their test results.
+## Try it out 🚀
 
-## How We Built the Project
-- We started by brainstorming the features and functionality of the website. From there, we divided the work into different tasks, such as designing the layout, implementing the self-assessment test, and integrating the Google login. The website was built using the MERN stack, which allowed us to efficiently handle the different aspects of the website, such as the database and user authentication. Chart.js was used to create the radar graph for the self-assessment test results.
+[comfortspace.netlify.app](https://comfortspace.netlify.app/)
+<br/>
+<br/>
 
-## Challenges
-- One of the biggest challenges we faced was ensuring that the self-assessment test was accurate and effective. We had to conduct extensive research on mental health and consult with experts in the field to create the test questions and interpret the results. Additionally, we faced challenges in creating a user-friendly interface that is accessible to individuals of all backgrounds. Ensuring that the website can be easily navigated by users with disabilities was a priority for us.
+## Description ℹ️
 
-## Conclusion
-- Creating this website was a challenging yet rewarding experience. We are proud of the end result and hope that it will be a valuable resource for individuals dealing with mental health issues. Our goal is to create a platform that provides both resources and a sense of community for those struggling with mental health, ultimately improving their well-being. We believe that together, we can break the stigmas surrounding mental health and make it a part of everyday conversation 💬
+The progressive web application provides a safe and supportive platform for discussing mental health topics, with features like Groups for creating and joining voice rooms, a dynamic Blog with infinite scroll, and a Connect Section for messaging and having a peer-to-peer video call. It also features a self-assessment test and the results are presented in a radar graph that highlights areas that require attention.<br/>
+This project was built for HackFit-2 Hackathon. Here's the submission - https://tinyurl.com/comfortspace
 
-## Built With
-- 📊 chart.js
-- 🛣️ express.js
-- 🗄️ mongodb
-- 🎨 mui
-- 💻 node.js
-- ⚛️ react
+<br/>
 
-## Try it out
- - [dazzling-arithmetic-c7c9ec.netlify.app](https://dazzling-arithmetic-c7c9ec.netlify.app/)
- - [GitHub Repo](https://github.com/Evozone/ok_to_be_not_ok)
+## Technologies Used 🧰
 
+|          |                                           Technologies                                            |
+| -------- | :-----------------------------------------------------------------------------------------------: |
+| Frontend | React.js, Material UI, Redux, socket.io-client, Web APIs, Chart.js, Jest, GItHub Actions, Netlify |
+| Backend  |                Express.js, Mongoose, Google Auth, Socket.IO, jsonwebtoken, Railway                |
+| Databse  |                              MongoDB Atlas, Appwrite Storage Bucket                               |
+
+<br/>
+
+## Screenshots 🖼️
+
+<img src='https://raw.githubusercontent.com/vishal-codes/images/main/comfortspace.png?token=GHSAT0AAAAAABYHJDRKSFPPE7XJN2SAFD22Y75GE6Q'>
+<img src='https://raw.githubusercontent.com/vishal-codes/images/main/cs-connect-dark.png?token=GHSAT0AAAAAABYHJDRK2CPXWE4USKXPI2XQY75GE3Q'/>
+
+<br/>
+
+## Attribution 📝
+
+[the icon "loading" is provided by loading.io](https://loading.io/icon/)
+
+<br/>
+
+## Project Maintainer 🛠
+
+<div align="center">
+<table>
+    <tbody>
+        <td align="center"><a href="https://github.com/vishal-codes"><img alt="github profile" src="https://avatars.githubusercontent.com/u/79784161" width="130px;"><br><sub><b> Vishal Shinde </b></sub></a><br><a title="Code"> Web Developer</a><br><a href="https://twitter.com/vishaltwts" target="_blank"><img src="https://img.shields.io/badge/twitter-%2300acee.svg?&style=for-the-badge&logo=twitter&logoColor=white&alt=twitter" /></a></td>  
+    </tbody>
+</table>
+</div>
+
+<br>

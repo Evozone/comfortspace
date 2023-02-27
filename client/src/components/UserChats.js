@@ -9,7 +9,11 @@ import ListItemButton from '@mui/material/ListItemButton';
 
 import { deepDark, medium } from '../utils/colors';
 import { formatDate, formatTime12 } from '../utils/formatTimestamp';
-import { notifyAction } from '../actions/actions';
+import {
+    notifyAction,
+    startLoadingAction,
+    stopLoadingAction,
+} from '../actions/actions';
 
 function UserChats({
     handleChatClick,
@@ -27,10 +31,10 @@ function UserChats({
 
     useEffect(() => {
         const getUserChats = async () => {
+            dispatch(startLoadingAction());
             try {
                 const auth = window.localStorage.getItem('healthApp');
                 const { dnd } = JSON.parse(auth);
-
                 const { data } = await axios({
                     method: 'GET',
                     url: `${process.env.REACT_APP_SERVER_URL}/api/chat`,
@@ -75,6 +79,7 @@ function UserChats({
                 );
                 console.log(err);
             }
+            dispatch(stopLoadingAction());
         };
         getUserChats();
     }, []);
