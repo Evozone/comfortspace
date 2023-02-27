@@ -22,51 +22,9 @@ function Connect({ mode }) {
     const [otherUser, setOtherUser] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [messageNotSeen, setMessageNotSeen] = useState([]);
-    const [connectSettings, setConnectSettings] = useState(
-        JSON.parse(window.localStorage.getItem('connectSettings'))
-    );
+    const [connectSettings, setConnectSettings] = useState();
 
     const currentUser = useSelector((state) => state.auth);
-
-    useEffect(() => {
-        const init = async () => {
-            socketRef.current = await initSocket('chat');
-            socketRef.current.on('connect_error', (error) =>
-                handleErrors(error)
-            );
-            socketRef.current.on('connect_failed', (error) =>
-                handleErrors(error)
-            );
-            function handleErrors(error) {
-                console.log('socket error', error);
-                alert(
-                    'Socket connection failed, Please close the tab & try again later.'
-                );
-            }
-            socketRef.current.emit('join', {
-                newUserId: currentUser.uid,
-                onlineStatus: connectSettings.onlineStatus,
-            });
-            socketRef.current.on('online_users', (users) => {
-                if (connectSettings.onlineStatus) {
-                    setOnlineUsers(
-                        users.filter((user) => user.onlineStatus === true)
-                    );
-                } else {
-                    setOnlineUsers([]);
-                }
-            });
-        };
-        init();
-        return () => {
-            socketRef.current?.disconnect();
-            socketRef.current?.off('connect_error');
-            socketRef.current?.off('connect_failed');
-            socketRef.current?.off('online_users');
-            socketRef.current?.off('recieve_message');
-            socketRef.current?.off('typing_status');
-        };
-    }, [currentUser]);
 
     useEffect(() => {
         if (!(Notification.permission === 'granted')) {
@@ -97,6 +55,46 @@ function Connect({ mode }) {
             setConnectSettings(data);
         }
     }, []);
+
+    useEffect(() => {
+        const init = async () => {
+            socketRef.current = await initSocket('chat');
+            socketRef.current.on('connect_error', (error) =>
+                handleErrors(error)
+            );
+            socketRef.current.on('connect_failed', (error) =>
+                handleErrors(error)
+            );
+            function handleErrors(error) {
+                console.log('socket error', error);
+                alert(
+                    'Socket connection failed, Please close the tab & try again later.'
+                );
+            }
+            socketRef.current.emit('join', {
+                newUserId: currentUser.uid,
+                onlineStatus: connectSettings?.onlineStatus,
+            });
+            socketRef.current.on('online_users', (users) => {
+                if (connectSettings.onlineStatus) {
+                    setOnlineUsers(
+                        users.filter((user) => user.onlineStatus === true)
+                    );
+                } else {
+                    setOnlineUsers([]);
+                }
+            });
+        };
+        init();
+        return () => {
+            socketRef.current?.disconnect();
+            socketRef.current?.off('connect_error');
+            socketRef.current?.off('connect_failed');
+            socketRef.current?.off('online_users');
+            socketRef.current?.off('recieve_message');
+            socketRef.current?.off('typing_status');
+        };
+    }, [currentUser, connectSettings]);
 
     useEffect(() => {
         socketRef.current?.on('recieve_notification', (message) => {

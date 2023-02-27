@@ -62,14 +62,23 @@ function Groups({ mode }) {
         );
         console.log('%c-inspired by discord', 'font-size: 17px;');
         const getGroups = async () => {
-            await axios
-                .get(`${process.env.REACT_APP_SERVER_URL}/api/rooms/getRooms`)
-                .then((res) => {
-                    setGroups(res.data.result);
-                })
-                .catch((err) => {
-                    alert('Something went wrong, please try again later.');
-                });
+            dispatch(startLoadingAction());
+            try {
+                const res = await axios.get(
+                    `${process.env.REACT_APP_SERVER_URL}/api/rooms/getRooms`
+                );
+                setGroups(res.data.result);
+            } catch (error) {
+                dispatch(
+                    notifyAction(
+                        true,
+                        'error',
+                        'It seems something is wrong, please log out and log in again. in a minute :('
+                    )
+                );
+                console.log(error);
+            }
+            dispatch(stopLoadingAction());
         };
         getGroups();
     }, []);
