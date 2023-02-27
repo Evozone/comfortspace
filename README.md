@@ -1,8 +1,11 @@
-<img style="display: block;
-    float: none;
-    margin-left: auto;
-    margin-right: auto;
-" src="client/public/assets/icon-96x96.png" >
+<div align="center">
+    <table>
+        <tbody>
+            <td align="center"><img src="client/public/assets/icon-96x96.png" >
+    </td>  
+        </tbody>
+    </table>
+</div>
 
 # Comfort Space : Seek comfort from people who have been through similar experiences 🌺.
 
