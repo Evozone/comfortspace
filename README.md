@@ -37,8 +37,8 @@ This project was built for HackFit-2 Hackathon. Here's the submission - https://
 
 ## Screenshots 🖼️
 
-<img src='https://raw.githubusercontent.com/vishal-codes/images/main/comfortspace.png?token=GHSAT0AAAAAABYHJDRKSFPPE7XJN2SAFD22Y75GE6Q'>
-<img src='https://raw.githubusercontent.com/vishal-codes/images/main/cs-connect-dark.png?token=GHSAT0AAAAAABYHJDRK2CPXWE4USKXPI2XQY75GE3Q'/>
+<img src='https://raw.githubusercontent.com/vishal-codes/repo-images/main/comfortspace.png'>
+<img src='https://raw.githubusercontent.com/vishal-codes/repo-images/main/cs-connect-dark.png'>
 
 <br/>
 
