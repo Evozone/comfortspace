@@ -17,6 +17,7 @@ function LandingPage() {
             <Box
                 component='img'
                 src='/assets/vectors/tree-landing.svg'
+                alt='tree-svg'
                 sx={{
                     height: '120%',
                     width: 'auto',
@@ -100,10 +101,10 @@ function LandingPage() {
                             Comfort Space
                         </h1>
                         <Typography
-                            variant='h6'
                             sx={{
                                 color: '#1B262C',
                                 fontSize: '1.1rem',
+                                fontWeight: 500,
                                 p: 2,
                                 background: ' rgba(255, 255, 255, 0.26)',
                                 borderRadius: '6px',
