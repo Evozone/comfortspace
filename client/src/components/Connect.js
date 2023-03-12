@@ -111,7 +111,7 @@ function Connect({ mode }) {
                     : 'New message from ' + message.senderName;
                 const notification = new Notification('Dev Chat+', {
                     body,
-                    // icon: '/logo192.png',
+                    icon: '/icon-192x192.png',
                     tag: message.senderId,
                 });
                 connectSettings?.playSound && audio.play();

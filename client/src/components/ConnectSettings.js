@@ -18,7 +18,7 @@ function ConnectSettings({ setConnectSettings, connectSettings }) {
             if (result === 'granted') {
                 const notification = new Notification('Dev Chat+', {
                     body: 'You will be notified like this when you receive a new message',
-                    // icon: '/assets/icons/maskable_icon_x48.png',
+                    icon: '/icon-192x192.png',
                     tag: 'example notification',
                 });
                 const audio = new Audio('/assets/audio/notification.mp3');
