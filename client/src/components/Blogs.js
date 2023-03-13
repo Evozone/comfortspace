@@ -28,7 +28,6 @@ function Blogs({ mode }) {
         const getBlogs = async () => {
             try {
                 setLoading(true);
-                console.log('set loading to true');
                 const blogsFromServer = await axios.get(
                     `${process.env.REACT_APP_SERVER_URL}/api/blog/getList/?page=${pageNum}`
                 );
@@ -42,7 +41,6 @@ function Blogs({ mode }) {
                 if (blogsFromServer.data.result.length < 6) {
                     setHasMore(false);
                 }
-                console.log('set loading to false');
                 setLoading(false);
             } catch (err) {
                 setLoading(false);

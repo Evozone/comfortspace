@@ -79,10 +79,10 @@ function CreateBlog({ mode }) {
             alert('Please fill all the text fields');
             return;
         }
-        // if (!coverUrl) {
-        //     alert('Please upload a cover image');
-        //     return;
-        // }
+        if (!coverUrl) {
+            alert('Please upload a cover image');
+            return;
+        }
         if (summary.length > 55) {
             alert('Summary should be less than 55 characters');
             return;

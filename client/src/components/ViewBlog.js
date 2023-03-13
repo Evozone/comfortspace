@@ -59,6 +59,7 @@ function ViewBlog({ mode }) {
         if (!choice) return;
         const auth = window.localStorage.getItem('healthApp');
         const { dnd } = JSON.parse(auth);
+        dispatch(startLoadingAction());
         try {
             await axios({
                 method: 'DELETE',
@@ -82,6 +83,7 @@ function ViewBlog({ mode }) {
                 )
             );
         }
+        dispatch(stopLoadingAction());
     };
 
     const editBlog = () => {
