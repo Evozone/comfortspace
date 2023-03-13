@@ -1,4 +1,4 @@
-import { Backdrop } from '@mui/material';
+import Backdrop from '@mui/material/Backdrop';
 
 import { useSelector } from 'react-redux';
 

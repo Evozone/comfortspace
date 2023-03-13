@@ -1,21 +1,23 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import Tooltip from '@mui/material/Tooltip';
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 
 import { bluegrey, richBlack, light, dark, deepDark } from '../utils/colors';
-import { Tooltip } from '@mui/material';
+import { notifyAction } from '../actions/actions';
 
 function Blogs({ mode }) {
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const observer = useRef();
     const [blogs, setBlogs] = useState(null);
     const [pageNum, setPageNum] = useState(0);
@@ -41,6 +43,14 @@ function Blogs({ mode }) {
                 }
                 setLoading(false);
             } catch (err) {
+                setLoading(false);
+                dispatch(
+                    notifyAction(
+                        true,
+                        'error',
+                        'Unable to load blogs! Please try again later.'
+                    )
+                );
                 console.log(err);
             }
         };

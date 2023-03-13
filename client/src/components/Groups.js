@@ -73,7 +73,7 @@ function Groups({ mode }) {
                     notifyAction(
                         true,
                         'error',
-                        'It seems something is wrong, please log out and log in again. in a minute :('
+                        'Unable to load groups, please try again later.'
                     )
                 );
                 console.log(error);

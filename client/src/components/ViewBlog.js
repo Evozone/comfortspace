@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
+import axios from 'axios';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -16,7 +16,11 @@ import EmailIcon from '@mui/icons-material/Email';
 import TwitterIcon from '@mui/icons-material/Twitter';
 
 import { bluegrey, light, medium } from '../utils/colors';
-import { notifyAction } from '../actions/actions';
+import {
+    notifyAction,
+    startLoadingAction,
+    stopLoadingAction,
+} from '../actions/actions';
 
 function ViewBlog({ mode }) {
     const navigate = useNavigate();
@@ -28,10 +32,24 @@ function ViewBlog({ mode }) {
 
     useEffect(() => {
         const fetchBlog = async () => {
-            const { data } = await axios.get(
-                `${process.env.REACT_APP_SERVER_URL}/api/blog/get/${blogId}`
-            );
-            setBlog(data.result);
+            dispatch(startLoadingAction(true));
+            try {
+                const { data } = await axios.get(
+                    `${process.env.REACT_APP_SERVER_URL}/api/blog/get/${blogId}`
+                );
+                setBlog(data.result);
+            } catch (error) {
+                console.log(error);
+                dispatch(
+                    notifyAction(
+                        true,
+                        'error',
+                        'Unable to load the blog, please try again later.'
+                    )
+                );
+                console.log(error);
+            }
+            dispatch(stopLoadingAction());
         };
         fetchBlog();
     }, [blogId]);
@@ -41,6 +59,7 @@ function ViewBlog({ mode }) {
         if (!choice) return;
         const auth = window.localStorage.getItem('healthApp');
         const { dnd } = JSON.parse(auth);
+        dispatch(startLoadingAction());
         try {
             await axios({
                 method: 'DELETE',
@@ -64,6 +83,7 @@ function ViewBlog({ mode }) {
                 )
             );
         }
+        dispatch(stopLoadingAction());
     };
 
     const editBlog = () => {
@@ -87,12 +107,7 @@ function ViewBlog({ mode }) {
             }}
         >
             <Card>
-                <CardMedia
-                    component='img'
-                    alt='green iguana'
-                    height='350px'
-                    image={blog?.cover}
-                />
+                <CardMedia component='img' height='350px' image={blog?.cover} />
                 <CardContent
                     sx={{
                         p: 4,
@@ -106,19 +121,21 @@ function ViewBlog({ mode }) {
                     >
                         {blog?.title}
                     </Typography>
-                    <Typography
-                        variant='subtitle1'
-                        color='textSecondary'
-                        sx={{
-                            mb: 2,
-                            textAlign: 'center',
-                        }}
-                    >
-                        by{' '}
-                        {`${blog?.authorName}  on   ${
-                            blog?.createdAt.split('T')[0]
-                        }`}
-                    </Typography>
+                    {blog && (
+                        <Typography
+                            variant='subtitle1'
+                            color='textSecondary'
+                            sx={{
+                                mb: 2,
+                                textAlign: 'center',
+                            }}
+                        >
+                            by{' '}
+                            {`${blog?.authorName}  on   ${
+                                blog?.createdAt.split('T')[0]
+                            }`}
+                        </Typography>
+                    )}
                     <div
                         className='content'
                         style={{ wordBreak: 'break-word' }}
