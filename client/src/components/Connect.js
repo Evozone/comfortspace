@@ -109,7 +109,7 @@ function Connect({ mode }) {
                       ' - ' +
                       message.text
                     : 'New message from ' + message.senderName;
-                const notification = new Notification('Dev Chat+', {
+                const notification = new Notification('Comfort Space', {
                     body,
                     icon: '/icon-192x192.png',
                     tag: message.senderId,
