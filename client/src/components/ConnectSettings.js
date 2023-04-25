@@ -16,7 +16,7 @@ function ConnectSettings({ setConnectSettings, connectSettings }) {
     const notificationPrompt = () => {
         Notification.requestPermission().then((result) => {
             if (result === 'granted') {
-                const notification = new Notification('Dev Chat+', {
+                const notification = new Notification('Comfort Space', {
                     body: 'You will be notified like this when you receive a new message',
                     icon: '/icon-192x192.png',
                     tag: 'example notification',

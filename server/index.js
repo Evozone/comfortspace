@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const uuid4 = require('uuid4');
 const { Server } = require('socket.io');
+const { useTreblle } = require('treblle');
 
 const userRouter = require('./routes/user.js');
 const blogsRouter = require('./routes/blog.js');
@@ -25,6 +26,11 @@ app.use((req, res, next) => {
     next();
 });
 app.use(express.json({ limit: '10MB' }));
+
+useTreblle(app, {
+    apiKey: process.env.TREBLLE_API_KEY,
+    projectId: process.env.TREBLLE_PROJECT_ID,
+});
 
 app.use('/api/user', userRouter);
 app.use('/api/blog', blogsRouter);
