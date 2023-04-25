@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+// Components
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
@@ -12,6 +15,7 @@ import AddModeratorIcon from '@mui/icons-material/AddModerator';
 import RemoveModeratorIcon from '@mui/icons-material/RemoveModerator';
 import ListItemText from '@mui/material/ListItemText';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 import {
     useHMSActions,
     useHMSStore,
@@ -28,6 +32,22 @@ function PeerInRoom({ peer, mode }) {
     const isModerator = localPeer.roleName === 'moderator';
 
     const [anchorEl, setAnchorEl] = useState(null);
+    const [displayName, setDisplayName] = useState('');
+
+    const getPeerName = async (peer) => {
+        await axios
+            .get(
+                `${process.env.REACT_APP_SERVER_URL}/api/user/${peer.customerUserId
+                }`,
+            )
+            .then((result) => {
+                const user = result.data.result;
+                console.log(user);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
     const mutePeer = () => {
         if (isModerator) {
@@ -46,6 +66,11 @@ function PeerInRoom({ peer, mode }) {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+
+    // Effect
+    useEffect(() => {
+        // getPeerName(peer);
+    }, []);
 
     return (
         <Box
@@ -117,9 +142,8 @@ function PeerInRoom({ peer, mode }) {
                         )}
                         {peer.roleName === 'participant' ? (
                             <Tooltip
-                                title={`Make ${
-                                    peer.name.split('@')[0]
-                                } a moderator`}
+                                title={`Make ${peer.name.split('@')[0]
+                                    } a moderator`}
                             >
                                 <MenuItem
                                     onClick={() => changeRole('moderator')}
@@ -133,9 +157,8 @@ function PeerInRoom({ peer, mode }) {
                             </Tooltip>
                         ) : (
                             <Tooltip
-                                title={`Make ${
-                                    peer.name.split('@')[0]
-                                } a participant`}
+                                title={`Make ${peer.name.split('@')[0]
+                                    } a participant`}
                             >
                                 <MenuItem
                                     onClick={() => changeRole('participant')}
@@ -186,7 +209,12 @@ function PeerInRoom({ peer, mode }) {
                     top: '70%',
                 }}
             >
-                {peer.name.split('@')[0]}
+                {/* Truncate peer name to 10 characters */}
+                {peer.name.split('@')[0].length > 10 ? (
+                    peer.name.split('@')[0].substring(0, 10) + '...'
+                ) : (
+                    peer.name.split('@')[0]
+                )}
             </Typography>
             <Typography
                 sx={{
