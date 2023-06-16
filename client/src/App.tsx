@@ -1,30 +1,34 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import jwtDecode from 'jwt-decode';
+import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { HMSRoomProvider } from '@100mslive/hms-video-react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import type { PaletteMode } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import Groups from './components/Groups';
-import VoiceRoom from './components/VoiceRoom';
-import Blogs from './components/Blogs';
-import Exam from './components/Exam';
-import LandingPage from './components/LandingPage';
-import ProtectedRoute from './components/ProtectedRoute';
-import ViewBlog from './components/ViewBlog';
-import CreateBlog from './components/CreateBlog';
 import MainAppbar from './components/MainAppbar';
 import Loading from './components/Loading';
-import EditBlog from './components/EditBlog';
 import Notify from './components/Notify';
-import {
-    customGlobalScrollBars,
-    smoothScrolling,
-} from './components/CustomGlobalCSS';
+import LandingPage from './components/LandingPage.js';
+import ProtectedRoute from './components/ProtectedRoute.js';
+import Exam from './components/Exam.js';
+
+import Groups from './components/Groups.js';
+import VoiceRoom from './components/VoiceRoom.js';
+
+import Blogs from './components/Blogs.js';
+import ViewBlog from './components/ViewBlog.js';
+import CreateBlog from './components/CreateBlog.js';
+import EditBlog from './components/EditBlog.js';
+
+import Connect from './components/Connect.js';
+import PersonalCall from './components/PersonalCall.js';
+
+import { customGlobalScrollBars, smoothScrolling } from './components/CustomGlobalCSS';
 import { signInAction } from './actions/actions';
-import Connect from './components/Connect';
-import PersonalCall from './components/PersonalCall';
+import { AuthState } from './reducers/authReducer';
 
 function App() {
     const dispatch = useDispatch();
@@ -33,15 +37,16 @@ function App() {
 
     const localTheme = window.localStorage.getItem('healthAppTheme');
 
-    const [mode, setMode] = useState(localTheme ? localTheme : 'light');
-    const [supportsPWA, setSupportsPWA] = useState(false);
-    const [promptInstall, setPromptInstall] = useState(null);
+    const [mode, setMode] = useState<PaletteMode>(
+        localTheme ? (localTheme as PaletteMode) : 'light'
+    );
+    const [supportsPWA, setSupportsPWA] = useState<boolean>(false);
+    const [promptInstall, setPromptInstall] = useState<Event | null>(null);
 
     const darkTheme = createTheme({
         palette: {
             mode: mode,
         },
-
         typography: {
             fontFamily: ['Poppins', 'Work Sans', 'sans-serif'].join(','),
         },
@@ -53,30 +58,24 @@ function App() {
         setMode(updatedTheme);
     };
 
-    const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+    const isSignedIn = useSelector((state: { auth: AuthState }) => state.auth.isSignedIn);
 
     useEffect(() => {
-        const auth = window.localStorage.getItem('healthApp');
-        const handler = (e) => {
+        const handler = (e: Event) => {
             e.preventDefault();
             setSupportsPWA(true);
             setPromptInstall(e);
         };
         window.addEventListener('beforeinstallprompt', handler);
-        if (auth) {
-            const { dnd } = JSON.parse(auth);
-            const { uid, email, name, photoURL, username, socialLinks } =
-                jwtDecode(dnd);
+        const token = window.localStorage.getItem('healthApp') as string;
+        const auth = JSON.parse(token);
+        if (auth?.isSignedIn) {
+            const { dnd } = auth;
+            const { uid, email, name, photoURL, username, socialLinks } = jwtDecode(
+                dnd
+            ) as AuthState;
             dispatch(
-                signInAction(
-                    uid,
-                    email,
-                    name,
-                    photoURL,
-                    username,
-                    socialLinks,
-                    dnd
-                )
+                signInAction(true, uid, email, name, photoURL, username, socialLinks, dnd)
             );
             if (
                 location.pathname.includes('/connect/pc/') ||
@@ -92,6 +91,7 @@ function App() {
                 navigate('/groups');
             }
         }
+        return () => window.removeEventListener('transitionend', handler);
     }, []);
 
     return (
@@ -112,9 +112,9 @@ function App() {
                 />
             )}
             <Routes>
-                <Route path='/' element={<LandingPage />} />
+                <Route path="/" element={<LandingPage />} />
                 <Route
-                    path='/groups'
+                    path="/groups"
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
@@ -124,20 +124,17 @@ function App() {
                     }
                 />
                 <Route
-                    path='/room/:id'
+                    path="/room/:id"
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
-                                <VoiceRoom
-                                    themeChange={themeChange}
-                                    mode={mode}
-                                />
+                                <VoiceRoom themeChange={themeChange} mode={mode} />
                             </HMSRoomProvider>
                         </ProtectedRoute>
                     }
                 />
                 <Route
-                    path='/blogs'
+                    path="/blogs"
                     element={
                         <ProtectedRoute>
                             <Blogs themeChange={themeChange} mode={mode} />
@@ -145,16 +142,23 @@ function App() {
                     }
                 />
                 <Route
-                    path='/blog/:id'
+                    path="/blog/:id"
                     element={
                         <>
-                            <MainAppbar themeChange={themeChange} mode={mode} />
+                            <MainAppbar
+                                {...{
+                                    themeChange,
+                                    mode,
+                                    supportsPWA,
+                                    promptInstall,
+                                }}
+                            />
                             <ViewBlog themeChange={themeChange} mode={mode} />
                         </>
                     }
                 />
                 <Route
-                    path='/createBlog'
+                    path="/createBlog"
                     element={
                         <ProtectedRoute>
                             <CreateBlog themeChange={themeChange} mode={mode} />
@@ -162,7 +166,7 @@ function App() {
                     }
                 />
                 <Route
-                    path='/editBlog/:id'
+                    path="/editBlog/:id"
                     element={
                         <ProtectedRoute>
                             <EditBlog themeChange={themeChange} mode={mode} />
@@ -170,7 +174,7 @@ function App() {
                     }
                 />
                 <Route
-                    path='/connect'
+                    path="/connect"
                     element={
                         <ProtectedRoute>
                             <Connect mode={mode} />
@@ -178,7 +182,7 @@ function App() {
                     }
                 />
                 <Route
-                    path='/connect/pc/:id'
+                    path="/connect/pc/:id"
                     element={
                         <ProtectedRoute>
                             <PersonalCall mode={mode} />
@@ -186,7 +190,7 @@ function App() {
                     }
                 />
                 <Route
-                    path='/exam'
+                    path="/exam"
                     element={
                         <ProtectedRoute>
                             <Exam themeChange={themeChange} mode={mode} />

@@ -108,7 +108,7 @@ chat.on('connection', (socket) => {
                 socketId: socket.id,
                 onlineStatus,
             });
-            // console.log('New User Connected', online_users);
+            console.log('New User Connected', online_users);
         }
         chat.emit('online_users', online_users);
     });

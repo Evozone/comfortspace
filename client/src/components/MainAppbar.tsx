@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
@@ -28,7 +28,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import DownloadIcon from '@mui/icons-material/Download';
 
 import storage from '../appwrite';
-import { CustomSwitcherGroup, CustomSwitcherButton } from './CustomSwitcher';
+import { CustomSwitcherGroup, CustomSwitcherButton } from '../utils/CustomSwitcher';
 import { richBlack, light, medium, deepDark, bluegrey } from '../utils/colors';
 import {
     signOutAction,
@@ -37,26 +37,39 @@ import {
     signInAction,
     notifyAction,
 } from '../actions/actions';
+import { AuthState } from 'src/reducers/authReducer';
 
-function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
+interface MainAppbarProps {
+    mode: string;
+    themeChange: () => void;
+    supportsPWA: boolean;
+    promptInstall: any;
+}
+
+const MainAppbar: React.FC<MainAppbarProps> = ({
+    mode,
+    themeChange,
+    supportsPWA,
+    promptInstall,
+}) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const currentUser = useSelector((state) => state.auth);
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [selected, setSelected] = useState(
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [selected, setSelected] = useState<string>(
         window.localStorage.getItem('healthAppLastPage') || 'groups'
     );
-    const [modalVisible, setModalVisible] = useState(false);
-    const [imageFile, setImageFile] = useState(null);
-    const [twitterProfile, setTwitterProfile] = useState(
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [twitterProfile, setTwitterProfile] = useState<string | undefined>(
         currentUser?.socialLinks?.twitter
     );
-    const [instagramProfile, setInstagramProfile] = useState(
+    const [instagramProfile, setInstagramProfile] = useState<string | undefined>(
         currentUser?.socialLinks?.instagram
     );
-    const [avatarURL, setAvatarURL] = useState(currentUser?.photoURL);
-    const [name, setName] = useState(currentUser?.name);
-    const [buttonStatus, setButtonStatus] = useState(true);
+    const [avatarURL, setAvatarURL] = useState<null | string>(currentUser?.photoURL);
+    const [name, setName] = useState<null | string>(currentUser?.name);
+    const [buttonStatus, setButtonStatus] = useState<boolean>(true);
 
     const onInstallClick = () => {
         if (!supportsPWA) {
@@ -86,7 +99,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                             ml: -0.5,
                         }}
                     />
-                    <ListItemText sx={{ ml: 1 }} primary='Install' />
+                    <ListItemText sx={{ ml: 1 }} primary="Install" />
                 </MenuItem>
             );
         }
@@ -101,13 +114,13 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
         }
     };
 
-    const handleNavigation = (value) => {
+    const handleNavigation = (value: string) => {
         setSelected(value);
         window.localStorage.setItem('healthAppLastPage', value);
         navigate(`/${value}`);
     };
 
-    const handleMenuClick = (event) => {
+    const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
@@ -115,12 +128,12 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
         setAnchorEl(null);
     };
 
-    const handleNameChange = (event) => {
+    const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
         setButtonStatus(false);
     };
 
-    const handleInputChange = (event) => {
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         if (name === 'twitter') {
             setTwitterProfile(value);
@@ -137,8 +150,8 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
         setButtonStatus(false);
     };
 
-    const changeAvatar = (e) => {
-        const file = e?.target.files[0];
+    const changeAvatar = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event?.target.files?.[0];
         if (file) {
             const fileExt = file?.name.split('.').pop();
             if (fileExt === 'jpg' || fileExt === 'jpeg' || fileExt === 'png') {
@@ -147,9 +160,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                 setAvatarURL(localUrl);
                 setButtonStatus(false);
             } else {
-                alert(
-                    'Please upload a valid image file of type jpg, jpeg or png'
-                );
+                alert('Please upload a valid image file of type jpg, jpeg or png');
             }
         }
     };
@@ -160,12 +171,12 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
             return;
         }
         const auth = window.localStorage.getItem('healthApp');
-        const { dnd } = JSON.parse(auth);
+        const { dnd } = JSON.parse(auth ? auth : '');
         try {
             dispatch(startLoadingAction());
             let newURL = avatarURL;
             if (imageFile !== null) {
-                newURL = await uploadFile(imageFile);
+                newURL = (await uploadFile(imageFile)).toString();
             }
             const data = {
                 name,
@@ -191,6 +202,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
             setInstagramProfile(result.data.result.socialLinks.instagram);
             dispatch(
                 signInAction(
+                    true,
                     result.data.result.uid,
                     result.data.result.email,
                     result.data.result.name,
@@ -201,23 +213,21 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                 )
             );
             dispatch(stopLoadingAction());
-            dispatch(
-                notifyAction(true, 'success', 'Profile Updated Successfully')
-            );
-        } catch (err) {
-            console.log(err);
+            dispatch(notifyAction(true, 'success', 'Profile Updated Successfully'));
+        } catch (error) {
+            console.log(error);
         }
     };
 
-    const uploadFile = async (file) => {
+    const uploadFile = async (file: File) => {
         const id = uuid();
         await storage.createFile(
-            process.env.REACT_APP_APPWRITE_BUCKET_ID,
+            process.env.REACT_APP_APPWRITE_BUCKET_ID || '',
             id,
             file
         );
         const result = storage.getFilePreview(
-            process.env.REACT_APP_APPWRITE_BUCKET_ID,
+            process.env.REACT_APP_APPWRITE_BUCKET_ID || '',
             id
         );
         return result;
@@ -227,8 +237,8 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
         setModalVisible(false);
         setName(currentUser.name);
         setAvatarURL(currentUser.photoURL);
-        setTwitterProfile(currentUser.socialLinks.twitter);
-        setInstagramProfile(currentUser.socialLinks.instagram);
+        setTwitterProfile(currentUser?.socialLinks?.twitter);
+        setInstagramProfile(currentUser?.socialLinks?.instagram);
         setButtonStatus(true);
     };
 
@@ -250,7 +260,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
         >
             <img
                 src={'/assets/vectors/logo-800x800.svg'}
-                alt='chat'
+                alt="chat"
                 style={{
                     width: '50px',
                     height: '50px',
@@ -262,28 +272,28 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                     <CustomSwitcherGroup exclusive>
                         <CustomSwitcherButton
                             onClick={() => handleNavigation('groups')}
-                            value='groups'
+                            value="groups"
                             selected={selected === 'groups'}
                         >
                             <Groups2Icon /> Groups
                         </CustomSwitcherButton>
                         <CustomSwitcherButton
                             onClick={() => handleNavigation('blogs')}
-                            value='blogs'
+                            value="blogs"
                             selected={selected === 'blogs'}
                         >
                             <LibraryBooksIcon /> Blogs
                         </CustomSwitcherButton>
                         <CustomSwitcherButton
                             onClick={() => handleNavigation('connect')}
-                            value='connect'
+                            value="connect"
                             selected={selected === 'connect'}
                         >
                             <GroupAddIcon /> Connect
                         </CustomSwitcherButton>
                         <CustomSwitcherButton
                             onClick={() => handleNavigation('exam')}
-                            value='exam'
+                            value="exam"
                             selected={selected === 'exam'}
                         >
                             <QuizIcon /> Take a Test
@@ -291,8 +301,8 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                     </CustomSwitcherGroup>
                     <IconButton sx={{ p: '6px' }} onClick={handleMenuClick}>
                         <Avatar
-                            alt={currentUser.name.charAt(0).toUpperCase()}
-                            src={currentUser.photoURL}
+                            alt={currentUser?.name?.charAt(0).toUpperCase()}
+                            src={currentUser.photoURL || ''}
                             sx={{
                                 bgcolor: mode === 'light' ? deepDark : light,
                                 color: mode === 'light' ? light : deepDark,
@@ -301,7 +311,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                 border: '2px solid',
                             }}
                         >
-                            {currentUser.name.charAt(0).toUpperCase()}
+                            {currentUser?.name?.charAt(0).toUpperCase()}
                         </Avatar>
                     </IconButton>
                     <Menu
@@ -311,8 +321,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                         onClose={handleMenuClose}
                         sx={{
                             '& .MuiPaper-root': {
-                                backgroundColor:
-                                    mode === 'light' ? light : bluegrey,
+                                backgroundColor: mode === 'light' ? light : bluegrey,
                             },
                         }}
                     >
@@ -324,8 +333,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                             {mode === 'light' ? (
                                 <DarkModeIcon
                                     sx={{
-                                        color:
-                                            mode === 'light' ? deepDark : light,
+                                        color: mode === 'light' ? deepDark : light,
                                         fontSize: '1.7rem',
                                         ml: -0.5,
                                     }}
@@ -333,14 +341,13 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                             ) : (
                                 <LightModeIcon
                                     sx={{
-                                        color:
-                                            mode === 'light' ? deepDark : light,
+                                        color: mode === 'light' ? deepDark : light,
                                         fontSize: '1.7rem',
                                         ml: -0.5,
                                     }}
                                 />
                             )}
-                            <ListItemText sx={{ ml: 1 }} primary='Theme' />
+                            <ListItemText sx={{ ml: 1 }} primary="Theme" />
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
@@ -355,7 +362,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                     ml: -0.5,
                                 }}
                             />
-                            <ListItemText sx={{ ml: 1 }} primary='Profile' />
+                            <ListItemText sx={{ ml: 1 }} primary="Profile" />
                         </MenuItem>
                         {renderInstallOption()}
                         <MenuItem
@@ -368,7 +375,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                     color: mode === 'light' ? deepDark : light,
                                 }}
                             />
-                            <ListItemText sx={{ ml: 1 }} primary='Logout' />
+                            <ListItemText sx={{ ml: 1 }} primary="Logout" />
                         </MenuItem>
                     </Menu>
                     <Modal open={modalVisible}>
@@ -380,8 +387,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                 transform: 'translate(-50%, -50%)',
                                 minWidth: 600,
                                 maxHeight: '700px',
-                                backgroundColor:
-                                    mode === 'light' ? light : bluegrey,
+                                backgroundColor: mode === 'light' ? light : bluegrey,
                                 boxShadow: 24,
                                 borderRadius: '10px',
                                 py: 2,
@@ -401,10 +407,9 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                 }}
                             >
                                 <Typography
-                                    variant='h5'
+                                    variant="h5"
                                     sx={{
-                                        color:
-                                            mode === 'light' ? deepDark : light,
+                                        color: mode === 'light' ? deepDark : light,
                                         fontWeight: 'bold',
                                     }}
                                 >
@@ -413,10 +418,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                 <IconButton onClick={handleModalClose}>
                                     <CloseIcon
                                         sx={{
-                                            color:
-                                                mode === 'light'
-                                                    ? deepDark
-                                                    : light,
+                                            color: mode === 'light' ? deepDark : light,
                                         }}
                                     />
                                 </IconButton>
@@ -438,54 +440,44 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                     }}
                                 >
                                     <Avatar
-                                        alt={currentUser.name
-                                            .charAt(0)
-                                            .toUpperCase()}
-                                        src={avatarURL}
+                                        alt={currentUser?.name?.charAt(0).toUpperCase()}
+                                        src={avatarURL || ''}
                                         sx={{
-                                            bgcolor:
-                                                mode === 'light'
-                                                    ? deepDark
-                                                    : light,
-                                            color:
-                                                mode === 'light'
-                                                    ? light
-                                                    : deepDark,
+                                            bgcolor: mode === 'light' ? deepDark : light,
+                                            color: mode === 'light' ? light : deepDark,
                                             height: 150,
                                             width: 150,
                                             border: '2px solid',
                                         }}
                                     >
-                                        {currentUser.name
-                                            .charAt(0)
-                                            .toUpperCase()}
+                                        {currentUser?.name?.charAt(0).toUpperCase()}
                                     </Avatar>
                                     <Box sx={{ mt: 1 }}>
                                         <input
-                                            accept='image/*'
-                                            id='changeAvatar'
-                                            type='file'
+                                            accept="image/*"
+                                            id="changeAvatar"
+                                            type="file"
                                             style={{ display: 'none' }}
                                             onChange={changeAvatar}
                                         />
 
                                         <Button
                                             sx={{ mr: 1 }}
-                                            color='success'
-                                            variant='outlined'
-                                            size='small'
+                                            color="success"
+                                            variant="outlined"
+                                            size="small"
                                         >
                                             <label
                                                 style={{ cursor: 'pointer' }}
-                                                htmlFor='changeAvatar'
+                                                htmlFor="changeAvatar"
                                             >
                                                 Change
                                             </label>
                                         </Button>
                                         <Button
-                                            color='error'
-                                            variant='outlined'
-                                            size='small'
+                                            color="error"
+                                            variant="outlined"
+                                            size="small"
                                             onClick={removePhotoURL}
                                         >
                                             Remove
@@ -500,20 +492,17 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                     }}
                                 >
                                     <TextField
-                                        label='Name'
-                                        color='success'
-                                        variant='outlined'
+                                        label="Name"
+                                        color="success"
+                                        variant="outlined"
                                         value={name}
                                         onChange={handleNameChange}
                                     />
                                     <Typography
-                                        variant='subtitle1'
+                                        variant="subtitle1"
                                         sx={{
                                             mt: 2,
-                                            color:
-                                                mode === 'light'
-                                                    ? deepDark
-                                                    : light,
+                                            color: mode === 'light' ? deepDark : light,
                                         }}
                                     >
                                         Username - {currentUser.username}
@@ -533,22 +522,18 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                         width: '390px',
                                         mb: 4,
                                         mr: 1.5,
-                                        color:
-                                            mode === 'light' ? deepDark : light,
+                                        color: mode === 'light' ? deepDark : light,
                                     }}
                                     value={twitterProfile}
                                     onChange={handleInputChange}
                                     InputLabelProps={{
                                         sx: {
-                                            color:
-                                                mode === 'light'
-                                                    ? deepDark
-                                                    : light,
+                                            color: mode === 'light' ? deepDark : light,
                                         },
                                     }}
                                     InputProps={{
                                         startAdornment: (
-                                            <InputAdornment position='start'>
+                                            <InputAdornment position="start">
                                                 <TwitterIcon
                                                     sx={{
                                                         color:
@@ -561,36 +546,32 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                             </InputAdornment>
                                         ),
                                     }}
-                                    color='success'
-                                    variant='outlined'
-                                    name='twitter'
-                                    label='Twitter Profile Link'
+                                    color="success"
+                                    variant="outlined"
+                                    name="twitter"
+                                    label="Twitter Profile Link"
                                 />
                                 <TextField
-                                    color='success'
-                                    name='instagram'
+                                    color="success"
+                                    name="instagram"
                                     value={instagramProfile}
-                                    label='Instagram Profile Link'
+                                    label="Instagram Profile Link"
                                     sx={{
                                         width: '390px',
-                                        color:
-                                            mode === 'light' ? deepDark : light,
+                                        color: mode === 'light' ? deepDark : light,
                                         mb: 0.5,
                                         mr: 1.5,
                                     }}
                                     onChange={handleInputChange}
                                     InputLabelProps={{
                                         sx: {
-                                            color:
-                                                mode === 'light'
-                                                    ? deepDark
-                                                    : light,
+                                            color: mode === 'light' ? deepDark : light,
                                         },
                                     }}
-                                    variant='outlined'
+                                    variant="outlined"
                                     InputProps={{
                                         startAdornment: (
-                                            <InputAdornment position='start'>
+                                            <InputAdornment position="start">
                                                 <InstagramIcon
                                                     sx={{
                                                         color:
@@ -606,11 +587,10 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                 />
                             </Box>
                             <Button
-                                color='success'
+                                color="success"
                                 sx={{
                                     mt: 3,
-                                    backgroundColor:
-                                        mode === 'light' ? medium : light,
+                                    backgroundColor: mode === 'light' ? medium : light,
                                     color: bluegrey,
                                     font: '500 0.9rem Poppins, sans-serif',
                                     ':hover': {
@@ -618,7 +598,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
                                         color: 'black',
                                     },
                                 }}
-                                variant='contained'
+                                variant="contained"
                                 disabled={buttonStatus}
                                 onClick={saveChanges}
                             >
@@ -630,10 +610,7 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
             ) : (
                 <Box sx={{ p: '3px' }}>
                     <CustomSwitcherGroup>
-                        <CustomSwitcherButton
-                            onClick={() => navigate('/')}
-                            value='/'
-                        >
+                        <CustomSwitcherButton onClick={() => navigate('/')} value="/">
                             <GroupAddIcon /> Join Now
                         </CustomSwitcherButton>
                     </CustomSwitcherGroup>
@@ -641,6 +618,6 @@ function MainAppbar({ mode, themeChange, supportsPWA, promptInstall }) {
             )}
         </Box>
     );
-}
+};
 
 export default MainAppbar;

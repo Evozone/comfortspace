@@ -42,7 +42,7 @@ function Blogs({ mode }) {
                     setHasMore(false);
                 }
                 setLoading(false);
-            } catch (err) {
+            } catch (error) {
                 setLoading(false);
                 dispatch(
                     notifyAction(
@@ -51,7 +51,7 @@ function Blogs({ mode }) {
                         'Unable to load blogs! Please try again later.'
                     )
                 );
-                console.log(err);
+                console.log(error);
             }
         };
         getBlogs();

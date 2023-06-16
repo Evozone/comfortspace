@@ -5,8 +5,9 @@ import {
     START_LOADING,
     STOP_LOADING,
 } from './types';
+import { AuthState } from '../reducers/authReducer';
 
-export const notifyAction = (open, severity, message) => {
+export const notifyAction = (open: boolean, severity: string, message: string) => {
     return {
         type: NOTIFY,
         payload: {
@@ -18,17 +19,19 @@ export const notifyAction = (open, severity, message) => {
 };
 
 export const signInAction = (
-    uid,
-    email,
-    name,
-    photoURL,
-    username,
-    socialLinks,
-    token
-) => {
+    isSignedIn: boolean,
+    uid: string | null,
+    email: string | null,
+    name: string | null,
+    photoURL: string | null,
+    username: string | null,
+    socialLinks: { twitter: string; instagram: string } | null,
+    token: string | null
+) : { type: string, payload: AuthState }  => {
     return {
         type: SIGN_IN,
         payload: {
+            isSignedIn,
             uid,
             email,
             name,
@@ -39,7 +42,6 @@ export const signInAction = (
         },
     };
 };
-
 export const signOutAction = () => {
     return {
         type: SIGN_OUT,

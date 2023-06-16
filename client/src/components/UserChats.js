@@ -69,7 +69,7 @@ function UserChats({
                         };
                     })
                 );
-            } catch (err) {
+            } catch (error) {
                 dispatch(
                     notifyAction(
                         true,
@@ -77,7 +77,7 @@ function UserChats({
                         'It seems something is wrong, please log out and log in again. in a minute :('
                     )
                 );
-                console.log(err);
+                console.log(error);
             }
             dispatch(stopLoadingAction());
         };

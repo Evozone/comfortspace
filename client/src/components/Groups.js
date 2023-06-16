@@ -94,7 +94,7 @@ function Groups({ mode }) {
                 .then((data) => {
                     managementToken = data.data.token;
                 })
-                .catch((err) => {
+                .catch((error) => {
                     alert('Something went wrong, please try again later.');
                 });
             const requestOptions = {
@@ -113,7 +113,7 @@ function Groups({ mode }) {
             await fetch('https://api.100ms.live/v2/rooms', requestOptions)
                 .then((response) => response.json())
                 .then((data) => setRoomId(data.id))
-                .catch((err) => {
+                .catch((error) => {
                     alert('Something went wrong, please try again later.');
                 });
         };

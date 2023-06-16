@@ -1,6 +1,17 @@
 import { SIGN_IN, SIGN_OUT } from '../actions/types';
 
-const INITIAL_STATE = {
+export interface AuthState {
+    isSignedIn: boolean;
+    uid: string | null;
+    email: string | null;
+    name: string | null;
+    photoURL: string | null;
+    username: string | null;
+    socialLinks: { twitter: string; instagram: string } | null;
+    token: string | null;
+}
+
+const INITIAL_STATE: AuthState = {
     isSignedIn: false,
     uid: null,
     email: null,
@@ -8,9 +19,10 @@ const INITIAL_STATE = {
     photoURL: null,
     username: null,
     socialLinks: null,
+    token: null,
 };
 
-const authReducer = (state = INITIAL_STATE, action) => {
+const authReducer = (state: AuthState = INITIAL_STATE, action: any): AuthState => {
     switch (action.type) {
         case SIGN_IN:
             window.localStorage.setItem(
@@ -19,7 +31,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
             );
             return {
                 ...state,
-                isSignedIn: true,
+                isSignedIn: action.payload.isSignedIn,
                 uid: action.payload.uid,
                 email: action.payload.email,
                 name: action.payload.name,
@@ -39,6 +51,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 photoURL: null,
                 username: null,
                 socialLinks: null,
+                token: null,
             };
 
         default:

@@ -38,7 +38,7 @@ function SearchUser({ mode, handleChatClick }) {
                         `${process.env.REACT_APP_SERVER_URL}/api/user/${currentUser.uid}?search=${event.target.value}`
                     );
                     setSearchResults(data.result);
-                } catch (err) {
+                } catch (error) {
                     dispatch(
                         notifyAction(
                             true,
@@ -46,7 +46,7 @@ function SearchUser({ mode, handleChatClick }) {
                             'It seems something is wrong, please log out and log in again. in a minute :('
                         )
                     );
-                    console.log(err);
+                    console.log(error);
                 }
                 setSearchStatus(null);
             }, 1100);
@@ -70,7 +70,7 @@ function SearchUser({ mode, handleChatClick }) {
                 lastMessageTime,
             });
             handleChatClick({ ...user, new: true });
-        } catch (err) {
+        } catch (error) {
             dispatch(
                 notifyAction(
                     true,
@@ -78,7 +78,7 @@ function SearchUser({ mode, handleChatClick }) {
                     'It seems something is wrong, please log out and log in again. in a minute :('
                 )
             );
-            console.log(err);
+            console.log(error);
         }
     };
 

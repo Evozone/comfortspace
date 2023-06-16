@@ -54,6 +54,7 @@ const GoogleOneTapLogin = () => {
                 const user = result.data.result;
                 dispatch(
                     signInAction(
+                        true,
                         user.uid,
                         user.email,
                         user.name,
@@ -66,8 +67,8 @@ const GoogleOneTapLogin = () => {
                 window.localStorage.setItem('healthAppLastPage', 'groups');
                 navigate('/groups');
             })
-            .catch((err) => {
-                console.log(err);
+            .catch((error) => {
+                console.log(error);
                 alert('Something went wrong, please try again later.');
             });
         dispatch(stopLoadingAction());
