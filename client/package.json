@@ -26,6 +26,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "compile": "tsc",
     "test": "TZ=UTC react-scripts test --env=jsdom --verbose",
     "eject": "react-scripts eject",
     "coverage": "TZ=UTC react-scripts test --env=jsdom --verbose --coverage --watchAll"

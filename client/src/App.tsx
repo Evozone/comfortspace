@@ -18,10 +18,10 @@ import Exam from './components/Exam';
 import Groups from './components/Groups';
 import VoiceRoom from './components/VoiceRoom';
 
-import Blogs from './components/Blogs.js';
-import ViewBlog from './components/ViewBlog.js';
-import CreateBlog from './components/CreateBlog.js';
-import EditBlog from './components/EditBlog.js';
+import Blogs from './components/Blogs';
+import ViewBlog from './components/ViewBlog';
+import CreateBlog from './components/CreateBlog';
+import EditBlog from './components/EditBlog';
 
 import Connect from './components/Connect.js';
 import PersonalCall from './components/PersonalCall.js';
@@ -137,7 +137,7 @@ const App = () => {
                     path="/blogs"
                     element={
                         <ProtectedRoute>
-                            <Blogs themeChange={themeChange} mode={mode} />
+                            <Blogs mode={mode} />
                         </ProtectedRoute>
                     }
                 />
@@ -153,7 +153,7 @@ const App = () => {
                                     promptInstall,
                                 }}
                             />
-                            <ViewBlog themeChange={themeChange} mode={mode} />
+                            <ViewBlog mode={mode} />
                         </>
                     }
                 />
@@ -161,7 +161,7 @@ const App = () => {
                     path="/createBlog"
                     element={
                         <ProtectedRoute>
-                            <CreateBlog themeChange={themeChange} mode={mode} />
+                            <CreateBlog mode={mode} />
                         </ProtectedRoute>
                     }
                 />
@@ -169,7 +169,7 @@ const App = () => {
                     path="/editBlog/:id"
                     element={
                         <ProtectedRoute>
-                            <EditBlog themeChange={themeChange} mode={mode} />
+                            <EditBlog mode={mode} />
                         </ProtectedRoute>
                     }
                 />
