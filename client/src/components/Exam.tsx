@@ -1,3 +1,4 @@
+import React from 'react';
 import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -6,9 +7,10 @@ import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 
 import QuestionTable from './QuestionTable';
 import { bluegrey, richBlack, light, deepDark } from '../utils/colors';
+import { AuthState } from 'src/reducers/authReducer';
 
-function Exam({ mode }) {
-    const currentUser = useSelector((state) => state.auth);
+const Exam = ({ mode }: { mode: string }) => {
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
 
     return (
         <Box
@@ -23,8 +25,8 @@ function Exam({ mode }) {
             }}
         >
             <Typography
-                variant='h1'
-                component='h2'
+                variant="h1"
+                component="h2"
                 sx={{
                     color: mode === 'light' ? deepDark : light,
                     margin: '2rem',
@@ -40,13 +42,10 @@ function Exam({ mode }) {
                 <ModeIcon sx={{ fontSize: '3rem', marginLeft: '1rem' }} />
             </Typography>
             <Typography
-                variant='h2'
-                component='h3'
+                variant="h2"
+                component="h3"
                 sx={{
-                    color:
-                        mode === 'light'
-                            ? deepDark.concat('aa')
-                            : light.concat('aa'),
+                    color: mode === 'light' ? deepDark.concat('aa') : light.concat('aa'),
                     margin: '2rem',
                     fontFamily: 'Work Sans',
                     fontWeight: 'medium',
@@ -74,8 +73,8 @@ function Exam({ mode }) {
                 }}
             >
                 <Typography
-                    variant='h2'
-                    component='h3'
+                    variant="h2"
+                    component="h3"
                     sx={{
                         mb: '1rem',
                         fontWeight: 'medium',
@@ -105,13 +104,13 @@ function Exam({ mode }) {
                         alignItems: 'center',
                     }}
                 >
-                    Online screening tools are meant to be a quick snapshot of
-                    your mental health. If your results indicate you may be
-                    experiencing symptoms of a mental illness, consider sharing
-                    your results with someone you trust. We can only provide you
-                    some simple assessments, A mental health provider (such as a
-                    doctor or a therapist) can give you a full assessment and
-                    talk to you about options for how to feel better.<br></br>
+                    Online screening tools are meant to be a quick snapshot of your mental
+                    health. If your results indicate you may be experiencing symptoms of a
+                    mental illness, consider sharing your results with someone you trust.
+                    We can only provide you some simple assessments, A mental health
+                    provider (such as a doctor or a therapist) can give you a full
+                    assessment and talk to you about options for how to feel better.
+                    <br></br>
                 </Typography>
             </Box>
             <Box>
@@ -119,6 +118,6 @@ function Exam({ mode }) {
             </Box>
         </Box>
     );
-}
+};
 
 export default Exam;

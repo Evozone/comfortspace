@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuid } from 'uuid';
@@ -18,34 +18,24 @@ import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import Typography from '@mui/material/Typography';
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import CancelIcon from '@mui/icons-material/Cancel';
-
-import {
-    bluegrey,
-    richBlack,
-    light,
-    medium,
-    dark,
-    deepDark,
-} from '../utils/colors';
 import { useHMSActions } from '@100mslive/hms-video-react';
-import {
-    startLoadingAction,
-    stopLoadingAction,
-    notifyAction,
-} from '../actions/actions';
 
-function Groups({ mode }) {
+import { bluegrey, richBlack, light, medium, dark, deepDark } from '../utils/colors';
+import { startLoadingAction, stopLoadingAction, notifyAction } from '../actions/actions';
+import { AuthState } from 'src/reducers/authReducer';
+
+const Groups = ({ mode }: { mode: string }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const hmsActions = useHMSActions();
-    const currentUser = useSelector((state) => state.auth);
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [roomId, setRoomId] = useState('');
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [coverImgURL, setCoverImgURL] = useState(null);
-    const [groups, setGroups] = useState(null);
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [roomId, setRoomId] = useState<string>('');
+    const [title, setTitle] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const [coverImgURL, setCoverImgURL] = useState<string | null>(null);
+    const [groups, setGroups] = useState<any[]>([]);
 
     useEffect(() => {
         console.log(
@@ -139,7 +129,7 @@ function Groups({ mode }) {
         }
     };
 
-    const joinGroup = (roomId, createdById) => {
+    const joinGroup = (roomId: string, createdById: string) => {
         dispatch(startLoadingAction());
         getToken(roomId, createdById)
             .then(async (token) => {
@@ -152,13 +142,7 @@ function Groups({ mode }) {
                     initEndpoint: process.env.REACT_APP_100MS_TOKEN_ENDPOINT,
                 });
                 dispatch(stopLoadingAction());
-                dispatch(
-                    notifyAction(
-                        true,
-                        'success',
-                        'Joined a Group successfully!'
-                    )
-                );
+                dispatch(notifyAction(true, 'success', 'Joined a Group successfully!'));
                 navigate(`/room/${roomId}`);
             })
             .catch((error) => {
@@ -174,11 +158,13 @@ function Groups({ mode }) {
             });
     };
 
-    const getToken = async (roomId, createdById) => {
+    const getToken = async (roomId: string, createdById: string) => {
         var role = '';
-        createdById.includes(currentUser.uid)
+
+        createdById.includes(currentUser.uid || '')
             ? (role = 'moderator')
             : (role = 'participant');
+
         const response = await fetch(
             `${process.env.REACT_APP_100MS_TOKEN_ENDPOINT}api/token`,
             {
@@ -194,15 +180,15 @@ function Groups({ mode }) {
         return token;
     };
 
-    const createNewGroup = async (e) => {
-        e.preventDefault();
+    const createNewGroup = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         if (!title || !description || !coverImgURL) {
             alert('Please fill all the fields');
             return;
         }
         try {
             const auth = window.localStorage.getItem('healthApp');
-            const { dnd } = JSON.parse(auth);
+            const { dnd } = JSON.parse(auth || '');
             const data = {
                 roomId,
                 title,
@@ -222,7 +208,13 @@ function Groups({ mode }) {
             setTitle('');
             setDescription('');
             setCoverImgURL(null);
-            setGroups((prev) => [...prev, response.data.result]);
+            setGroups((prev) => {
+                if (prev === null) {
+                    return [response.data.result];
+                } else {
+                    return [...prev, response.data.result];
+                }
+            });
         } catch (error) {
             console.log(error);
             dispatch(
@@ -235,13 +227,11 @@ function Groups({ mode }) {
         }
     };
 
-    const deleteGroup = async (roomId) => {
-        const choice = window.confirm(
-            'Are you sure you want to delete this group?'
-        );
+    const deleteGroup = async (roomId: string) => {
+        const choice = window.confirm('Are you sure you want to delete this group?');
         if (!choice) return;
         const auth = window.localStorage.getItem('healthApp');
-        const { dnd } = JSON.parse(auth);
+        const { dnd } = JSON.parse(auth || '');
         try {
             await axios({
                 method: 'DELETE',
@@ -252,9 +242,7 @@ function Groups({ mode }) {
                 },
             });
             window.location.reload();
-            dispatch(
-                notifyAction(true, 'success', 'Deleted a Group successfully!')
-            );
+            dispatch(notifyAction(true, 'success', 'Deleted a Group successfully!'));
         } catch (error) {
             console.log(error);
             dispatch(
@@ -280,8 +268,8 @@ function Groups({ mode }) {
             }}
         >
             <Typography
-                variant='h1'
-                component='h2'
+                variant="h1"
+                component="h2"
                 sx={{
                     color: mode === 'light' ? deepDark : light,
                     margin: '2rem',
@@ -294,19 +282,14 @@ function Groups({ mode }) {
                 }}
             >
                 Support Groups
-                <RecordVoiceOverIcon
-                    sx={{ fontSize: '3rem', marginLeft: '1rem' }}
-                />
+                <RecordVoiceOverIcon sx={{ fontSize: '3rem', marginLeft: '1rem' }} />
             </Typography>
 
             <Typography
-                variant='h2'
-                component='h3'
+                variant="h2"
+                component="h3"
                 sx={{
-                    color:
-                        mode === 'light'
-                            ? deepDark.concat('aa')
-                            : light.concat('aa'),
+                    color: mode === 'light' ? deepDark.concat('aa') : light.concat('aa'),
                     margin: '2rem',
                     fontFamily: 'Work Sans',
                     fontWeight: 'medium',
@@ -329,17 +312,13 @@ function Groups({ mode }) {
                     gridAutoFlow: 'dense',
                 }}
             >
-                {groups &&
+                {groups.length > 0 &&
                     groups.map((space) => (
                         <Card
                             key={space.roomId}
                             sx={{
-                                backgroundColor:
-                                    mode === 'light' ? deepDark : richBlack,
-                                color:
-                                    mode === 'light'
-                                        ? light
-                                        : dark.concat('aa'),
+                                backgroundColor: mode === 'light' ? deepDark : richBlack,
+                                color: mode === 'light' ? light : dark.concat('aa'),
                                 borderRadius: '10px',
                                 border:
                                     mode === 'light'
@@ -359,10 +338,9 @@ function Groups({ mode }) {
                             />
                             <CardContent>
                                 <Typography
-                                    variant='h5'
+                                    variant="h5"
                                     sx={{
-                                        color:
-                                            mode === 'light' ? light : medium,
+                                        color: mode === 'light' ? light : medium,
                                         font: '600 1.5rem/1.5rem Poppins, sans-serif',
                                         mb: '0.5rem',
                                     }}
@@ -370,8 +348,8 @@ function Groups({ mode }) {
                                     {space.title}
                                 </Typography>
                                 <Typography
-                                    variant='subtitle2'
-                                    color='textSecondary'
+                                    variant="subtitle2"
+                                    color="textSecondary"
                                     sx={{
                                         m: 0,
                                     }}
@@ -388,7 +366,7 @@ function Groups({ mode }) {
                                     }}
                                 >
                                     <Typography
-                                        variant='body1'
+                                        variant="body1"
                                         sx={{
                                             font: '400 1rem/1.5rem Work Sans, sans-serif',
                                         }}
@@ -398,8 +376,8 @@ function Groups({ mode }) {
                                 </Box>
                                 <Button
                                     disableElevation
-                                    color='success'
-                                    variant='contained'
+                                    color="success"
+                                    variant="contained"
                                     sx={{
                                         mt: 0,
                                         backgroundColor:
@@ -411,10 +389,7 @@ function Groups({ mode }) {
                                         },
                                     }}
                                     onClick={() => {
-                                        joinGroup(
-                                            space.roomId,
-                                            space.createdById
-                                        );
+                                        joinGroup(space.roomId, space.createdById);
                                     }}
                                     endIcon={<PhoneInTalkIcon />}
                                 >
@@ -424,8 +399,8 @@ function Groups({ mode }) {
                                     <Button
                                         sx={{ ml: 2 }}
                                         disableElevation
-                                        variant='contained'
-                                        color='error'
+                                        variant="contained"
+                                        color="error"
                                         endIcon={<DeleteIcon />}
                                         onClick={() => {
                                             deleteGroup(space._id);
@@ -486,7 +461,7 @@ function Groups({ mode }) {
                             top: 10,
                             right: 10,
                         }}
-                        cursor='pointer'
+                        cursor="pointer"
                         onClick={() => {
                             setTitle('');
                             setDescription('');
@@ -496,7 +471,7 @@ function Groups({ mode }) {
                         }}
                     />
                     <Typography
-                        variant='h4'
+                        variant="h4"
                         sx={{
                             textAlign: 'center',
                             mb: 3,
@@ -514,11 +489,11 @@ function Groups({ mode }) {
                         }}
                     >
                         <TextField
-                            color='success'
+                            color="success"
                             fullWidth
                             required
-                            id='outlined-required'
-                            label='Title'
+                            id="outlined-required"
+                            label="Title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             sx={{
@@ -533,11 +508,11 @@ function Groups({ mode }) {
                             }}
                         />
                         <TextField
-                            color='success'
+                            color="success"
                             fullWidth
                             required
-                            id='outlined-required'
-                            label='Description (max 55 characters)'
+                            id="outlined-required"
+                            label="Description (max 55 characters)"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             sx={{
@@ -560,19 +535,18 @@ function Groups({ mode }) {
                                     alignSelf: 'center',
                                     position: 'relative',
                                 }}
-                                alt='loading ...'
+                                alt="loading ..."
                                 src={coverImgURL}
                             />
                         )}
                         <Button
                             disableElevation
-                            color='success'
-                            variant='contained'
+                            color="success"
+                            variant="contained"
                             sx={{
                                 mt: 1,
                                 alignSelf: 'center',
-                                backgroundColor:
-                                    mode === 'light' ? medium : light,
+                                backgroundColor: mode === 'light' ? medium : light,
                                 color: 'black',
                                 ':hover': {
                                     backgroundColor: medium,
@@ -584,32 +558,31 @@ function Groups({ mode }) {
                             Change Cover Image
                         </Button>
                         <Button
-                            color='success'
-                            variant='contained'
+                            color="success"
+                            variant="contained"
                             disableElevation
                             sx={{
                                 mt: 1,
                                 mb: 1,
                                 alignSelf: 'flex-end',
-                                backgroundColor:
-                                    mode === 'light' ? medium : light,
+                                backgroundColor: mode === 'light' ? medium : light,
                                 color: 'black',
                                 ':hover': {
                                     backgroundColor: medium,
                                     color: 'black',
                                 },
                             }}
-                            type='submit'
+                            type="submit"
                         >
                             Create
                         </Button>
                     </form>
                 </Box>
             </Modal>
-            <Tooltip title='Create a new Group'>
+            <Tooltip title="Create a new Group">
                 <Fab
-                    color='primary'
-                    aria-label='add'
+                    color="primary"
+                    aria-label="add"
                     sx={{
                         position: 'fixed',
                         bottom: '2rem',
@@ -643,6 +616,6 @@ function Groups({ mode }) {
             </Tooltip>
         </Box>
     );
-}
+};
 
 export default Groups;

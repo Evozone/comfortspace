@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -21,17 +21,16 @@ import {
 import { bluegrey, light, deepDark } from '../utils/colors';
 import PeerInRoom from './PeerInRoom';
 
-function VoiceRoom({ mode }) {
+const VoiceRoom = ({ mode }: { mode: string }) => {
     const peers = useHMSStore(selectPeers);
     const isConnected = useHMSStore(selectIsConnectedToRoom);
     const navigate = useNavigate();
     const hmsActions = useHMSActions();
 
-    const [deafen, setDeafen] = useState(false);
+    const [deafen, setDeafen] = useState<boolean>(false);
+    const isLocalAudioEnabled = useHMSStore<boolean>(selectIsLocalAudioEnabled);
 
-    const isLocalAudioEnabled = useHMSStore(selectIsLocalAudioEnabled);
-
-    const setPeersVolume = (volume) => {
+    const setPeersVolume = (volume: number) => {
         for (const peer of peers) {
             if (peer.audioTrack) {
                 hmsActions.setVolume(volume, peer.audioTrack);
@@ -93,14 +92,12 @@ function VoiceRoom({ mode }) {
                     backgroundColor: deepDark,
                 }}
             >
-                <Stack direction='row' spacing={2}>
+                <Stack direction="row" spacing={2}>
                     {isLocalAudioEnabled ? (
-                        <Tooltip title='Mute' arrow>
+                        <Tooltip title="Mute" arrow>
                             <IconButton
                                 onClick={() =>
-                                    hmsActions.setLocalAudioEnabled(
-                                        !isLocalAudioEnabled
-                                    )
+                                    hmsActions.setLocalAudioEnabled(!isLocalAudioEnabled)
                                 }
                                 sx={{ color: 'white' }}
                             >
@@ -108,12 +105,10 @@ function VoiceRoom({ mode }) {
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title='Mute' arrow>
+                        <Tooltip title="Mute" arrow>
                             <IconButton
                                 onClick={() => {
-                                    hmsActions.setLocalAudioEnabled(
-                                        !isLocalAudioEnabled
-                                    );
+                                    hmsActions.setLocalAudioEnabled(!isLocalAudioEnabled);
                                 }}
                                 sx={{
                                     backgroundColor: 'white',
@@ -127,16 +122,13 @@ function VoiceRoom({ mode }) {
                         </Tooltip>
                     )}
                     {!deafen ? (
-                        <Tooltip title='Deafen' arrow>
-                            <IconButton
-                                sx={{ color: 'white' }}
-                                onClick={toggleDeafen}
-                            >
+                        <Tooltip title="Deafen" arrow>
+                            <IconButton sx={{ color: 'white' }} onClick={toggleDeafen}>
                                 <HeadsetIcon />
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title='Undeafen' arrow>
+                        <Tooltip title="Undeafen" arrow>
                             <IconButton
                                 sx={{
                                     backgroundColor: 'white',
@@ -168,6 +160,6 @@ function VoiceRoom({ mode }) {
             </Paper>
         </Box>
     );
-}
+};
 
 export default VoiceRoom;

@@ -1,8 +1,9 @@
+import React from 'react';
 import Box from '@mui/material/Box';
 import GoogleOneTapLogin from './GoogleOneTapLogin';
 import Typography from '@mui/material/Typography';
 
-function LandingPage() {
+const LandingPage = () => {
     return (
         <Box
             sx={{
@@ -15,9 +16,9 @@ function LandingPage() {
             }}
         >
             <Box
-                component='img'
-                src='/assets/vectors/tree-landing.svg'
-                alt='tree-svg'
+                component="img"
+                src="/assets/vectors/tree-landing.svg"
+                alt="tree-svg"
                 sx={{
                     height: '120%',
                     width: 'auto',
@@ -63,7 +64,7 @@ function LandingPage() {
                     >
                         <img
                             src={'/assets/vectors/logo-800x800.svg'}
-                            alt='logo'
+                            alt="logo"
                             style={{
                                 width: '400px',
                                 height: '400px',
@@ -113,24 +114,23 @@ function LandingPage() {
                                 border: '1px solid rgba(255, 255, 255, 0.8)',
                             }}
                         >
-                            ComfortSpace is a web app which focuses on creating
-                            a safe and supportive environment. Whether you're
-                            looking for a community to connect with or
-                            professional guidance, ComfortSpace is here to help.
-                            Remember, <br />
+                            ComfortSpace is a web app which focuses on creating a safe and
+                            supportive environment. Whether you're looking for a community
+                            to connect with or professional guidance, ComfortSpace is here
+                            to help. Remember, <br />
                             it's OK Not To Be OK.
                         </Typography>
                         <Box sx={{ mt: 3 }}>
                             <iframe
-                                title='spotify'
+                                title="spotify"
                                 style={{
                                     width: '60%',
                                     height: '85px',
-                                    mt: '20px',
+                                    marginTop: '20px',
                                     border: 0,
                                 }}
-                                src='https://open.spotify.com/embed/track/0zzVTGyRrWpQu8Fr28NRAv?utm_source=generator'
-                                allow='encrypted-media'
+                                src="https://open.spotify.com/embed/track/0zzVTGyRrWpQu8Fr28NRAv?utm_source=generator"
+                                allow="encrypted-media"
                             />
                         </Box>
                         <GoogleOneTapLogin />
@@ -143,9 +143,9 @@ function LandingPage() {
                             color: 'black',
                             fontSize: '0.7rem',
                         }}
-                        href='https://loading.io/icon/'
-                        target='_blank'
-                        rel='noreferrer'
+                        href="https://loading.io/icon/"
+                        target="_blank"
+                        rel="noreferrer"
                     >
                         the icon "loading" is provided by loading.io
                     </a>
@@ -153,6 +153,6 @@ function LandingPage() {
             </Box>
         </Box>
     );
-}
+};
 
 export default LandingPage;

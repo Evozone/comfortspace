@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
@@ -13,6 +13,7 @@ import RemoveModeratorIcon from '@mui/icons-material/RemoveModerator';
 import ListItemText from '@mui/material/ListItemText';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
+    HMSPeer,
     useHMSActions,
     useHMSStore,
     selectIsPeerAudioEnabled,
@@ -21,25 +22,31 @@ import {
 
 import { light, bluegrey, deepDark } from '../utils/colors';
 
-function PeerInRoom({ peer, mode }) {
+interface PeerInRoomProps {
+    peer: HMSPeer;
+    mode: string;
+}
+
+const PeerInRoom: React.FC<PeerInRoomProps> = ({ peer, mode }) => {
     const hmsActions = useHMSActions();
     const audioEnabled = useHMSStore(selectIsPeerAudioEnabled(peer.id));
     const localPeer = useHMSStore(selectLocalPeer);
     const isModerator = localPeer.roleName === 'moderator';
 
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const mutePeer = () => {
         if (isModerator) {
-            hmsActions.setRemoteTrackEnabled(peer.audioTrack, false);
+            const audioTrack = peer.audioTrack || '';
+            hmsActions.setRemoteTrackEnabled(audioTrack, false);
         }
     };
 
-    const changeRole = (role) => {
+    const changeRole = (role: string) => {
         hmsActions.changeRoleOfPeer(peer.id, role, true);
     };
 
-    const handleMenuClick = (event) => {
+    const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
@@ -83,67 +90,49 @@ function PeerInRoom({ peer, mode }) {
                         onClose={handleMenuClose}
                         sx={{
                             '& .MuiPaper-root': {
-                                backgroundColor:
-                                    mode === 'light' ? light : bluegrey,
+                                backgroundColor: mode === 'light' ? light : bluegrey,
                             },
                         }}
                     >
                         {audioEnabled ? (
                             <Tooltip
-                                placement='top'
+                                placement="top"
                                 title={`Mute ${peer.name.split('@')[0]}`}
                             >
                                 <MenuItem onClick={mutePeer}>
                                     <MicIcon />
-                                    <ListItemText
-                                        sx={{ ml: 1 }}
-                                        primary='Unmuted'
-                                    />
+                                    <ListItemText sx={{ ml: 1 }} primary="Unmuted" />
                                 </MenuItem>
                             </Tooltip>
                         ) : (
-                            <Tooltip
-                                placement='top'
-                                title={`User cannot be unmuted`}
-                            >
+                            <Tooltip placement="top" title={`User cannot be unmuted`}>
                                 <MenuItem>
                                     <MicOffIcon />
-                                    <ListItemText
-                                        sx={{ ml: 1 }}
-                                        primary='Muted'
-                                    />
+                                    <ListItemText sx={{ ml: 1 }} primary="Muted" />
                                 </MenuItem>
                             </Tooltip>
                         )}
                         {peer.roleName === 'participant' ? (
                             <Tooltip
-                                title={`Make ${
-                                    peer.name.split('@')[0]
-                                } a moderator`}
+                                title={`Make ${peer.name.split('@')[0]} a moderator`}
                             >
-                                <MenuItem
-                                    onClick={() => changeRole('moderator')}
-                                >
+                                <MenuItem onClick={() => changeRole('moderator')}>
                                     <AddModeratorIcon />
                                     <ListItemText
                                         sx={{ ml: 1 }}
-                                        primary='Make Moderator'
+                                        primary="Make Moderator"
                                     />
                                 </MenuItem>
                             </Tooltip>
                         ) : (
                             <Tooltip
-                                title={`Make ${
-                                    peer.name.split('@')[0]
-                                } a participant`}
+                                title={`Make ${peer.name.split('@')[0]} a participant`}
                             >
-                                <MenuItem
-                                    onClick={() => changeRole('participant')}
-                                >
+                                <MenuItem onClick={() => changeRole('participant')}>
                                     <RemoveModeratorIcon />
                                     <ListItemText
                                         sx={{ ml: 1 }}
-                                        primary='Make Participant'
+                                        primary="Make Participant"
                                     />
                                 </MenuItem>
                             </Tooltip>
@@ -197,11 +186,13 @@ function PeerInRoom({ peer, mode }) {
                     left: '10px',
                 }}
             >
-                {peer.roleName.charAt(0).toUpperCase() + peer.roleName.slice(1)}
+                {peer?.roleName
+                    ? peer.roleName.charAt(0).toUpperCase() + peer.roleName.slice(1)
+                    : ''}
                 {/* {peer.name.split('@')[0]} */}
             </Typography>
         </Box>
     );
-}
+};
 
 export default PeerInRoom;

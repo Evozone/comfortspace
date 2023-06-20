@@ -11,12 +11,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import MainAppbar from './components/MainAppbar';
 import Loading from './components/Loading';
 import Notify from './components/Notify';
-import LandingPage from './components/LandingPage.js';
-import ProtectedRoute from './components/ProtectedRoute.js';
-import Exam from './components/Exam.js';
+import LandingPage from './components/LandingPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import Exam from './components/Exam';
 
-import Groups from './components/Groups.js';
-import VoiceRoom from './components/VoiceRoom.js';
+import Groups from './components/Groups';
+import VoiceRoom from './components/VoiceRoom';
 
 import Blogs from './components/Blogs.js';
 import ViewBlog from './components/ViewBlog.js';
@@ -30,7 +30,7 @@ import { customGlobalScrollBars, smoothScrolling } from './components/CustomGlob
 import { signInAction } from './actions/actions';
 import { AuthState } from './reducers/authReducer';
 
-function App() {
+const App = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -118,7 +118,7 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
-                                <Groups themeChange={themeChange} mode={mode} />
+                                <Groups mode={mode} />
                             </HMSRoomProvider>
                         </ProtectedRoute>
                     }
@@ -128,7 +128,7 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <HMSRoomProvider>
-                                <VoiceRoom themeChange={themeChange} mode={mode} />
+                                <VoiceRoom mode={mode} />
                             </HMSRoomProvider>
                         </ProtectedRoute>
                     }
@@ -193,13 +193,13 @@ function App() {
                     path="/exam"
                     element={
                         <ProtectedRoute>
-                            <Exam themeChange={themeChange} mode={mode} />
+                            <Exam mode={mode} />
                         </ProtectedRoute>
                     }
                 />
             </Routes>
         </ThemeProvider>
     );
-}
+};
 
 export default App;

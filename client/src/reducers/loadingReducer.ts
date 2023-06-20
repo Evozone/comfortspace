@@ -1,10 +1,17 @@
 import { START_LOADING, STOP_LOADING } from '../actions/types';
 
-const INITIAL_STATE = {
+export interface LoadingState {
+    isVisible: boolean;
+}
+
+const INITIAL_STATE: LoadingState = {
     isVisible: false,
 };
 
-const modalReducer = (state = INITIAL_STATE, action) => {
+const loadingReducer = (
+    state: LoadingState = INITIAL_STATE,
+    action: any
+): LoadingState => {
     switch (action.type) {
         case START_LOADING:
             return { isVisible: true };
@@ -17,4 +24,4 @@ const modalReducer = (state = INITIAL_STATE, action) => {
     }
 };
 
-export default modalReducer;
+export default loadingReducer;

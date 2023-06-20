@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -22,13 +22,16 @@ import {
     Legend,
 } from 'chart.js';
 
+import { AuthState } from '../reducers/authReducer';
 import { bluegrey, richBlack, light, medium, deepDark } from '../utils/colors';
 import { questions } from '../utils/questionTableData';
 
-function QuestionTable({ mode }) {
-    const currentUser = useSelector((state) => state.auth);
-    const [data, setData] = useState(null);
-    const [selectedOption, setSelectedOption] = useState({
+const QuestionTable = ({ mode }: { mode: string }) => {
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
+    const [data, setData] = useState<any>(null);
+    const [selectedOption, setSelectedOption] = useState<{
+        [key: number]: number | null;
+    }>({
         1: null,
         2: null,
         3: null,
@@ -90,15 +93,15 @@ function QuestionTable({ mode }) {
             ptsd = 0;
         for (let i = 0; i < 25; i++) {
             if (questions[i].disorder === 'ocd') {
-                ocd += selectedOption[i + 1];
+                ocd += selectedOption[i + 1] ?? 0;
             } else if (questions[i].disorder === 'ADHD') {
-                adhd += selectedOption[i + 1];
+                adhd += selectedOption[i + 1] ?? 0;
             } else if (questions[i].disorder === 'depression') {
-                depression += selectedOption[i + 1];
+                depression += selectedOption[i + 1] ?? 0;
             } else if (questions[i].disorder === 'anxiety') {
-                anxiety += selectedOption[i + 1];
+                anxiety += selectedOption[i + 1] ?? 0;
             } else if (questions[i].disorder === 'PTSD') {
-                ptsd += selectedOption[i + 1];
+                ptsd += selectedOption[i + 1] ?? 0;
             }
         }
         ocd = Math.round(ocd / 5);
@@ -151,18 +154,16 @@ function QuestionTable({ mode }) {
                     <TableRow>
                         <TableCell
                             sx={{
-                                backgroundColor:
-                                    mode === 'light' ? medium : deepDark,
+                                backgroundColor: mode === 'light' ? medium : deepDark,
                                 borderRadius: '15px 0 0 0',
                                 border: 'none',
                             }}
                         >
                             <Typography
-                                variant='h4'
-                                component='h4'
+                                variant="h4"
+                                component="h4"
                                 sx={{
-                                    color:
-                                        mode === 'light' ? deepDark : richBlack,
+                                    color: mode === 'light' ? deepDark : richBlack,
                                     fontFamily: 'Work Sans',
                                     fontWeight: 'medium',
                                     fontSize: '1.3rem',
@@ -190,15 +191,14 @@ function QuestionTable({ mode }) {
                                     p: 3,
                                     pb: 1,
                                 }}
-                                component='th'
-                                scope='row'
+                                component="th"
+                                scope="row"
                             >
                                 <Typography
-                                    variant='h4'
-                                    component='h4'
+                                    variant="h4"
+                                    component="h4"
                                     sx={{
-                                        color:
-                                            mode === 'light' ? deepDark : light,
+                                        color: mode === 'light' ? deepDark : light,
                                         m: '1rem',
                                         mt: '2px',
                                         mr: '2rem',
@@ -217,14 +217,10 @@ function QuestionTable({ mode }) {
                                     }}
                                 >
                                     <Typography
-                                        variant='h4'
-                                        component='h5'
+                                        variant="h4"
+                                        component="h5"
                                         sx={{
-                                            color:
-                                                mode === 'light'
-                                                    ? deepDark
-                                                    : light,
-                                            fontFamily: 'Work Sans',
+                                            color: mode === 'light' ? deepDark : light,
                                             fontWeight: 'medium',
                                             fontSize: '1.1rem',
                                             textAlign: 'left',
@@ -237,15 +233,12 @@ function QuestionTable({ mode }) {
                                         sx={{
                                             mb: '1.3rem',
                                         }}
-                                        aria-label={question.id}
                                         name={question.id.toString()}
                                         value={selectedOption[question.id]}
                                         onChange={(e) =>
                                             setSelectedOption({
                                                 ...selectedOption,
-                                                [question.id]: parseInt(
-                                                    e.target.value
-                                                ),
+                                                [question.id]: parseInt(e.target.value),
                                             })
                                         }
                                     >
@@ -254,29 +247,29 @@ function QuestionTable({ mode }) {
                                                 mr: '2rem',
                                             }}
                                             value={0}
-                                            label='Not at all'
-                                            control={<Radio color='success' />}
+                                            label="Not at all"
+                                            control={<Radio color="success" />}
                                         />
                                         <FormControlLabel
                                             sx={{
                                                 mr: '2rem',
                                             }}
                                             value={1}
-                                            control={<Radio color='success' />}
-                                            label='Some of the days'
+                                            control={<Radio color="success" />}
+                                            label="Some of the days"
                                         />
                                         <FormControlLabel
                                             sx={{
                                                 mr: '2rem',
                                             }}
                                             value={2}
-                                            label='Most of the days'
-                                            control={<Radio color='success' />}
+                                            label="Most of the days"
+                                            control={<Radio color="success" />}
                                         />
                                         <FormControlLabel
                                             value={3}
-                                            label='Nearly every day'
-                                            control={<Radio color='success' />}
+                                            label="Nearly every day"
+                                            control={<Radio color="success" />}
                                         />
                                     </RadioGroup>
                                 </Box>
@@ -286,8 +279,8 @@ function QuestionTable({ mode }) {
                 </TableBody>
             </Table>
             <Button
-                color='success'
-                variant='contained'
+                color="success"
+                variant="contained"
                 sx={{
                     p: 1,
                     px: 4,
@@ -309,14 +302,12 @@ function QuestionTable({ mode }) {
             {data && (
                 <Box
                     sx={{
-                        backgroundColor:
-                            mode === 'light' ? '#DBFFF1' : richBlack,
+                        backgroundColor: mode === 'light' ? '#DBFFF1' : richBlack,
                         boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.5)',
                         mt: 3,
                         p: '2rem',
                         borderRadius: '15px',
-                        border:
-                            mode === 'light' ? 'none' : `1px solid ${light}`,
+                        border: mode === 'light' ? 'none' : `1px solid ${light}`,
                         display: 'flex',
                         flexDirection: 'column',
                         height: '100%',
@@ -325,8 +316,8 @@ function QuestionTable({ mode }) {
                 >
                     <Box>
                         <Typography
-                            variant='h2'
-                            component='h3'
+                            variant="h2"
+                            component="h3"
                             sx={{
                                 mb: '1rem',
                                 color: mode === 'light' ? deepDark : light,
@@ -354,11 +345,7 @@ function QuestionTable({ mode }) {
                             padding: '1rem',
                         }}
                     >
-                        <Radar
-                            options={chartOptions}
-                            data={data}
-                            redraw={true}
-                        />
+                        <Radar options={chartOptions} data={data} redraw={true} />
                     </Box>
                     <Box
                         sx={{
@@ -378,29 +365,27 @@ function QuestionTable({ mode }) {
                                 alignItems: 'left',
                             }}
                         >
-                            The radar chart you see represents your scores in
-                            different areas of mental health disorders. Each
-                            point on the chart represents a score on a scale of
-                            0-3, with 0 indicating no symptoms and 3 indicating
-                            severe symptoms.
+                            The radar chart you see represents your scores in different
+                            areas of mental health disorders. Each point on the chart
+                            represents a score on a scale of 0-3, with 0 indicating no
+                            symptoms and 3 indicating severe symptoms.
                             <br />
                             <br />
                             Please note that this chart is not a substitute for
-                            professional medical advice and should not be used
-                            to diagnose or treat any condition. If you have any
-                            concerns about your mental health, we strongly
-                            recommend that you speak with a healthcare
-                            professional.
+                            professional medical advice and should not be used to diagnose
+                            or treat any condition. If you have any concerns about your
+                            mental health, we strongly recommend that you speak with a
+                            healthcare professional.
                             <br />
                             <br />
-                            You can share this chart with people you trust, but
-                            it's not intended to be used as a diagnostic tool.
+                            You can share this chart with people you trust, but it's not
+                            intended to be used as a diagnostic tool.
                         </Typography>
                     </Box>
                 </Box>
             )}
         </div>
     );
-}
+};
 
 export default QuestionTable;

@@ -1,12 +1,18 @@
 import { NOTIFY } from '../actions/types';
 
-const INITIAL_STATE = {
+export interface NotifyState {
+    open: boolean;
+    severity: string;
+    message: string;
+}
+
+const INITIAL_STATE: NotifyState = {
     open: false,
     severity: 'info',
     message: '',
 };
 
-const notifyReducer = (state = INITIAL_STATE, action) => {
+const notifyReducer = (state: NotifyState = INITIAL_STATE, action: any): NotifyState => {
     switch (action.type) {
         case NOTIFY:
             return {

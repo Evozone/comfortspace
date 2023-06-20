@@ -6,29 +6,40 @@ import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 
 import { useDispatch } from 'react-redux';
-import {
-    signInAction,
-    startLoadingAction,
-    stopLoadingAction,
-} from '../actions/actions';
+import { signInAction, startLoadingAction, stopLoadingAction } from '../actions/actions';
 
 import { light, deepDark } from '../utils/colors';
+
+declare global {
+    interface Window {
+        google: any;
+    }
+}
 
 const GoogleOneTapLogin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const googleButton = useRef(null);
+    const googleButton = useRef<HTMLDivElement>(null);
 
-    const [displayType, setDisplayType] = useState('flex');
-    const [gBtnDisplay, setGBtnDisplay] = useState('none');
+    const [displayType, setDisplayType] = useState<string>('flex');
+    const [gBtnDisplay, setGBtnDisplay] = useState<string>('none');
 
-    const handleResponse = async (response) => {
+    const handleResponse = async (response: { credential: {} }) => {
         dispatch(startLoadingAction());
-        const token = response.credential;
-        const { sub: uid, email, name, picture: photoURL } = jwtDecode(token);
+        const token = response.credential as string;
+        const {
+            sub: uid,
+            email,
+            name,
+            picture: photoURL,
+        } = jwtDecode(token) as {
+            sub: string;
+            email: string;
+            name: string;
+            picture: string;
+        };
         const username = email.split('@')[0];
-
         const config = {
             headers: {
                 'Content-type': 'application/json',
@@ -87,16 +98,13 @@ const GoogleOneTapLogin = () => {
                 width: 280,
                 text: 'continue_with',
             });
-            window.google.accounts.id.prompt((notification) => {
+            window.google.accounts.id.prompt((notification: any) => {
                 if (notification.isNotDisplayed()) {
                     setDisplayType('none');
                     setGBtnDisplay('flex');
                     alert('Please allow Third Party Cookies');
                 }
-                if (
-                    notification.isSkippedMoment() ||
-                    notification.isDismissedMoment()
-                ) {
+                if (notification.isSkippedMoment() || notification.isDismissedMoment()) {
                     setDisplayType('none');
                     setGBtnDisplay('flex');
                 }
@@ -109,7 +117,7 @@ const GoogleOneTapLogin = () => {
     return (
         <React.Fragment>
             <Button
-                variant='contained'
+                variant="contained"
                 startIcon={<Google />}
                 sx={{
                     display: displayType,
