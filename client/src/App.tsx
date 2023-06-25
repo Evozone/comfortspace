@@ -23,8 +23,8 @@ import ViewBlog from './components/ViewBlog';
 import CreateBlog from './components/CreateBlog';
 import EditBlog from './components/EditBlog';
 
-import Connect from './components/Connect.js';
-import PersonalCall from './components/PersonalCall.js';
+import Connect from './components/Connect';
+import PersonalCall from './components/PersonalCall';
 
 import { customGlobalScrollBars, smoothScrolling } from './components/CustomGlobalCSS';
 import { signInAction } from './actions/actions';

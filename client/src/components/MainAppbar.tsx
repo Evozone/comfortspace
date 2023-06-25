@@ -37,7 +37,7 @@ import {
     signInAction,
     notifyAction,
 } from '../actions/actions';
-import { AuthState } from 'src/reducers/authReducer';
+import { AuthState } from '../reducers/authReducer';
 
 interface MainAppbarProps {
     mode: string;

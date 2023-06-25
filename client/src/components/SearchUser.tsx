@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
@@ -17,18 +17,25 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 import { dark, deepDark, medium } from '../utils/colors';
 import { notifyAction } from '../actions/actions';
+import { AuthState } from '../reducers/authReducer';
+import { otherUser } from './Connect';
 import ProfileInfo from './ProfileInfo';
 
-function SearchUser({ mode, handleChatClick }) {
-    const dispatch = useDispatch();
-    const currentUser = useSelector((state) => state.auth);
-    const [searchStatus, setSearchStatus] = useState(null);
-    const [searchResults, setSearchResults] = useState(null);
-    const [timer, setTimer] = useState(null);
-    const [profileInfoOpen, setProfileInfoOpen] = useState(false);
-    const [otherUser, setOtherUser] = useState(null);
+interface SearchUserProps {
+    mode: string;
+    handleChatClick: (user: any) => void;
+}
 
-    const handleSearch = (event) => {
+const SearchUser: React.FC<SearchUserProps> = ({ mode, handleChatClick }) => {
+    const dispatch = useDispatch();
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
+    const [searchStatus, setSearchStatus] = useState<string | null>(null);
+    const [searchResults, setSearchResults] = useState<any>(null);
+    const [timer, setTimer] = useState<NodeJS.Timeout>();
+    const [profileInfoOpen, setProfileInfoOpen] = useState<boolean>(false);
+    const [otherUser, setOtherUser] = useState<otherUser | null>(null);
+
+    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.value.length > 0) {
             clearTimeout(timer);
             setSearchStatus('Searching...');
@@ -56,11 +63,9 @@ function SearchUser({ mode, handleChatClick }) {
         }
     };
 
-    const createChat = async (user) => {
-        const chatId =
-            currentUser.uid > user.uid
-                ? currentUser.uid + user.uid
-                : user.uid + currentUser.uid;
+    const createChat = async (user: otherUser) => {
+        const cId = currentUser.uid ? currentUser.uid : '';
+        const chatId = cId > user.uid ? cId + user.uid : user.uid + cId;
         const lastMessageTime = Date.now();
         try {
             await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/chat`, {
@@ -82,7 +87,7 @@ function SearchUser({ mode, handleChatClick }) {
         }
     };
 
-    const handleShowProfileInfo = (user) => {
+    const handleShowProfileInfo = (user: otherUser) => {
         setOtherUser(user);
         setProfileInfoOpen(true);
     };
@@ -92,7 +97,7 @@ function SearchUser({ mode, handleChatClick }) {
             <List sx={{ p: 0 }}>
                 <TextField
                     autoFocus
-                    label='Search for users'
+                    label="Search for users"
                     onChange={handleSearch}
                     sx={{
                         m: 2,
@@ -111,8 +116,8 @@ function SearchUser({ mode, handleChatClick }) {
                     }}
                     InputProps={{
                         endAdornment: (
-                            <Tooltip title='Search for users by typing their name or username'>
-                                <InputAdornment position='end'>
+                            <Tooltip title="Search for users by typing their name or username">
+                                <InputAdornment position="end">
                                     <IconButton>
                                         <SearchIcon />
                                     </IconButton>
@@ -120,11 +125,11 @@ function SearchUser({ mode, handleChatClick }) {
                             </Tooltip>
                         ),
                     }}
-                    size='small'
+                    size="small"
                 />
                 <Divider />
                 {searchResults &&
-                    searchResults.map((user) => (
+                    searchResults.map((user: any) => (
                         <ListItem
                             key={user.uid}
                             sx={{
@@ -139,12 +144,11 @@ function SearchUser({ mode, handleChatClick }) {
                         >
                             <Avatar
                                 src={user?.photoURL}
-                                alt='user avatar'
+                                alt="user avatar"
                                 sx={{
                                     width: 50,
                                     height: 50,
-                                    backgroundColor:
-                                        mode === 'light' ? deepDark : medium,
+                                    backgroundColor: mode === 'light' ? deepDark : medium,
                                 }}
                             >
                                 {user.name[0].toUpperCase()}
@@ -159,7 +163,7 @@ function SearchUser({ mode, handleChatClick }) {
                             </Typography>
                             <Tooltip
                                 title={`View ${user.name}'s Profile`}
-                                placement='bottom'
+                                placement="bottom"
                             >
                                 <IconButton
                                     sx={{
@@ -177,7 +181,7 @@ function SearchUser({ mode, handleChatClick }) {
                             </Tooltip>
                             <Tooltip
                                 title={`Start a conversation with ${user.name}`}
-                                placement='right'
+                                placement="right"
                             >
                                 <IconButton
                                     sx={{
@@ -205,8 +209,8 @@ function SearchUser({ mode, handleChatClick }) {
                         top: '36%',
                         right: '25%',
                     }}
-                    src='/assets/vectors/searching.svg'
-                    alt=''
+                    src="/assets/vectors/searching.svg"
+                    alt=""
                 />
             )}
             {searchResults && searchResults.length === 0 && (
@@ -226,6 +230,6 @@ function SearchUser({ mode, handleChatClick }) {
             )}
         </Box>
     );
-}
+};
 
 export default SearchUser;

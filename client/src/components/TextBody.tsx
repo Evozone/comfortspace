@@ -8,14 +8,22 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 import { formatTime12 } from '../utils/formatTimestamp';
 import { deepDark, medium, bluegrey, richBlack } from '../utils/colors';
+import { message } from './Connect';
+import { AuthState } from 'src/reducers/authReducer';
 
-export default function TextBody({ message, endRef }) {
-    const currentUser = useSelector((state) => state.auth);
-    const [messageTime, setMessageTime] = useState('');
-    const [isLink, setIsLink] = useState(false);
-    const [isImage, setIsImage] = useState(false);
-    const [imageModal, setImageModal] = useState(false);
-    const [imageURL, setImageURL] = useState('');
+interface TextBodyProps {
+    message: message;
+    endRef: any;
+}
+
+const TextBody: React.FC<TextBodyProps> = ({ message, endRef }) => {
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
+
+    const [messageTime, setMessageTime] = useState<string>('');
+    const [isLink, setIsLink] = useState<boolean>(false);
+    const [isImage, setIsImage] = useState<boolean>(false);
+    const [imageModal, setImageModal] = useState<boolean>(false);
+    const [imageURL, setImageURL] = useState<string>('');
 
     const urlRegex =
         /([a-zA-Z0-9]+:\/\/)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\.[A-Za-z]{2,4})(:[0-9]+)?(\/.*)?/;
@@ -33,30 +41,27 @@ export default function TextBody({ message, endRef }) {
         setIsLink(urlRegex.test(message.text));
     }, [message]);
 
-    const funcSplitMessage = (message) => {
+    const funcSplitMessage = (message: string) => {
         let splitMessage = message.split(splitUrlRegex);
 
         if (splitMessage.length === 1) {
             splitMessage = message.split(urlRegex);
         }
 
-        splitMessage = splitMessage.filter((item) => {
+        splitMessage = splitMessage.filter((item: string) => {
             return (
-                item !== '' &&
-                item !== undefined &&
-                item !== 'https' &&
-                item !== 'http'
+                item !== '' && item !== undefined && item !== 'https' && item !== 'http'
             );
         });
         return splitMessage;
     };
 
-    const handleImgModal = (e) => {
-        const src = e.target.src;
+    const handleImgModal = (event: any) => {
         if (imageModal) {
             setImageModal(false);
             setImageURL('');
         } else {
+            const src = event.target.src;
             setImageModal(true);
             setImageURL(src);
         }
@@ -67,7 +72,6 @@ export default function TextBody({ message, endRef }) {
             <Box
                 sx={{
                     borderRadius: '20px',
-                    borderBottomLeftRadius: '2px',
                     maxWidth: '30rem',
                     width: 'fit-content',
                     p: '12px',
@@ -82,7 +86,11 @@ export default function TextBody({ message, endRef }) {
                               borderBottomRightRadius: '1px',
                               backgroundColor: deepDark,
                           }
-                        : { backgroundColor: medium, color: bluegrey }),
+                        : {
+                              backgroundColor: medium,
+                              color: bluegrey,
+                              borderBottomLeftRadius: '2px',
+                          }),
                     ...(isImage
                         ? {
                               flexDirection: 'column',
@@ -95,8 +103,8 @@ export default function TextBody({ message, endRef }) {
                 <Modal
                     open={imageModal}
                     onClose={handleImgModal}
-                    aria-labelledby='modal-modal-title'
-                    aria-describedby='modal-modal-description'
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
                 >
                     <Box
                         sx={{
@@ -124,7 +132,7 @@ export default function TextBody({ message, endRef }) {
                                 top: 10,
                                 right: 10,
                             }}
-                            cursor='pointer'
+                            cursor="pointer"
                             onClick={handleImgModal}
                         />
                         <img
@@ -134,14 +142,14 @@ export default function TextBody({ message, endRef }) {
                                 maxHeight: '400px',
                                 display: 'block',
                             }}
-                            alt='Failed to load :('
+                            alt="Failed to load :("
                             src={imageURL}
                         />
                         <a
                             style={{ color: 'white' }}
                             href={imageURL}
-                            target='_blank'
-                            rel='noreferrer'
+                            target="_blank"
+                            rel="noreferrer"
                         >
                             Open Original
                         </a>
@@ -162,7 +170,7 @@ export default function TextBody({ message, endRef }) {
                                             key={index}
                                             src={src}
                                             alt={src}
-                                            loading='lazy'
+                                            loading="lazy"
                                             style={{
                                                 width: '100%',
                                                 minWidth: '100px',
@@ -180,23 +188,18 @@ export default function TextBody({ message, endRef }) {
                                             key={index}
                                             href={src}
                                             target={
-                                                item.includes(
-                                                    'comfortspace.netlify.app'
-                                                )
+                                                item.includes('comfortspace.netlify.app')
                                                     ? '_self'
                                                     : '_blank'
                                             }
                                             rel={
-                                                item.includes(
-                                                    'comfortspace.netlify.app'
-                                                )
+                                                item.includes('comfortspace.netlify.app')
                                                     ? ''
                                                     : 'noopener noreferrer'
                                             }
                                             sx={{
                                                 fontFamily: 'Helvetica',
-                                                ...(currentUser.uid ===
-                                                message.senderId
+                                                ...(currentUser.uid === message.senderId
                                                     ? {
                                                           color: '#00f6ff',
                                                       }
@@ -241,15 +244,16 @@ export default function TextBody({ message, endRef }) {
                         ml: '4px',
                         mb: '-5px',
                         alignSelf: 'flex-end',
-                        ...(!currentUser.uid === message.senderId && {
+                        ...(currentUser.uid !== message.senderId && {
                             color: richBlack,
                         }),
                     }}
                 >
                     {messageTime}
                 </Typography>
-                {/* <div ref={endRef}></div> */}
             </Box>
         </React.Fragment>
     );
-}
+};
+
+export default TextBody;

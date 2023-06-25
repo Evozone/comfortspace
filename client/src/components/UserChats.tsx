@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -9,13 +10,34 @@ import ListItemButton from '@mui/material/ListItemButton';
 
 import { deepDark, medium } from '../utils/colors';
 import { formatDate, formatTime12 } from '../utils/formatTimestamp';
-import {
-    notifyAction,
-    startLoadingAction,
-    stopLoadingAction,
-} from '../actions/actions';
+import { notifyAction, startLoadingAction, stopLoadingAction } from '../actions/actions';
+import { otherUser } from './Connect';
+import { AuthState } from '../reducers/authReducer';
 
-function UserChats({
+interface UserChatsProps {
+    handleChatClick: (user: any) => void;
+    mode: string;
+    socketRef: React.MutableRefObject<Socket | null>;
+    otherUser: otherUser | undefined;
+    onlineUsers: any;
+    messageNotSeen: any;
+    setMessageNotSeen: React.Dispatch<React.SetStateAction<any>>;
+    setValue: React.Dispatch<React.SetStateAction<number>>;
+}
+
+interface userChatType {
+    chatId: string;
+    userOne: AuthState;
+    userTwo: AuthState;
+    lastMessageTime: string;
+    lastMessage: string;
+    uid: string;
+    lastMessageDate: string;
+    photoURL: string;
+    name: string;
+}
+
+const UserChats: React.FC<UserChatsProps> = ({
     handleChatClick,
     mode,
     socketRef,
@@ -24,17 +46,17 @@ function UserChats({
     messageNotSeen,
     setMessageNotSeen,
     setValue,
-}) {
-    const currentUser = useSelector((state) => state.auth);
+}) => {
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
     const dispatch = useDispatch();
-    const [userChats, setUserChats] = useState([]);
+    const [userChats, setUserChats] = useState<userChatType[]>([]);
 
     useEffect(() => {
         const getUserChats = async () => {
             dispatch(startLoadingAction());
             try {
                 const auth = window.localStorage.getItem('healthApp');
-                const { dnd } = JSON.parse(auth);
+                const { dnd } = JSON.parse(auth || '');
                 const { data } = await axios({
                     method: 'GET',
                     url: `${process.env.REACT_APP_SERVER_URL}/api/chat`,
@@ -54,7 +76,7 @@ function UserChats({
                     setValue(1);
                 }
                 setUserChats(
-                    data.result.map((chat) => {
+                    data.result.map((chat: userChatType) => {
                         const info =
                             chat.userTwo.uid === currentUser.uid
                                 ? chat.userOne
@@ -64,7 +86,7 @@ function UserChats({
                             lastMessageTime: chat.lastMessageTime,
                             lastMessage: chat?.lastMessage,
                             lastMessageDate: formatDate(
-                                chat.lastMessageTime / 1000
+                                Number(chat.lastMessageTime) / 1000
                             ),
                         };
                     })
@@ -87,12 +109,10 @@ function UserChats({
     useEffect(() => {
         socketRef.current?.on('recieve_message', (message) => {
             if (otherUser === null || message.senderId !== otherUser?.uid) {
-                setMessageNotSeen((prev) => [...prev, message.senderId]);
+                setMessageNotSeen((prev: userChatType[]) => [...prev, message.senderId]);
             }
             setUserChats((prev) => {
-                const index = prev.findIndex(
-                    (user) => user.uid === message.senderId
-                );
+                const index = prev.findIndex((user) => user?.uid === message.senderId);
                 if (index === -1) return prev;
                 const user = prev[index];
                 const newUser = {
@@ -113,9 +133,7 @@ function UserChats({
         const socket = socketRef?.current;
         socketRef.current?.on('update_user_chats', (message) => {
             setUserChats((prev) => {
-                const index = prev.findIndex(
-                    (user) => user.uid === message.receiverId
-                );
+                const index = prev.findIndex((user) => user.uid === message.receiverId);
                 if (index === -1) return prev;
                 const user = prev[index];
                 const newUser = {
@@ -159,10 +177,8 @@ function UserChats({
                                         : '1px solid rgba(255, 255, 255, 0.12)',
                             }}
                             onClick={() => {
-                                setMessageNotSeen((prev) => {
-                                    const index = prev.findIndex(
-                                        (id) => id === user.uid
-                                    );
+                                setMessageNotSeen((prev: string[]) => {
+                                    const index = prev.findIndex((id) => id === user.uid);
                                     if (index === -1) return prev;
                                     const newMessageNotSeen = [...prev];
                                     newMessageNotSeen.splice(index, 1);
@@ -173,18 +189,17 @@ function UserChats({
                         >
                             <Avatar
                                 src={user?.photoURL}
-                                alt='user avatar'
+                                alt="user avatar"
                                 sx={{
                                     width: 50,
                                     height: 50,
-                                    backgroundColor:
-                                        mode === 'light' ? deepDark : medium,
+                                    backgroundColor: mode === 'light' ? deepDark : medium,
                                 }}
                             >
                                 {user.name[0].toUpperCase()}
                             </Avatar>
                             {onlineUsers?.find(
-                                (onlineUser) => onlineUser.userId === user.uid
+                                (onlineUser: any) => onlineUser.userId === user.uid
                             ) && (
                                 <Box
                                     sx={{
@@ -223,8 +238,7 @@ function UserChats({
                                     }}
                                 >
                                     {user.lastMessage?.length > 25
-                                        ? user.lastMessage.substring(0, 25) +
-                                          '...'
+                                        ? user.lastMessage.substring(0, 25) + '...'
                                         : user.lastMessage}
                                 </Typography>
                                 <Typography
@@ -257,7 +271,7 @@ function UserChats({
                                         top: '25px',
                                     }}
                                 >
-                                    {formatTime12(user?.lastMessageTime / 1000)}
+                                    {formatTime12(Number(user?.lastMessageTime) / 1000)}
                                 </Typography>
                                 {messageNotSeen.includes(user.uid) && (
                                     <Box
@@ -300,6 +314,6 @@ function UserChats({
                     ))}
         </List>
     );
-}
+};
 
 export default UserChats;

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { Socket } from 'socket.io-client';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -17,21 +18,23 @@ import { light, bluegrey, deepDark } from '../utils/colors';
 import { initSocket } from '../socket';
 import { useSelector } from 'react-redux';
 import { notifyAction } from '../actions/actions';
+import { AuthState } from '../reducers/authReducer';
 
-function PersonalCall({ mode }) {
-    const socketRef = useRef();
+const PersonalCall = ({ mode }: { mode: string }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const pcRef = useRef();
-    const localVideoRef = useRef(null);
-    const remoteVideoRef = useRef(null);
+    const socketRef = useRef<Socket>();
+    const pcRef = useRef<RTCPeerConnection | null>(null);
+    const localVideoRef = useRef<HTMLVideoElement>(null);
+    const remoteVideoRef = useRef<HTMLVideoElement>(null);
     const { id: roomId } = useParams();
 
-    const currentUser = useSelector((state) => state.auth);
-    const [audioMuted, setAudioMuted] = useState(false);
-    const [videoMuted, setVideoMuted] = useState(false);
-    const [remoteUser, setRemoteUser] = useState(null);
-    const [remoteAudioMute, setRemoteAudioMute] = useState(null);
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
+
+    const [audioMuted, setAudioMuted] = useState<boolean>(false);
+    const [videoMuted, setVideoMuted] = useState<boolean>(false);
+    const [remoteUser, setRemoteUser] = useState<any>(null);
+    const [remoteAudioMute, setRemoteAudioMute] = useState<boolean | null>(null);
 
     const pc_config = {
         iceServers: [
@@ -93,7 +96,7 @@ function PersonalCall({ mode }) {
         }
     };
 
-    const createOffer = async (userId) => {
+    const createOffer = async (userId: string) => {
         // console.log('create offer');
         if (!(pcRef.current && socketRef.current)) {
             return;
@@ -103,9 +106,7 @@ function PersonalCall({ mode }) {
                 offerToReceiveAudio: true,
                 offerToReceiveVideo: true,
             });
-            await pcRef.current.setLocalDescription(
-                new RTCSessionDescription(sdp)
-            );
+            await pcRef.current.setLocalDescription(new RTCSessionDescription(sdp));
             // console.log(remoteUser);
             socketRef.current.emit('offer', { sdp, userId });
         } catch (error) {
@@ -114,23 +115,19 @@ function PersonalCall({ mode }) {
         }
     };
 
-    const createAnswer = async (sdp, userId) => {
+    const createAnswer = async (sdp: RTCSessionDescriptionInit, userId: string) => {
         if (!(pcRef.current && socketRef.current)) {
             return;
         }
         try {
-            await pcRef.current.setRemoteDescription(
-                new RTCSessionDescription(sdp)
-            );
+            await pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
             // console.log('answer set remote description success');
             const mySdp = await pcRef.current.createAnswer({
                 offerToReceiveVideo: true,
                 offerToReceiveAudio: true,
             });
             // console.log('create answer');
-            await pcRef.current.setLocalDescription(
-                new RTCSessionDescription(mySdp)
-            );
+            await pcRef.current.setLocalDescription(new RTCSessionDescription(mySdp));
             // console.log('set local description success - ', mySdp);
             socketRef.current.emit('answer', {
                 sdp: mySdp,
@@ -143,11 +140,14 @@ function PersonalCall({ mode }) {
     };
 
     const toggleAudio = () => {
-        if (localVideoRef) {
+        if (
+            localVideoRef.current &&
+            localVideoRef.current.srcObject instanceof MediaStream &&
+            socketRef.current
+        ) {
             setAudioMuted(!audioMuted);
-            localVideoRef.current.srcObject.getAudioTracks()[0].enabled =
-                audioMuted;
-            socketRef.current.emit('toggle_audio', {
+            localVideoRef.current.srcObject.getAudioTracks()[0].enabled = audioMuted;
+            socketRef?.current.emit('toggle_audio', {
                 roomId,
                 audioMuted,
             });
@@ -155,10 +155,12 @@ function PersonalCall({ mode }) {
     };
 
     const toggleVideo = () => {
-        if (localVideoRef) {
+        if (
+            localVideoRef.current &&
+            localVideoRef.current.srcObject instanceof MediaStream
+        ) {
             setVideoMuted(!videoMuted);
-            localVideoRef.current.srcObject.getVideoTracks()[0].enabled =
-                videoMuted;
+            localVideoRef.current.srcObject.getVideoTracks()[0].enabled = videoMuted;
         }
     };
 
@@ -190,9 +192,7 @@ function PersonalCall({ mode }) {
                     return;
                 }
                 // console.log('set remote description', sdp);
-                pcRef.current.setRemoteDescription(
-                    new RTCSessionDescription(sdp)
-                );
+                pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
                 // console.log(sdp);
             });
 
@@ -200,9 +200,7 @@ function PersonalCall({ mode }) {
                 if (!pcRef.current) {
                     return;
                 }
-                await pcRef.current.addIceCandidate(
-                    new RTCIceCandidate(candidate)
-                );
+                await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
                 // console.log('candidate add success');
             });
 
@@ -212,13 +210,7 @@ function PersonalCall({ mode }) {
 
             socketRef.current.on('user_left', (user) => {
                 setRemoteUser(null);
-                dispatch(
-                    notifyAction(
-                        true,
-                        'success',
-                        `${user.name} has left the call`
-                    )
-                );
+                dispatch(notifyAction(true, 'success', `${user.name} has left the call`));
             });
 
             setVideoTracks();
@@ -267,7 +259,7 @@ function PersonalCall({ mode }) {
                     }}
                 >
                     <Typography
-                        variant='h6'
+                        variant="h6"
                         sx={{
                             zIndex: 1,
                             position: 'absolute',
@@ -296,8 +288,7 @@ function PersonalCall({ mode }) {
                                 position: 'absolute',
                                 bottom: '10px',
                                 left: '10px',
-                                color:
-                                    mode === 'light' ? 'white' : 'text.primary',
+                                color: mode === 'light' ? 'white' : 'text.primary',
                             }}
                         />
                     )}
@@ -311,20 +302,19 @@ function PersonalCall({ mode }) {
                         }}
                     >
                         <Typography
-                            variant='h6'
+                            variant="h6"
                             sx={{
                                 zIndex: 1,
                                 position: 'absolute',
                                 bottom: '6px',
                                 left: '36px',
-                                color:
-                                    mode === 'light' ? 'white' : 'text.primary',
+                                color: mode === 'light' ? 'white' : 'text.primary',
                             }}
                         >
                             {remoteUser?.name}
                         </Typography>
                         <video
-                            id='remotevideo'
+                            id="remotevideo"
                             style={{
                                 height: '100%',
                                 width: 'inherit',
@@ -341,10 +331,7 @@ function PersonalCall({ mode }) {
                                     position: 'absolute',
                                     bottom: '10px',
                                     left: '10px',
-                                    color:
-                                        mode === 'light'
-                                            ? 'white'
-                                            : 'text.primary',
+                                    color: mode === 'light' ? 'white' : 'text.primary',
                                 }}
                             />
                         )}
@@ -358,9 +345,9 @@ function PersonalCall({ mode }) {
                     backgroundColor: deepDark,
                 }}
             >
-                <Stack direction='row' spacing={2}>
+                <Stack direction="row" spacing={2}>
                     {audioMuted ? (
-                        <Tooltip title='Turn On Mic' arrow>
+                        <Tooltip title="Turn On Mic" arrow>
                             <IconButton
                                 sx={{
                                     color: 'red',
@@ -375,17 +362,14 @@ function PersonalCall({ mode }) {
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title='Turn Off Mic' arrow>
-                            <IconButton
-                                sx={{ color: 'white' }}
-                                onClick={toggleAudio}
-                            >
+                        <Tooltip title="Turn Off Mic" arrow>
+                            <IconButton sx={{ color: 'white' }} onClick={toggleAudio}>
                                 <MicIcon />
                             </IconButton>
                         </Tooltip>
                     )}
                     {videoMuted ? (
-                        <Tooltip title='Turn On Camera' arrow>
+                        <Tooltip title="Turn On Camera" arrow>
                             <IconButton
                                 sx={{
                                     color: 'red',
@@ -400,7 +384,7 @@ function PersonalCall({ mode }) {
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title='Turn Off Camera' arrow>
+                        <Tooltip title="Turn Off Camera" arrow>
                             <IconButton
                                 sx={{
                                     color: 'white',
@@ -412,7 +396,7 @@ function PersonalCall({ mode }) {
                         </Tooltip>
                     )}
 
-                    <Tooltip title='Leave Call' arrow>
+                    <Tooltip title="Leave Call" arrow>
                         <IconButton
                             sx={{
                                 backgroundColor: 'white',
@@ -432,6 +416,6 @@ function PersonalCall({ mode }) {
             </Paper>
         </Box>
     );
-}
+};
 
 export default PersonalCall;

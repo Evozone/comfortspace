@@ -1,3 +1,4 @@
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
@@ -8,8 +9,19 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 
 import { light, deepDark, bluegrey } from '../utils/colors';
+import { otherUser } from './Connect';
 
-function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
+interface ProfileInfoProps {
+    mode: string;
+    otherUser: otherUser | null;
+    setProfileInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ProfileInfo: React.FC<ProfileInfoProps> = ({
+    mode,
+    otherUser,
+    setProfileInfoOpen,
+}) => {
     return (
         <Box
             sx={{
@@ -39,7 +51,7 @@ function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
                 }}
             >
                 <Typography
-                    variant='h5'
+                    variant="h5"
                     sx={{
                         color: mode === 'light' ? deepDark : light,
                         fontWeight: 'bold',
@@ -72,8 +84,8 @@ function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
                     }}
                 >
                     <Avatar
-                        alt={otherUser.name.charAt(0).toUpperCase()}
-                        src={otherUser.photoURL}
+                        alt={otherUser?.name.charAt(0).toUpperCase()}
+                        src={otherUser?.photoURL}
                         sx={{
                             bgcolor: mode === 'light' ? deepDark : light,
                             color: mode === 'light' ? light : deepDark,
@@ -82,7 +94,7 @@ function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
                             border: '2px solid',
                         }}
                     >
-                        {otherUser.name.charAt(0).toUpperCase()}
+                        {otherUser?.name.charAt(0).toUpperCase()}
                     </Avatar>
                 </Box>
                 <Box
@@ -101,7 +113,7 @@ function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
                         }}
                     >
                         <Typography
-                            variant='subtitle1'
+                            variant="subtitle1"
                             sx={{
                                 mr: 1,
                                 color: mode === 'light' ? deepDark : light,
@@ -113,9 +125,9 @@ function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
                             sx={{
                                 fontSize: '1rem',
                             }}
-                            label={otherUser.name}
-                            color='success'
-                            size='medium'
+                            label={otherUser?.name}
+                            color="success"
+                            size="medium"
                         />
                     </Box>
                     <Box
@@ -128,7 +140,7 @@ function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
                         }}
                     >
                         <Typography
-                            variant='subtitle1'
+                            variant="subtitle1"
                             sx={{
                                 mt: 2,
                                 mr: 1,
@@ -141,15 +153,15 @@ function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
                             sx={{
                                 fontSize: '1rem',
                             }}
-                            label={otherUser.username}
-                            color='success'
-                            size='medium'
+                            label={otherUser?.username}
+                            color="success"
+                            size="medium"
                         />
                     </Box>
                 </Box>
             </Box>
-            {(otherUser.socialLinks.twitter !== '' ||
-                otherUser.socialLinks.instagram !== '') && (
+            {(otherUser?.socialLinks?.twitter !== '' ||
+                otherUser?.socialLinks?.instagram !== '') && (
                 <Box
                     sx={{
                         display: 'flex',
@@ -167,10 +179,7 @@ function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
                             cursor: 'pointer',
                         }}
                         onClick={() => {
-                            window.open(
-                                otherUser.socialLinks.twitter,
-                                '_blank'
-                            );
+                            window.open(otherUser?.socialLinks?.twitter, '_blank');
                         }}
                     />
                     <InstagramIcon
@@ -181,16 +190,13 @@ function ProfileInfo({ mode, otherUser, setProfileInfoOpen }) {
                             cursor: 'pointer',
                         }}
                         onClick={() => {
-                            window.open(
-                                otherUser.socialLinks.instagram,
-                                '_blank'
-                            );
+                            window.open(otherUser?.socialLinks?.instagram, '_blank');
                         }}
                     />
                 </Box>
             )}
         </Box>
     );
-}
+};
 
 export default ProfileInfo;

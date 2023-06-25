@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { Socket } from 'socket.io-client';
 import { v4 as uuid } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import MessageInput from './MessageInput';
+
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
@@ -18,35 +19,46 @@ import { light, bluegrey, deepDark, medium } from '../utils/colors';
 import { formatDate } from '../utils/formatTimestamp';
 import storage from '../appwrite';
 import TextBody from './TextBody';
-import {
-    notifyAction,
-    startLoadingAction,
-    stopLoadingAction,
-} from '../actions/actions';
 import ProfileInfo from './ProfileInfo';
+import MessageInput from './MessageInput';
+import { notifyAction, startLoadingAction, stopLoadingAction } from '../actions/actions';
+import { message, otherUser } from './Connect';
+import { AuthState } from 'src/reducers/authReducer';
 
-function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
-    const inputRef = useRef();
-    const endRef = useRef();
+interface ChatInterfaceProps {
+    mode: string;
+    otherUser: otherUser;
+    socketRef: React.MutableRefObject<Socket | null>;
+    connectSettings: any;
+}
+
+const ChatInterface: React.FC<ChatInterfaceProps> = ({
+    mode,
+    otherUser,
+    socketRef,
+    connectSettings,
+}) => {
+    const inputRef = useRef<any>();
+    const endRef = useRef<any>();
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const currentUser = useSelector((state) => state.auth);
-    const [messages, setMessages] = useState(null);
-    const [pageNum, setPageNum] = useState(0);
-    const [loadButtonVisible, setLoadButtonVisible] = useState(true);
-    const [prevOtherUser, setPrevOtherUser] = useState(null);
-    const [timer, setTimer] = useState(null);
-    const [typing, setTyping] = useState(false);
-    const [profileInfoOpen, setProfileInfoOpen] = useState(false);
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
+    const [messages, setMessages] = useState<message[]>([]);
+    const [pageNum, setPageNum] = useState<number>(0);
+    const [loadButtonVisible, setLoadButtonVisible] = useState<boolean>(true);
+    const [prevOtherUser, setPrevOtherUser] = useState<otherUser>();
+    const [timer, setTimer] = useState<NodeJS.Timeout>();
+    const [typing, setTyping] = useState<boolean>(false);
+    const [profileInfoOpen, setProfileInfoOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (otherUser.uid === prevOtherUser?.uid) return;
         setTimeout(() => {
-            endRef.current.scrollIntoView({ behavior: 'smooth' });
+            endRef?.current?.scrollIntoView({ behavior: 'smooth' });
         }, 700);
         setPrevOtherUser(otherUser);
-        setMessages(null);
+        setMessages([]);
         setLoadButtonVisible(true);
         loadConversation(0);
     }, [otherUser]);
@@ -64,7 +76,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                 return [...prev, message];
             });
             setTimeout(() => {
-                endRef.current.scrollIntoView({ behavior: 'smooth' });
+                endRef?.current?.scrollIntoView({ behavior: 'smooth' });
             }, 700);
         });
 
@@ -76,10 +88,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
     useEffect(() => {
         const socket = socketRef?.current;
         socketRef.current?.on('typing_status', (data) => {
-            if (
-                data.senderId !== otherUser.uid ||
-                !connectSettings.typingStatus
-            ) {
+            if (data.senderId !== otherUser.uid || !connectSettings.typingStatus) {
                 return;
             }
             setTyping(data.typing);
@@ -89,9 +98,12 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
         };
     }, [socketRef, otherUser, connectSettings]);
 
-    const loadConversation = async (page) => {
+    const loadConversation = async (page: number) => {
+        if (!currentUser.uid) {
+            return;
+        }
         const chatId =
-            currentUser.uid > otherUser.uid
+            currentUser?.uid > otherUser.uid
                 ? `${currentUser.uid}${otherUser.uid}`
                 : `${otherUser.uid}${currentUser.uid}`;
         try {
@@ -102,13 +114,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
             if (data.result.length === 0) {
                 setLoadButtonVisible(false);
                 if (!otherUser.new) {
-                    dispatch(
-                        notifyAction(
-                            true,
-                            'success',
-                            'No more messages to load'
-                        )
-                    );
+                    dispatch(notifyAction(true, 'success', 'No more messages to load'));
                 }
                 return;
             }
@@ -129,8 +135,8 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
         }
     };
 
-    const handleSendMessage = async (text) => {
-        if (!text) {
+    const handleSendMessage = async (text: string) => {
+        if (!text || !currentUser.uid) {
             alert('Please enter a message');
             return;
         }
@@ -153,7 +159,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                     timestamp: Date.now(),
                 }
             );
-            socketRef.current.emit('send_message', {
+            socketRef?.current?.emit('send_message', {
                 ...data.result,
                 receiverId: otherUser.uid,
             });
@@ -164,9 +170,11 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                 return [...prev, data.result];
             });
             setTimeout(() => {
-                endRef.current.scrollIntoView({ behavior: 'smooth' });
+                endRef?.current?.scrollIntoView({ behavior: 'smooth' });
             }, 700);
-            inputRef.current.value = '';
+            if (inputRef?.current) {
+                inputRef.current.value = '';
+            }
         } catch (error) {
             dispatch(
                 notifyAction(
@@ -179,32 +187,26 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
         }
     };
 
-    const uploadFile = async (file) => {
+    const uploadFile = async (file: File) => {
         dispatch(startLoadingAction());
         const id = uuid();
-        await storage.createFile(
-            process.env.REACT_APP_APPWRITE_BUCKET_ID,
-            id,
-            file
-        );
-        const result = await storage.getFilePreview(
-            process.env.REACT_APP_APPWRITE_BUCKET_ID,
-            id
-        );
+        const bucketId = process.env.REACT_APP_APPWRITE_BUCKET_ID;
+        await storage.createFile(bucketId || '', id, file);
+        const result = storage.getFilePreview(bucketId || '', id);
         await handleSendMessage(result.href);
         dispatch(stopLoadingAction());
     };
 
-    const textfieldOnChange = (event) => {
+    const textfieldOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.value && connectSettings.typingStatus) {
-            socketRef.current.emit('start_typing', {
+            socketRef?.current?.emit('start_typing', {
                 receiverId: otherUser.uid,
                 senderId: currentUser.uid,
                 typing: true,
             });
             clearTimeout(timer);
             const newTimer = setTimeout(() => {
-                socketRef.current.emit('stop_typing', {
+                socketRef?.current?.emit('stop_typing', {
                     receiverId: otherUser.uid,
                     senderId: currentUser.uid,
                     typing: false,
@@ -218,7 +220,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
         dispatch(startLoadingAction());
         const id = uuid();
         const CALL_TEMPLATE = `Hey, Lets talk more on a video call. Please click on the link below to join the call. \n\n ${process.env.REACT_APP_BASE_URL}/connect/pc/${id}`;
-        await handleSendMessage(CALL_TEMPLATE);
+        // await handleSendMessage(CALL_TEMPLATE);
         dispatch(stopLoadingAction());
         navigate(`/connect/pc/${id}`);
     };
@@ -240,8 +242,8 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                     px: 2,
                 }}
                 elevation={0}
-                color='inherit'
-                position='static'
+                color="inherit"
+                position="static"
             >
                 <Box
                     sx={{
@@ -264,9 +266,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                         {otherUser.name.charAt(0).toUpperCase()}
                     </Avatar>
                     <Box sx={{ display: 'block' }}>
-                        <Typography
-                            sx={{ fontWeight: '400', ml: 3, fontSize: '1rem' }}
-                        >
+                        <Typography sx={{ fontWeight: '400', ml: 3, fontSize: '1rem' }}>
                             {otherUser.name}
                         </Typography>
                         <Typography
@@ -331,14 +331,14 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                             width: '195px',
                             height: '30px',
                         }}
-                        variant='contained'
+                        variant="contained"
                         disableElevation
-                        color='success'
+                        color="success"
                     >
                         Load More Chats
                     </Button>
                 )}
-                {messages &&
+                {messages.length > 0 &&
                     messages.map((message, index) => {
                         const msgDate = formatDate(message.timestamp / 1000);
                         const nxtMsgDate = formatDate(
@@ -372,12 +372,7 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
                                 </React.Fragment>
                             );
                         }
-                        return (
-                            <TextBody
-                                key={message._id}
-                                {...{ message, endRef }}
-                            />
-                        );
+                        return <TextBody key={message._id} {...{ message, endRef }} />;
                     })}
             </Box>
             <Divider />
@@ -393,6 +388,6 @@ function ChatInterface({ mode, otherUser, socketRef, connectSettings }) {
             )}
         </Box>
     );
-}
+};
 
 export default ChatInterface;

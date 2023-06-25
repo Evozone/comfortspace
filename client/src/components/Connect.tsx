@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Socket } from 'socket.io-client';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
@@ -15,43 +16,64 @@ import ChatInterface from './ChatInterface';
 import UserChats from './UserChats';
 import SearchUser from './SearchUser';
 import ConnectSettings from './ConnectSettings';
+import { AuthState } from '../reducers/authReducer';
 
-function Connect({ mode }) {
-    const socketRef = useRef(null);
-    const [value, setValue] = useState(0);
-    const [otherUser, setOtherUser] = useState(null);
-    const [onlineUsers, setOnlineUsers] = useState([]);
-    const [messageNotSeen, setMessageNotSeen] = useState([]);
-    const [connectSettings, setConnectSettings] = useState();
+export interface otherUser {
+    uid: string;
+    name: string;
+    photoURL: string;
+    username: string;
+    new: boolean;
+    socialLinks: {
+        twitter: string;
+        instagram: string;
+    };
+}
 
-    const currentUser = useSelector((state) => state.auth);
+export interface message {
+    _id: string;
+    senderId: string;
+    senderName: string;
+    text: string;
+    timestamp: number;
+}
+
+const Connect = ({ mode }: { mode: string }) => {
+    const socketRef = useRef<Socket | null>(null);
+    const [value, setValue] = useState<number>(0);
+    const [otherUser, setOtherUser] = useState<otherUser>();
+    const [onlineUsers, setOnlineUsers] = useState<any>([]);
+    const [messageNotSeen, setMessageNotSeen] = useState<any>([]);
+    const [connectSettings, setConnectSettings] = useState<any>();
+
+    const currentUser = useSelector((state: { auth: AuthState }) => state.auth);
 
     useEffect(() => {
-        if (!(Notification.permission === 'granted')) {
+        if (Notification.permission === 'granted') {
+            const data = JSON.parse(window.localStorage.getItem('connectSettings')!);
+            console.log(data);
+            if (data) {
+                setConnectSettings(data);
+            } else {
+                const data = {
+                    showNotifications: true,
+                    textContent: false,
+                    playSound: true,
+                    onlineStatus: true,
+                    typingStatus: true,
+                };
+                window.localStorage.setItem('connectSettings', JSON.stringify(data));
+                setConnectSettings(data);
+            }
+        } else {
             const data = {
                 showNotifications: false,
                 textContent: false,
-                playSound: true,
+                playSound: false,
                 onlineStatus: true,
                 typingStatus: true,
             };
-            window.localStorage.setItem(
-                'connectSettings',
-                JSON.stringify(data)
-            );
-            setConnectSettings(data);
-        } else {
-            const data = {
-                showNotifications: true,
-                textContent: false,
-                playSound: true,
-                onlineStatus: true,
-                typingStatus: true,
-            };
-            window.localStorage.setItem(
-                'connectSettings',
-                JSON.stringify(data)
-            );
+            window.localStorage.setItem('connectSettings', JSON.stringify(data));
             setConnectSettings(data);
         }
     }, []);
@@ -59,13 +81,9 @@ function Connect({ mode }) {
     useEffect(() => {
         const init = async () => {
             socketRef.current = await initSocket('chat');
-            socketRef.current.on('connect_error', (error) =>
-                handleErrors(error)
-            );
-            socketRef.current.on('connect_failed', (error) =>
-                handleErrors(error)
-            );
-            function handleErrors(error) {
+            socketRef.current.on('connect_error', (error: any) => handleErrors(error));
+            socketRef.current.on('connect_failed', (error: any) => handleErrors(error));
+            function handleErrors(error: any) {
                 console.log('socket error', error);
                 alert(
                     'Socket connection failed, Please close the tab & try again later.'
@@ -75,10 +93,10 @@ function Connect({ mode }) {
                 newUserId: currentUser.uid,
                 onlineStatus: connectSettings?.onlineStatus,
             });
-            socketRef.current.on('online_users', (users) => {
-                if (connectSettings.onlineStatus) {
+            socketRef.current.on('online_users', (users: any) => {
+                if (connectSettings?.onlineStatus) {
                     setOnlineUsers(
-                        users.filter((user) => user.onlineStatus === true)
+                        users.filter((user: any) => user.onlineStatus === true)
                     );
                 } else {
                     setOnlineUsers([]);
@@ -97,17 +115,14 @@ function Connect({ mode }) {
     }, [currentUser, connectSettings]);
 
     useEffect(() => {
-        socketRef.current?.on('recieve_notification', (message) => {
+        socketRef.current?.on('recieve_notification', (message: message) => {
             if (
-                (otherUser === null || message.senderId !== otherUser.uid) &&
+                (otherUser === null || message.senderId !== otherUser?.uid) &&
                 connectSettings?.showNotifications
             ) {
                 const audio = new Audio('/assets/audio/notification.mp3');
                 const body = connectSettings?.textContent
-                    ? 'New message from ' +
-                      message.senderName +
-                      ' - ' +
-                      message.text
+                    ? 'New message from ' + message.senderName + ' - ' + message.text
                     : 'New message from ' + message.senderName;
                 const notification = new Notification('Comfort Space', {
                     body,
@@ -126,11 +141,11 @@ function Connect({ mode }) {
         };
     });
 
-    const handleChange = (event, newValue) => {
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
-    const handleChatClick = (user) => {
+    const handleChatClick = (user: any) => {
         setOtherUser(user);
         if (user.new) {
             setValue(0);
@@ -147,22 +162,20 @@ function Connect({ mode }) {
             }}
         >
             <Box sx={{ width: '400px' }}>
-                <AppBar elevation={0} color='inherit' position='static'>
+                <AppBar elevation={0} color="inherit" position="static">
                     <Tabs
                         sx={{
                             alignItems: 'center',
                             // boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-                            backgroundColor:
-                                mode === 'light' ? medium : bluegrey,
+                            backgroundColor: mode === 'light' ? medium : bluegrey,
                             '& .MuiTabs-indicator': {
-                                backgroundColor:
-                                    mode === 'light' ? deepDark : medium,
+                                backgroundColor: mode === 'light' ? deepDark : medium,
                             },
                         }}
                         value={value}
                         onChange={handleChange}
-                        textColor='inherit'
-                        variant='fullWidth'
+                        textColor="inherit"
+                        variant="fullWidth"
                     >
                         <Tab
                             sx={{
@@ -186,9 +199,7 @@ function Connect({ mode }) {
                                         ? '1px solid rgba(255, 255, 255, 0.52)'
                                         : '1px solid rgba(255, 255, 255, 0.22)',
                             }}
-                            icon={
-                                <PersonSearchIcon sx={{ fontSize: '34px' }} />
-                            }
+                            icon={<PersonSearchIcon sx={{ fontSize: '34px' }} />}
                         />
                         <Tab
                             sx={{
@@ -237,10 +248,7 @@ function Connect({ mode }) {
                         />
                     )}
                     {value === 1 && (
-                        <SearchUser
-                            mode={mode}
-                            handleChatClick={handleChatClick}
-                        />
+                        <SearchUser mode={mode} handleChatClick={handleChatClick} />
                     )}
                     {value === 2 && (
                         <ConnectSettings
@@ -268,7 +276,7 @@ function Connect({ mode }) {
                                 ? '/assets/vectors/welcome-screen-dark.svg'
                                 : '/assets/vectors/welcome-screen.svg'
                         }
-                        alt='chat'
+                        alt="chat"
                         style={{ width: '400px', height: '400px' }}
                     />
                     <Typography
@@ -283,12 +291,10 @@ function Connect({ mode }) {
                     </Typography>
                 </Box>
             ) : (
-                <ChatInterface
-                    {...{ mode, otherUser, socketRef, connectSettings }}
-                />
+                <ChatInterface {...{ mode, otherUser, socketRef, connectSettings }} />
             )}
         </Box>
     );
-}
+};
 
 export default Connect;

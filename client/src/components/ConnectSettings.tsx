@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
 
-function ConnectSettings({ setConnectSettings, connectSettings }) {
-    const [checkState, setCheckState] = useState({
+interface ConnectSettingsProps {
+    setConnectSettings: React.Dispatch<React.SetStateAction<any>>;
+    connectSettings: any;
+}
+
+const ConnectSettings: React.FC<ConnectSettingsProps> = ({
+    setConnectSettings,
+    connectSettings,
+}) => {
+    const [checkState, setCheckState] = useState<any>({
         showNotifications: connectSettings.showNotifications,
         textContent: connectSettings.textContent,
         playSound: connectSettings.playSound,
@@ -63,11 +71,8 @@ function ConnectSettings({ setConnectSettings, connectSettings }) {
         });
     };
 
-    const handleCheckboxChange = (event) => {
-        if (
-            event.target.name === 'showNotifications' &&
-            !checkState.showNotifications
-        ) {
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.name === 'showNotifications' && !checkState.showNotifications) {
             notificationPrompt();
             return;
         }
@@ -102,11 +107,11 @@ function ConnectSettings({ setConnectSettings, connectSettings }) {
                         <Checkbox
                             checked={checkState.showNotifications}
                             onChange={handleCheckboxChange}
-                            color='success'
-                            name='showNotifications'
+                            color="success"
+                            name="showNotifications"
                         />
                     }
-                    label='Show notifications'
+                    label="Show notifications"
                 />
                 {checkState.showNotifications && (
                     <>
@@ -116,11 +121,11 @@ function ConnectSettings({ setConnectSettings, connectSettings }) {
                                 <Checkbox
                                     checked={checkState.textContent}
                                     onChange={handleCheckboxChange}
-                                    color='success'
-                                    name='textContent'
+                                    color="success"
+                                    name="textContent"
                                 />
                             }
-                            label='Show text content in notifications'
+                            label="Show text content in notifications"
                         />
                         <FormControlLabel
                             sx={{ mb: 2 }}
@@ -128,11 +133,11 @@ function ConnectSettings({ setConnectSettings, connectSettings }) {
                                 <Checkbox
                                     checked={checkState.playSound}
                                     onChange={handleCheckboxChange}
-                                    color='success'
-                                    name='playSound'
+                                    color="success"
+                                    name="playSound"
                                 />
                             }
-                            label='Play sound on notifications'
+                            label="Play sound on notifications"
                         />
                     </>
                 )}
@@ -142,11 +147,11 @@ function ConnectSettings({ setConnectSettings, connectSettings }) {
                         <Checkbox
                             checked={checkState.typingStatus}
                             onChange={handleCheckboxChange}
-                            color='success'
-                            name='typingStatus'
+                            color="success"
+                            name="typingStatus"
                         />
                     }
-                    label='Show typing status'
+                    label="Show typing status"
                 />
                 <FormControlLabel
                     sx={{ mb: 2 }}
@@ -154,19 +159,19 @@ function ConnectSettings({ setConnectSettings, connectSettings }) {
                         <Checkbox
                             checked={checkState.onlineStatus}
                             onChange={handleCheckboxChange}
-                            color='success'
-                            name='onlineStatus'
+                            color="success"
+                            name="onlineStatus"
                         />
                     }
-                    label='Show online status'
+                    label="Show online status"
                 />
                 <FormHelperText>
-                    *Online status change will take effect once you refresh the
-                    page or log out and log in again.
+                    *Online status change will take effect once you refresh the page or
+                    log out and log in again.
                 </FormHelperText>
             </Box>
         </Box>
     );
-}
+};
 
 export default ConnectSettings;
