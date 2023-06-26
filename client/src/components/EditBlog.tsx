@@ -65,7 +65,7 @@ const EditBlog = ({ mode }: { mode: string }) => {
         try {
             await axios({
                 method: 'PATCH',
-                url: `${process.env.REACT_APP_SERVER_URL}/api/blog/edit/${blog._id}`,
+                url: `${process.env.REACT_APP_SERVER_URL}/api/blog/${blog._id}`,
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `Bearer ${dnd}`,

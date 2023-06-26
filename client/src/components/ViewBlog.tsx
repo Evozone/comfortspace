@@ -32,7 +32,7 @@ const ViewBlog = ({ mode }: { mode: string }) => {
             dispatch(startLoadingAction());
             try {
                 const { data } = await axios.get(
-                    `${process.env.REACT_APP_SERVER_URL}/api/blog/get/${blogId}`
+                    `${process.env.REACT_APP_SERVER_URL}/api/blog/${blogId}`
                 );
                 setBlog(data.result);
             } catch (error) {
@@ -60,7 +60,7 @@ const ViewBlog = ({ mode }: { mode: string }) => {
         try {
             await axios({
                 method: 'DELETE',
-                url: `${process.env.REACT_APP_SERVER_URL}/api/blog/delete/${blogId}`,
+                url: `${process.env.REACT_APP_SERVER_URL}/api/blog/${blogId}`,
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `Bearer ${dnd}`,

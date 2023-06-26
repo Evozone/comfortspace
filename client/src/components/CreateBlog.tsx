@@ -86,7 +86,7 @@ const CreateBlog = ({ mode }: { mode: string }) => {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${process.env.REACT_APP_SERVER_URL}/api/blog/create`,
+                url: `${process.env.REACT_APP_SERVER_URL}/api/blog`,
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `Bearer ${dnd}`,

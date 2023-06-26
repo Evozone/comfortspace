@@ -55,7 +55,7 @@ const Groups = ({ mode }: { mode: string }) => {
             dispatch(startLoadingAction());
             try {
                 const res = await axios.get(
-                    `${process.env.REACT_APP_SERVER_URL}/api/rooms/getRooms`
+                    `${process.env.REACT_APP_SERVER_URL}/api/rooms`
                 );
                 setGroups(res.data.result);
             } catch (error) {
@@ -197,7 +197,7 @@ const Groups = ({ mode }: { mode: string }) => {
             };
             const response = await axios({
                 method: 'POST',
-                url: `${process.env.REACT_APP_SERVER_URL}/api/rooms/create`,
+                url: `${process.env.REACT_APP_SERVER_URL}/api/rooms`,
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `Bearer ${dnd}`,
@@ -235,7 +235,7 @@ const Groups = ({ mode }: { mode: string }) => {
         try {
             await axios({
                 method: 'DELETE',
-                url: `${process.env.REACT_APP_SERVER_URL}/api/rooms/delete/${roomId}`,
+                url: `${process.env.REACT_APP_SERVER_URL}/api/rooms/${roomId}`,
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `Bearer ${dnd}`,

@@ -29,7 +29,7 @@ const Blogs = ({ mode }: { mode: string }) => {
             try {
                 setLoading(true);
                 const blogsFromServer = await axios.get(
-                    `${process.env.REACT_APP_SERVER_URL}/api/blog/getList/?page=${pageNum}`
+                    `${process.env.REACT_APP_SERVER_URL}/api/blog/?page=${pageNum}`
                 );
                 setBlogs((prev) => {
                     if (!prev || prev.length === 0) {
