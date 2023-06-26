@@ -32,4 +32,4 @@ jobs:
         run: docker build -t backend-ci .
 
       - name: Push the Docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-ci:latest
+        run: docker push chinu1710/backend-ci:latest
