@@ -17,9 +17,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "server"
     steps:
       - uses: actions/checkout@v3
       - name: Login to DockerHub
@@ -29,7 +26,7 @@ jobs:
         run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
 
       - name: Build the Docker image
-        run: docker build -t backend-ci .
+        run: docker build --file ./server/Dockerfile -t backend-ci .
 
       - name: Push the Docker image
         run: docker push chinu1710/backend-ci:latest
