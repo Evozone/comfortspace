@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: "client"
+        working-directory: "server"
     steps:
       - uses: actions/checkout@v3
       - name: Login to DockerHub
