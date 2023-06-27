@@ -1,0 +1,32 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - tsx-development
+      - development
+    paths:
+      - "server/**"
+  pull_request:
+    branches:
+      - tsx-development
+      - development
+    paths:
+      - "server/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to DockerHub
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+
+      - name: Build the Docker image
+        run: docker build --file ./server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-ci .
+
+      - name: Push the Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-ci:latest
