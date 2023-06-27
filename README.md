@@ -9,8 +9,10 @@
 
 # Comfort Space : Seek comfort from people who have been through similar experiences 🌺.
 
-[![Node.js CI](https://github.com/Evozone/comfortspace/actions/workflows/integration.yml/badge.svg?branch=development)](https://github.com/Evozone/comfortspace/actions/workflows/integration.yml)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/4cf7227e-89a4-483a-a92f-68efb9d8bad2/deploy-status)](https://app.netlify.com/sites/comfortspace/deploys)
+[![Frontend CI](https://github.com/Evozone/comfortspace/actions/workflows/fe-CI.yml/badge.svg)](https://github.com/Evozone/comfortspace/actions/workflows/fe-CI.yml)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/4cf7227e-89a4-483a-a92f-68efb9d8bad2/deploy-status)](https://app.netlify.com/sites/comfortspace/deploys) <br/>
+[![Backend CI](https://github.com/Evozone/comfortspace/actions/workflows/backend-CI.yml/badge.svg)](https://github.com/Evozone/comfortspace/actions/workflows/backend-CI.yml)
+[![Backend CD](https://github.com/Evozone/comfortspace/actions/workflows/backend-CD.yml/badge.svg)](https://github.com/Evozone/comfortspace/actions/workflows/backend-CD.yml)
 
 ## Try it out 🚀
 

@@ -17,7 +17,7 @@ dotenv.config();
 const PORT = process.env.PORT || 8080;
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', "*");
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
     res.setHeader(
         'Access-Control-Allow-Headers',
@@ -81,7 +81,7 @@ mongoose
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
-    .then(() => console.log('MongoDB connected successfully >_< !!'))
+    .then(() => console.log('MongoDB connected successfully!'))
     .catch((error) => console.log(`${error} did not connect`));
 
 const server = app.listen(PORT, () =>
