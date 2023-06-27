@@ -26,7 +26,7 @@ jobs:
         run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
 
       - name: Build the Docker image
-        run: docker build --file ./server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-ci .
+        run: docker build --file ./server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-ci ./server
 
       - name: Push the Docker image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-ci:latest
