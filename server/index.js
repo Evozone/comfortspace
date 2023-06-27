@@ -14,7 +14,7 @@ const messageRouter = require('./routes/message.js');
 
 const app = express();
 dotenv.config();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);
@@ -81,7 +81,7 @@ mongoose
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
-    .then(() => console.log('MongoDB connected successfully'))
+    .then(() => console.log('MongoDB connected successfully >_< !!'))
     .catch((error) => console.log(`${error} did not connect`));
 
 const server = app.listen(PORT, () =>
@@ -108,7 +108,7 @@ chat.on('connection', (socket) => {
                 socketId: socket.id,
                 onlineStatus,
             });
-            // console.log('New User Connected', online_users);
+            console.log('New User Connected', online_users);
         }
         chat.emit('online_users', online_users);
     });

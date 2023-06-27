@@ -10,10 +10,10 @@ const {
     deleteBlogById,
 } = require('../controllers/blog');
 
-router.get('/getList', getBlogs);
-router.post('/create', auth, createBlog);
-router.get('/get/:id', getBlogById);
-router.patch('/edit/:id', auth, editBlogById);
-router.delete('/delete/:id', auth, deleteBlogById);
+router.get('/', getBlogs);
+router.post('/', auth, createBlog);
+router.get('/:id', getBlogById);
+router.patch('/:id', auth, editBlogById);
+router.delete('/:id', auth, deleteBlogById);
 
 module.exports = router;
