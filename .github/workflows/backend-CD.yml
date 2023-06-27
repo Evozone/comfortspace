@@ -10,11 +10,11 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-      - name: Pull the Docker image
+      - name: Pull the Docker image.
         run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/backend-ci:latest
 
-      - name: Delete the old Docker container
+      - name: Delete the old Docker container.
         run: sudo docker rm -f backend-ci-container || true
 
-      - name: Run the Docker container
+      - name: Run the Docker container.
         run: sudo docker run -d --name backend-ci-container -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/backend-ci:latest
