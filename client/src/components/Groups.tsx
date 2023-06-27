@@ -47,7 +47,7 @@ const Groups = ({ mode }: { mode: string }) => {
             'font-size: 19px;'
         );
         console.log(
-            '%cPasting anything in here could give attackers access to your Comfort Space account, so do not paste anything here.',
+            '%cPasting anything in here could give attackers access to your Comfort Space account, so do not paste anything here!',
             'color:red; font-size: 19px;'
         );
         console.log('%c-inspired by discord', 'font-size: 17px;');
