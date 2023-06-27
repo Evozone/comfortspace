@@ -3,8 +3,7 @@ name: Backend CD
 on:
   workflow_run:
     workflows: [Backend CI]
-    types:
-      - completed
+    types: [completed]
 
 jobs:
   build:
