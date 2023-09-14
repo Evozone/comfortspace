@@ -121,14 +121,14 @@ const PersonalCall = ({ mode }: { mode: string }) => {
         }
         try {
             await pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
-            // console.log('answer set remote description success');
+            // console.log('answer set remote description success!');
             const mySdp = await pcRef.current.createAnswer({
                 offerToReceiveVideo: true,
                 offerToReceiveAudio: true,
             });
             // console.log('create answer');
             await pcRef.current.setLocalDescription(new RTCSessionDescription(mySdp));
-            // console.log('set local description success - ', mySdp);
+            // console.log('set local description success :- ', mySdp);
             socketRef.current.emit('answer', {
                 sdp: mySdp,
                 userId,
