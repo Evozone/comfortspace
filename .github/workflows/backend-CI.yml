@@ -4,13 +4,12 @@ on:
   push:
     branches:
       - main
-      - tsx-development
       - development
     paths:
       - "server/**"
   pull_request:
     branches:
-      - tsx-development
+      - main
       - development
     paths:
       - "server/**"
