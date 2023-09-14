@@ -72,7 +72,7 @@ app.get('/mtoken', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.send("Hello, welocme to comfort space's API.");
+    res.send("Hello, welocme to comfort space's API!");
 });
 
 mongoose.set('strictQuery', false);
