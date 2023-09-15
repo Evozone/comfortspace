@@ -220,7 +220,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         dispatch(startLoadingAction());
         const id = uuid();
         const CALL_TEMPLATE = `Hey, Lets talk more on a video call. Please click on the link below to join the call. \n\n ${process.env.REACT_APP_BASE_URL}/connect/pc/${id}`;
-        // await handleSendMessage(CALL_TEMPLATE);
+        await handleSendMessage(CALL_TEMPLATE);
         dispatch(stopLoadingAction());
         navigate(`/connect/pc/${id}`);
     };
